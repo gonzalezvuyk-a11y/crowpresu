@@ -191,6 +191,80 @@
       color: #c6bfb5;
     }
 
+    body[data-theme="dark"] .archive-panel {
+      background: #0f0e0c;
+      --color-ink: #f5f3ee;
+      --color-muted: #a9a39a;
+      --color-border-soft: rgba(245, 243, 238, 0.18);
+      --color-surface-panel: #171512;
+    }
+
+    body[data-theme="dark"] .archive-header {
+      border-bottom-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .archive-sidebar {
+      background: #171512;
+      border-right-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .archive-count {
+      border-top-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .archive-filter-chip:hover {
+      background: rgba(245, 243, 238, 0.06);
+    }
+
+    body[data-theme="dark"] .archive-filter-chip.is-active {
+      background: rgba(245, 243, 238, 0.09);
+    }
+
+    body[data-theme="dark"] .arc-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(245, 243, 238, 0.18);
+    }
+
+    body[data-theme="dark"] .arc-card:hover,
+    body[data-theme="dark"] .arc-card.is-active {
+      border-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .arc-btn {
+      color: #e8e1d7;
+      border-color: rgba(245, 243, 238, 0.24);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    body[data-theme="dark"] .arc-btn:hover {
+      color: #0f0e0c;
+      background: #f5f3ee;
+      border-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .arc-btn.is-primary {
+      color: #0f0e0c;
+      background: #f5f3ee;
+      border-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .arc-badge[data-tipo="foto"]        { color: #7ab87a; background: rgba(122, 184, 122, 0.12); }
+    body[data-theme="dark"] .arc-badge[data-tipo="audiovisual"] { color: #7a8ab8; background: rgba(122, 138, 184, 0.12); }
+    body[data-theme="dark"] .arc-badge[data-tipo="edicion"]     { color: #b87ab8; background: rgba(184, 122, 184, 0.12); }
+    body[data-theme="dark"] .arc-badge[data-tipo="tiempoReal"]  { color: #b8937a; background: rgba(184, 147, 122, 0.12); }
+
+    body[data-theme="dark"] .btn-archive-open {
+      color: #e8e1d7;
+      border-color: rgba(245, 243, 238, 0.24);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    body[data-theme="dark"] .btn-archive-open:hover {
+      color: #0f0e0c;
+      background: #f5f3ee;
+      border-color: #f5f3ee;
+    }
+
     body[data-theme="dark"] .obs-toggle.on .obs-toggle-txt,
     body[data-theme="dark"] .ibtn-x:hover,
     body[data-theme="dark"] .obs-x:hover {
@@ -594,6 +668,305 @@
       line-height: var(--line-body);
     }
 
+    .btn-archive-open {
+      width: 100%;
+      margin-top: var(--space-4);
+      font-family: var(--font);
+      font-size: var(--font-size-button);
+      font-weight: 700;
+      letter-spacing: var(--tracking-heading);
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: var(--space-8) var(--space-12);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, border-color 100ms;
+    }
+
+    .btn-archive-open:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    /* ── Archive panel ───────────────────────────── */
+
+    .archive-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-app);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease;
+    }
+
+    .archive-panel.is-open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .archive-header {
+      height: 52px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 var(--space-28);
+      border-bottom: 1px solid var(--border);
+      gap: var(--space-14);
+    }
+
+    .archive-brand {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-brand-ui);
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .archive-sep {
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+    }
+
+    .archive-heading {
+      font-size: var(--font-size-ui);
+      font-weight: 700;
+      letter-spacing: var(--tracking-heading);
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .archive-close {
+      margin-left: auto;
+      font-family: var(--font);
+      font-size: var(--font-size-button);
+      font-weight: 700;
+      letter-spacing: var(--tracking-heading);
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: var(--space-8) var(--space-12);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, border-color 100ms;
+    }
+
+    .archive-close:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .archive-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .archive-sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      padding: var(--space-24) var(--space-22);
+      overflow-y: auto;
+      background: var(--bg-b);
+    }
+
+    .archive-search {
+      width: 100%;
+      font-family: var(--font);
+      font-size: var(--font-size-body);
+      color: var(--ink);
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      padding: var(--space-4) 0 var(--space-6);
+      outline: none;
+      caret-color: var(--ink);
+      margin-bottom: var(--space-22);
+    }
+
+    .archive-search::placeholder { color: var(--muted); }
+
+    .archive-search:focus { border-bottom-color: var(--ink); }
+
+    .archive-filter-label {
+      display: block;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-section);
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--space-8);
+    }
+
+    .archive-filters {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-bottom: var(--space-24);
+    }
+
+    .archive-filter-chip {
+      font-family: var(--font);
+      font-size: var(--font-size-ui);
+      font-weight: 700;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      text-align: left;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      padding: var(--space-5) var(--space-8);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, background 100ms;
+    }
+
+    .archive-filter-chip:hover {
+      color: var(--ink);
+      background: rgba(13, 13, 13, 0.05);
+    }
+
+    .archive-filter-chip.is-active {
+      color: var(--ink);
+      background: rgba(13, 13, 13, 0.07);
+    }
+
+    .archive-count {
+      margin-top: auto;
+      padding-top: var(--space-22);
+      border-top: 1px solid var(--border);
+      font-size: var(--font-size-ui);
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .archive-main {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-24) var(--space-28);
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-12);
+    }
+
+    .arc-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-16) var(--space-16) var(--space-12);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+      background: var(--bg-b);
+      cursor: pointer;
+      transition: border-color 120ms;
+    }
+
+    .arc-card:hover,
+    .arc-card.is-active {
+      border-color: var(--ink);
+    }
+
+    .arc-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-8);
+    }
+
+    .arc-badge {
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-meta);
+      text-transform: uppercase;
+      padding: 2px 5px;
+      border-radius: var(--radius-xs);
+      flex-shrink: 0;
+    }
+
+    .arc-badge[data-tipo="foto"]        { color: #2d5a2d; background: rgba(45, 90, 45, 0.10); }
+    .arc-badge[data-tipo="audiovisual"] { color: #2d3a6a; background: rgba(45, 58, 106, 0.10); }
+    .arc-badge[data-tipo="edicion"]     { color: #5a2d6a; background: rgba(90, 45, 106, 0.10); }
+    .arc-badge[data-tipo="tiempoReal"]  { color: #6a3a2d; background: rgba(106, 58, 45, 0.10); }
+
+    .arc-date {
+      font-size: var(--font-size-ui);
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .arc-title {
+      font-size: var(--font-size-body);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+
+    .arc-client {
+      font-size: var(--font-size-ui);
+      color: var(--muted);
+      margin-top: var(--space-3);
+    }
+
+    .arc-amount {
+      font-size: var(--font-size-ui);
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .arc-actions {
+      display: flex;
+      gap: var(--space-6);
+      margin-top: var(--space-2);
+    }
+
+    .arc-btn {
+      font-family: var(--font);
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-heading);
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, border-color 100ms, background 100ms;
+      color: var(--muted);
+    }
+
+    .arc-btn:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .arc-btn.is-primary {
+      color: var(--bg-b);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .arc-btn.is-primary:hover { opacity: 0.75; }
+
+    .arc-empty {
+      grid-column: 1 / -1;
+      padding: var(--space-60) 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: var(--font-size-body);
+      line-height: var(--line-body);
+    }
+
     .bg-chip {
       display: flex;
       align-items: center;
@@ -759,24 +1132,7 @@
               <button class="btn-add" type="button" onclick="newBudget()">Nuevo</button>
             </div>
             <p class="budget-message" id="budget-message"></p>
-            <div class="budget-filters">
-              <div class="field">
-                <label class="fl" for="budget-search">Buscar</label>
-                <input class="fi" id="budget-search" type="search" placeholder="Cliente, título, fecha"
-                  oninput="setBudgetFilter('query', this.value)">
-              </div>
-              <div class="field">
-                <label class="fl" for="budget-type-filter">Tipo</label>
-                <select class="fs" id="budget-type-filter" onchange="setBudgetFilter('tipo', this.value)">
-                  <option value="">Todos</option>
-                  <option value="foto">Foto</option>
-                  <option value="audiovisual">Audiovisual</option>
-                  <option value="edicion">Edición</option>
-                  <option value="tiempoReal">Tiempo real</option>
-                </select>
-              </div>
-            </div>
-            <div class="budget-list" id="budget-list"></div>
+            <button class="btn-archive-open" type="button" onclick="openArchive()">Ver presupuestos →</button>
           </div>
         </div>
       </section>
@@ -1111,6 +1467,36 @@
   </div>
 
 </div>
+
+<!-- ── Archive panel ──────────────────────────────── -->
+<div id="archive-panel" class="archive-panel" aria-hidden="true">
+  <div class="archive-header">
+    <span class="archive-brand">The Crow</span>
+    <span class="archive-sep">/</span>
+    <span class="archive-heading">Presupuestos guardados</span>
+    <button class="archive-close" type="button" onclick="closeArchive()">← Volver al editor</button>
+  </div>
+  <div class="archive-body">
+    <aside class="archive-sidebar">
+      <input class="archive-search" id="archive-search" type="search"
+        placeholder="Buscar…"
+        oninput="setBudgetFilter('query', this.value)">
+      <span class="archive-filter-label">Tipo</span>
+      <div class="archive-filters">
+        <button class="archive-filter-chip is-active" data-tipo="" type="button" onclick="setBudgetFilter('tipo', '')">Todos</button>
+        <button class="archive-filter-chip" data-tipo="foto" type="button" onclick="setBudgetFilter('tipo', 'foto')">Fotografía</button>
+        <button class="archive-filter-chip" data-tipo="audiovisual" type="button" onclick="setBudgetFilter('tipo', 'audiovisual')">Audiovisual</button>
+        <button class="archive-filter-chip" data-tipo="edicion" type="button" onclick="setBudgetFilter('tipo', 'edicion')">Edición</button>
+        <button class="archive-filter-chip" data-tipo="tiempoReal" type="button" onclick="setBudgetFilter('tipo', 'tiempoReal')">Tiempo Real</button>
+      </div>
+      <p class="archive-count" id="archive-count"></p>
+    </aside>
+    <main class="archive-main">
+      <div class="archive-grid" id="archive-grid"></div>
+    </main>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.104.0/dist/umd/supabase.min.js"></script>
 <script>
 // ─── Data ───────────────────────────────────────────
@@ -1941,6 +2327,7 @@ function filteredBudgets() {
 function setBudgetFilter(key, value) {
   budgetFilter[key] = value
   renderBudgetList()
+  renderArchive()
 }
 
 function renderBudgetList() {
@@ -1976,6 +2363,7 @@ function renderBudgetList() {
       </div>
     `
   }).join('')
+  renderArchive()
 }
 
 async function loadBudgets() {
@@ -2044,6 +2432,85 @@ function newBudget() {
   renderBuilder()
   renderDoc()
   setMessage('budget-message', 'Nuevo presupuesto listo.')
+}
+
+// ─── Archive panel ───────────────────────────────────
+
+function openArchive() {
+  const panel = document.getElementById('archive-panel')
+  if (!panel) return
+  panel.classList.add('is-open')
+  panel.removeAttribute('aria-hidden')
+  renderArchive()
+}
+
+function closeArchive() {
+  const panel = document.getElementById('archive-panel')
+  if (!panel) return
+  panel.classList.remove('is-open')
+  panel.setAttribute('aria-hidden', 'true')
+}
+
+function loadBudgetFromArchive(id) {
+  loadBudget(id)
+  closeArchive()
+}
+
+function formatArchiveDate(dateStr) {
+  if (!dateStr) return ''
+  const d = new Date(dateStr.length === 10 ? dateStr + 'T00:00:00' : dateStr)
+  if (isNaN(d)) return ''
+  return d.toLocaleDateString('es-PY', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function renderArchive() {
+  const panel = document.getElementById('archive-panel')
+  if (!panel || !panel.classList.contains('is-open')) return
+
+  document.querySelectorAll('.archive-filter-chip').forEach(chip => {
+    chip.classList.toggle('is-active', chip.dataset.tipo === budgetFilter.tipo)
+  })
+  const searchEl = document.getElementById('archive-search')
+  if (searchEl) searchEl.value = budgetFilter.query
+
+  const rows = filteredBudgets()
+  const total = budgetArchive.length
+  const countEl = document.getElementById('archive-count')
+  if (countEl) {
+    countEl.textContent = total
+      ? `${rows.length} de ${total} presupuesto${total !== 1 ? 's' : ''}`
+      : 'Sin presupuestos guardados'
+  }
+
+  const grid = document.getElementById('archive-grid')
+  if (!grid) return
+  if (!rows.length) {
+    grid.innerHTML = `<p class="arc-empty">${total ? 'Sin resultados para ese filtro.' : 'Todavía no guardaste ningún presupuesto.'}</p>`
+    return
+  }
+  grid.innerHTML = rows.map(row => {
+    const typeLabel = TIPO_MAP[row.budget_type] || ''
+    const amount = row.amount ? `${row.currency || '₲'} ${formatAmount(String(row.amount))}` : ''
+    const date = formatArchiveDate(row.event_date || row.issue_date)
+    const isActive = row.id === currentBudgetId
+    return `
+      <div class="arc-card${isActive ? ' is-active' : ''}" onclick="loadBudgetFromArchive('${row.id}')">
+        <div class="arc-card-top">
+          ${row.budget_type ? `<span class="arc-badge" data-tipo="${row.budget_type}">${typeLabel}</span>` : '<span></span>'}
+          ${date ? `<span class="arc-date">${esc(date)}</span>` : ''}
+        </div>
+        <div>
+          <p class="arc-title">${esc(row.title)}</p>
+          ${row.client ? `<p class="arc-client">${esc(row.client)}</p>` : ''}
+        </div>
+        ${amount ? `<p class="arc-amount">${esc(amount)}</p>` : ''}
+        <div class="arc-actions">
+          <button class="arc-btn is-primary" type="button" onclick="event.stopPropagation();loadBudgetFromArchive('${row.id}')">Abrir</button>
+          <button class="arc-btn" type="button" onclick="event.stopPropagation();downloadBudget('${row.id}')">Descargar PDF</button>
+        </div>
+      </div>
+    `
+  }).join('')
 }
 
 // ─── Render builder ─────────────────────────────────
