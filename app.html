@@ -141,8 +141,7 @@
     body[data-theme="dark"] .chip,
     body[data-theme="dark"] .pchip,
     body[data-theme="dark"] .btn-add,
-    body[data-theme="dark"] .btn-theme,
-    body[data-theme="dark"] .auth-switch {
+    body[data-theme="dark"] .btn-theme {
       color: #e8e1d7;
       border-color: rgba(245, 243, 238, 0.24);
       background: rgba(255, 255, 255, 0.02);
@@ -152,8 +151,7 @@
     body[data-theme="dark"] .chip:hover,
     body[data-theme="dark"] .pchip:hover,
     body[data-theme="dark"] .btn-add:hover,
-    body[data-theme="dark"] .btn-theme:hover,
-    body[data-theme="dark"] .auth-switch:hover {
+    body[data-theme="dark"] .btn-theme:hover {
       color: #0f0e0c;
       background: #f5f3ee;
       border-color: #f5f3ee;
@@ -286,25 +284,6 @@
     .auth-box .btn-export {
       color: #fcfcfb;
       background: #0d0d0d;
-    }
-
-    .auth-switch {
-      width: 100%;
-      border: 0;
-      background: transparent;
-      color: #6b665f;
-      cursor: pointer;
-      font-family: var(--font);
-      font-size: var(--font-size-button);
-      font-weight: 700;
-      letter-spacing: var(--tracking-strong);
-      text-transform: uppercase;
-      padding: var(--space-8) 0 0;
-      text-align: center;
-    }
-
-    .auth-switch:hover {
-      color: #0d0d0d;
     }
 
     .auth-message {
@@ -743,7 +722,6 @@
       </div>
       <div class="auth-actions">
         <button class="btn-export" id="auth-submit" type="submit">Iniciar sesión</button>
-        <button class="auth-switch" id="auth-switch" type="button">Crear usuario</button>
       </div>
       <p class="auth-message" id="auth-message">Cargando sesión...</p>
     </div>
@@ -1143,7 +1121,6 @@ const SUPABASE_IS_CONFIGURED = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY)
 
 let supabaseClient = null
 let currentUser = null
-let authMode = 'login'
 
 const TIPO_MAP = {
   foto:        'FOTOGRAFÍA',
@@ -1483,15 +1460,6 @@ function setAuthMessage(message, isError = false) {
   el.classList.toggle('is-error', isError)
 }
 
-function renderAuthMode() {
-  const isRegister = authMode === 'register'
-  txt('auth-mode', isRegister ? 'Registro' : 'Ingreso')
-  txt('auth-submit', isRegister ? 'Crear usuario' : 'Iniciar sesión')
-  txt('auth-switch', isRegister ? 'Ya tengo usuario' : 'Crear usuario')
-  const pass = document.getElementById('auth-password-input')
-  if (pass) pass.autocomplete = isRegister ? 'new-password' : 'current-password'
-}
-
 function setAuthState(session) {
   currentUser = session?.user || null
   document.body.classList.remove('auth-loading', 'auth-signed-out', 'auth-signed-in')
@@ -1510,7 +1478,6 @@ function setAuthState(session) {
 }
 
 async function initAuth() {
-  renderAuthMode()
   const client = getSupabaseClient()
   if (!client) {
     document.body.classList.remove('auth-loading', 'auth-signed-in')
@@ -1548,11 +1515,9 @@ async function handleAuthSubmit(event) {
   const password = document.getElementById('auth-password-input').value
   const submit = document.getElementById('auth-submit')
   submit.disabled = true
-  setAuthMessage(authMode === 'register' ? 'Creando usuario...' : 'Ingresando...')
+  setAuthMessage('Ingresando...')
 
-  const result = authMode === 'register'
-    ? await client.auth.signUp({ email, password })
-    : await client.auth.signInWithPassword({ email, password })
+  const result = await client.auth.signInWithPassword({ email, password })
 
   submit.disabled = false
   if (result.error) {
@@ -1560,17 +1525,6 @@ async function handleAuthSubmit(event) {
     return
   }
 
-  if (authMode === 'register' && !result.data.session) {
-    setAuthMessage('Usuario creado. Revisá el email para confirmar la cuenta.')
-    return
-  }
-
-  setAuthMessage('')
-}
-
-function toggleAuthMode() {
-  authMode = authMode === 'login' ? 'register' : 'login'
-  renderAuthMode()
   setAuthMessage('')
 }
 
@@ -2336,7 +2290,6 @@ document.getElementById('f-fecha-emision').value = todayISO()
 applyTheme(getPreferredTheme())
 previewZoom = getSavedZoom()
 document.getElementById('auth-form').addEventListener('submit', handleAuthSubmit)
-document.getElementById('auth-switch').addEventListener('click', toggleAuthMode)
 renderBuilder()
 renderDoc()
 initAuth()
