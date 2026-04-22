@@ -11,25 +11,25 @@ colors:
   surface-card: "#FFFFFF"
 typography:
   brand:
-    fontFamily: "IBM Plex Mono"
+    fontFamily: "TT Norms Pro Mono Trl"
     fontSize: 8.5px
     fontWeight: 700
     lineHeight: 1
     letterSpacing: 0.22em
   body:
-    fontFamily: "IBM Plex Mono"
+    fontFamily: "TT Norms Pro Trial"
     fontSize: 10px
     fontWeight: 400
     lineHeight: 1.5
     letterSpacing: 0
   label:
-    fontFamily: "IBM Plex Mono"
+    fontFamily: "TT Norms Pro Mono Trl"
     fontSize: 8px
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: 0.12em
   section:
-    fontFamily: "IBM Plex Mono"
+    fontFamily: "TT Norms Pro Mono Trl"
     fontSize: 7.5px
     fontWeight: 700
     lineHeight: 1.4
@@ -101,7 +101,7 @@ The palette is built on high-contrast neutrals and soft paper-like surfaces.
 Color should not become decorative. Use contrast, not chroma, to establish hierarchy.
 
 ## Typography
-IBM Plex Mono defines the voice of the system. It keeps the interface feeling technical, structured, and unembellished.
+TT Norms Pro Trial defines the voice of the body text, while TT Norms Pro Mono Trl keeps the interface feeling technical, structured, and unembellished.
 
 - **Brand:** Uppercase, tightly controlled, and used for headers and product marks.
 - **Body:** Small but readable, designed for compact document layouts and high information density.

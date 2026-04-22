@@ -65,6 +65,13 @@ const tokenGroups = [
   ["components", source.components ?? {}],
 ];
 
+const fontFaces = (source.fonts ?? [])
+  .map(
+    ({ family, src, weight, style, display = "swap" }) =>
+      `@font-face {\n  font-family: "${family}";\n  src: url("${src}") format("truetype");\n  font-weight: ${weight};\n  font-style: ${style};\n  font-display: ${display};\n}`,
+  )
+  .join("\n\n");
+
 const tokenSections = tokenGroups
   .map(([namespace, values]) => {
     const lines = flattenTokens(namespace, values).map(
@@ -90,7 +97,7 @@ const rules = source.rules
   })
   .join("\n\n");
 
-const css = `/* Generated from tokens.json. Run: node scripts/build-design-system.mjs */\n\n:root {\n${tokenSections.join("\n\n")}\n\n  /* Backwards-compatible aliases used by the current HTML files. */\n${aliasLines.join("\n")}\n}\n\n${rules}\n`;
+const css = `/* Generated from tokens.json. Run: node scripts/build-design-system.mjs */\n\n${fontFaces ? `${fontFaces}\n\n` : ""}:root {\n${tokenSections.join("\n\n")}\n\n  /* Backwards-compatible aliases used by the current HTML files. */\n${aliasLines.join("\n")}\n}\n\n${rules}\n`;
 
 fs.writeFileSync(outputPath, css);
 console.log(`Generated ${path.relative(rootDir, outputPath)} from ${path.relative(rootDir, tokensPath)}`);

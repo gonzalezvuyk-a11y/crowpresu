@@ -4,15 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Presupuesto Audiovisual 2026 — The Crow</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./design-system.css">
   <style>
     html, body {
       background: #e5e5e5;
+      font-family: var(--font-mono);
     }
 
     .sheet {
       margin: 40px auto;
+    }
+
+    .font-body {
+      font-family: var(--font);
+    }
+
+    .title-block .title-bold,
+    .title-block .title-regular {
+      font-family: var(--font-mono);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+    }
+
+    .meta-value,
+    .service-name,
+    .service-detail,
+    .obs-item {
+      font-family: var(--font);
     }
 
     .title-regular { font-weight: 400; }
@@ -29,7 +48,9 @@
 
     <!-- Brand header -->
     <div class="brand">
-      <span class="brand-name">The Crow</span>
+      <span class="brand-name brand-logo brand-logo-wordmark" role="img" aria-label="The Crow">
+        <img src="./assets/logo/crow-beige-logotipo.svg" alt="">
+      </span>
       <span class="brand-slogan">Always present</span>
     </div>
     <div class="brand-rule"></div>
@@ -45,19 +66,19 @@
     <div class="meta">
       <div class="meta-row">
         <span class="meta-label">Cliente</span>
-        <span class="meta-value">Paraguay Sotheby's International Realty</span>
+        <span class="meta-value font-body">Paraguay Sotheby's International Realty</span>
       </div>
       <div class="meta-row">
         <span class="meta-label">Servicio</span>
-        <span class="meta-value">Producción y edición de contenido audiovisual</span>
+        <span class="meta-value font-body">Producción y edición de contenido audiovisual</span>
       </div>
       <div class="meta-row">
         <span class="meta-label">Modalidad</span>
-        <span class="meta-value">Servicio mensual fijo — Año 2026</span>
+        <span class="meta-value font-body">Servicio mensual fijo — Año 2026</span>
       </div>
       <div class="meta-row">
         <span class="meta-label">Fecha</span>
-        <span class="meta-value">02 / 03 / 2026</span>
+        <span class="meta-value font-body">02 / 03 / 2026</span>
       </div>
     </div>
 
@@ -68,22 +89,22 @@
       <div class="service-item">
         <span class="service-num">01</span>
         <div class="service-body">
-          <p class="service-name">Producción audiovisual</p>
-          <p class="service-detail">— 4 jornadas de 4h de grabación al mes, basadas en 5 guiones semanales previamente definidos.</p>
+          <p class="service-name font-body">Producción audiovisual</p>
+          <p class="service-detail font-body">— 4 jornadas de 4h de grabación al mes, basadas en 5 guiones semanales previamente definidos.</p>
         </div>
       </div>
       <div class="service-item">
         <span class="service-num">02</span>
         <div class="service-body">
-          <p class="service-name">Edición de video</p>
-          <p class="service-detail">— 20 ediciones mensuales — 5 ediciones a la semana</p>
+          <p class="service-name font-body">Edición de video</p>
+          <p class="service-detail font-body">— 20 ediciones mensuales — 5 ediciones a la semana</p>
         </div>
       </div>
       <div class="service-item">
         <span class="service-num">03</span>
         <div class="service-body">
-          <p class="service-name">Equipamiento técnico incluido</p>
-          <p class="service-detail">— Cámara profesional — Iluminación continua — Micrófono</p>
+          <p class="service-name font-body">Equipamiento técnico incluido</p>
+          <p class="service-detail font-body">— Cámara profesional — Iluminación continua — Micrófono</p>
         </div>
       </div>
     </div>
@@ -100,12 +121,12 @@
     <div class="rule"></div>
     <p class="section-title">Observaciones</p>
     <div class="obs-list">
-      <p class="obs-item">— El servicio se contrata como paquete mensual integral.</p>
-      <p class="obs-item">— El paquete contempla hasta 20 videos mensuales, dentro del esquema de producción acordado.</p>
-      <p class="obs-item">— Grabaciones, ediciones o jornadas adicionales se cotizan por separado.</p>
-      <p class="obs-item">— Días prioritarios de grabación: lunes y viernes.</p>
-      <p class="obs-item">— La coordinación de grabaciones se realiza con anticipación, sujeta a disponibilidad.</p>
-      <p class="obs-item">— Cobertura incluida: Asunción y alrededores.</p>
+      <p class="obs-item font-body">— El servicio se contrata como paquete mensual integral.</p>
+      <p class="obs-item font-body">— El paquete contempla hasta 20 videos mensuales, dentro del esquema de producción acordado.</p>
+      <p class="obs-item font-body">— Grabaciones, ediciones o jornadas adicionales se cotizan por separado.</p>
+      <p class="obs-item font-body">— Días prioritarios de grabación: lunes y viernes.</p>
+      <p class="obs-item font-body">— La coordinación de grabaciones se realiza con anticipación, sujeta a disponibilidad.</p>
+      <p class="obs-item font-body">— Cobertura incluida: Asunción y alrededores.</p>
     </div>
 
     <!-- Footer -->

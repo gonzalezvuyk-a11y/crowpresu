@@ -1,5 +1,29 @@
 /* Generated from tokens.json. Run: node scripts/build-design-system.mjs */
 
+@font-face {
+  font-family: "TT Norms Pro Trial";
+  src: url("./assets/fonts/TT_Norms_Pro_Trial_Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TT Norms Pro Mono Trl";
+  src: url("./assets/fonts/TT_Norms_Pro_Mono_Trial_Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TT Norms Pro Mono Trl";
+  src: url("./assets/fonts/TT_Norms_Pro_Mono_Trial_DemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* tokens */
   --color-ink: #0d0d0d;
@@ -8,11 +32,12 @@
   --color-rule-strong: rgba(13, 13, 13, 0.15);
   --color-border-soft: rgba(13, 13, 13, 0.13);
   --color-surface-document: #fcfcfb;
-  --color-surface-app: #eceae6;
+  --color-surface-app: #f0f0f1;
   --color-surface-panel: #f5f4f1;
   --color-surface-card: rgba(255, 255, 255, 0.45);
   --color-inverse: #fcfcfb;
-  --font-family-mono: "IBM Plex Mono", "Courier New", monospace;
+  --font-family-body: "TT Norms Pro Trial", "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: "TT Norms Pro Mono Trl", "SFMono-Regular", Consolas, monospace;
   --space-1: 1px;
   --space-2: 2px;
   --space-3: 3px;
@@ -133,9 +158,12 @@
   --bg-doc: var(--semantic-color-surface-document);
   --bg-app: var(--semantic-color-surface-app);
   --bg-b: var(--semantic-color-surface-panel);
-  --font: var(--font-family-mono);
+  --font: var(--font-family-body);
+  --font-mono: var(--font-family-mono);
   --m: var(--semantic-layout-document-padding);
   --doc-m: var(--semantic-layout-document-padding);
+  --brand-logo-beige: #cfb9a6;
+  --brand-logo-color: var(--brand-logo-beige);
 }
 
 *,
@@ -161,6 +189,7 @@ select {
 }
 
 .btop-brand {
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: var(--tracking-brand-ui);
@@ -168,9 +197,39 @@ select {
   text-transform: uppercase;
 }
 
+.brand-logo {
+  display: inline-block;
+  flex: 0 0 auto;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.brand-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: var(--brand-logo-filter, none);
+}
+
+.brand-logo-wordmark {
+  width: 96px;
+  height: 24px;
+}
+
+.brand-logo-ui-wordmark {
+  width: 88px;
+  height: 24px;
+}
+
+.brand-logo-mark {
+  width: 14px;
+  height: 17px;
+}
+
 .btn-export,
 .ds-button-primary {
-  font-family: var(--font);
+  font-family: var(--font-mono);
   font-size: var(--font-size-button);
   font-weight: 700;
   letter-spacing: var(--tracking-heading);
@@ -191,7 +250,7 @@ select {
 
 .btn-add,
 .ds-button-secondary {
-  font-family: var(--font);
+  font-family: var(--font-mono);
   font-size: var(--font-size-button);
   font-weight: 700;
   letter-spacing: var(--tracking-strong);
@@ -221,6 +280,7 @@ select {
 
 .bsec-lbl,
 .ds-eyebrow {
+  font-family: var(--font-mono);
   font-size: var(--font-size-ui);
   font-weight: 700;
   letter-spacing: var(--tracking-section);
@@ -230,6 +290,7 @@ select {
 }
 
 .sub-lbl {
+  font-family: var(--font-mono);
   font-size: var(--font-size-small);
   font-weight: 700;
   letter-spacing: var(--tracking-heading);
@@ -248,6 +309,7 @@ select {
 
 .fl,
 .ds-field-label {
+  font-family: var(--font-mono);
   display: block;
   font-size: var(--font-size-ui);
   font-weight: 700;
@@ -302,7 +364,7 @@ select {
 .ds-chip {
   font-family: var(--font);
   font-size: var(--font-size-ui);
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: var(--tracking-strong);
   text-transform: uppercase;
   color: var(--component-chip-default-foreground);
@@ -405,7 +467,7 @@ select {
   background: none;
   border: none;
   cursor: pointer;
-  font-family: var(--font);
+  font-family: var(--font-mono);
   transition: color 100ms;
 }
 
@@ -503,17 +565,19 @@ select {
   background: var(--component-document-sheet-background);
   padding: var(--component-document-sheet-padding);
   position: relative;
+  font-family: var(--font);
 }
 
 .brand,
 .ds-brand {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   margin-bottom: var(--space-15);
 }
 
 .brand-name {
+  font-family: var(--font-mono);
   font-size: var(--font-size-label);
   font-weight: 700;
   letter-spacing: var(--tracking-brand-doc);
@@ -522,9 +586,11 @@ select {
 }
 
 .brand-slogan {
+  font-family: var(--font);
   font-size: var(--font-size-tiny);
-  color: var(--muted);
+  color: var(--brand-logo-color);
   letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
 }
 
 .brand-rule {
@@ -534,16 +600,17 @@ select {
 }
 
 .title-block {
-  margin-bottom: var(--space-50);
+  margin-bottom: var(--space-24);
 }
 
 .title-bold,
 .title-light,
 .title-regular {
-  font-size: var(--font-size-display);
+  font-family: var(--font-mono);
+  font-size: 16px;
   color: var(--ink);
-  line-height: 1;
-  letter-spacing: -0.02em;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
   display: block;
 }
 
@@ -580,6 +647,27 @@ select {
   margin-bottom: var(--space-24);
 }
 
+.meta-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-18);
+}
+
+.meta-grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  background: var(--rule);
+}
+
+.meta-col {
+  min-width: 0;
+}
+
 .meta-row {
   display: grid;
   grid-template-columns: 108px 1fr;
@@ -589,6 +677,7 @@ select {
 
 .meta-lbl,
 .meta-label {
+  font-family: var(--font-mono);
   font-size: var(--font-size-micro-plus);
   font-weight: 700;
   letter-spacing: var(--tracking-title);
@@ -605,6 +694,7 @@ select {
 
 .sec-title,
 .section-title {
+  font-family: var(--font-mono);
   font-size: var(--font-size-micro-plus);
   font-weight: 700;
   letter-spacing: var(--tracking-section);
@@ -616,7 +706,7 @@ select {
 .services,
 .obs-doc,
 .obs-list {
-  margin-bottom: var(--space-28);
+  margin-bottom: var(--space-40);
 }
 
 .svc-item,
@@ -635,6 +725,7 @@ select {
 
 .svc-name,
 .service-name {
+  font-family: var(--font-mono);
   font-size: var(--font-size-micro-plus);
   font-weight: 700;
   letter-spacing: var(--tracking-strong);
@@ -666,6 +757,7 @@ select {
 }
 
 .ent-lbl {
+  font-family: var(--font-mono);
   font-size: var(--font-size-micro-plus);
   font-weight: 700;
   letter-spacing: var(--tracking-strong);
@@ -681,6 +773,13 @@ select {
   margin-bottom: var(--space-32);
 }
 
+.inv-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
 .inv-lbl,
 .inv-label {
   font-size: var(--font-size-tiny);
@@ -694,10 +793,18 @@ select {
   letter-spacing: -0.01em;
 }
 
+.inv-note {
+  font-family: var(--font);
+  font-size: var(--font-size-tiny);
+  color: var(--muted);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
 .doc-footer,
 .footer {
   position: absolute;
-  bottom: var(--doc-m);
+  bottom: calc(var(--doc-m) - var(--space-4));
   left: var(--doc-m);
   right: var(--doc-m);
 }
@@ -717,6 +824,7 @@ select {
 
 .doc-footer-txt,
 .footer-text {
+  font-family: var(--font);
   font-size: var(--font-size-micro);
   color: var(--muted);
   letter-spacing: var(--tracking-label);

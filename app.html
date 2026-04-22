@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Crow — Builder</title>
   <link rel="icon" href="data:,">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./design-system.css">
   <style>
     :root {
@@ -41,6 +40,11 @@
     body[data-theme="dark"] .builder {
       background: #171512;
       border-right-color: rgba(245, 243, 238, 0.18);
+    }
+
+    body[data-theme="dark"] .btop {
+      background: #171512;
+      border-bottom-color: rgba(245, 243, 238, 0.14);
     }
 
     body[data-theme="dark"] .preview {
@@ -328,17 +332,26 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: var(--space-12);
       flex-shrink: 0;
     }
 
     .btop-actions {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
       gap: var(--space-8);
+      min-width: 0;
+    }
+
+    .btop .brand-logo-mark {
+      width: 22px;
+      height: 27px;
     }
 
     .btn-theme {
-      font-family: var(--font);
+      font-family: var(--font-mono);
       font-size: var(--font-size-button);
       font-weight: 700;
       letter-spacing: var(--tracking-heading);
@@ -350,6 +363,7 @@
       cursor: pointer;
       border-radius: var(--radius-sm);
       transition: color 100ms, border-color 100ms, background 100ms;
+      white-space: nowrap;
     }
 
     .btn-theme:hover {
@@ -361,6 +375,48 @@
       flex: 1;
       overflow-y: auto;
       padding-bottom: var(--space-36);
+    }
+
+    .builder-panel.is-hidden {
+      display: none;
+    }
+
+    .budget-message-global {
+      padding: var(--space-12) var(--space-18) 0;
+      margin-bottom: 0;
+    }
+
+    .archive-view {
+      padding: var(--space-16) var(--space-18) var(--space-28);
+    }
+
+    .archive-view.is-hidden {
+      display: none;
+    }
+
+    .archive-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-12);
+      margin-bottom: var(--space-18);
+    }
+
+    .archive-title {
+      font-family: var(--font-mono);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-section);
+      text-transform: uppercase;
+    }
+
+    .archive-count {
+      display: block;
+      margin-top: var(--space-4);
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+      line-height: 1.4;
     }
 
     .bsec {
@@ -381,6 +437,7 @@
     }
 
     .bsec-step {
+      font-family: var(--font-mono);
       font-size: 10px;
       color: var(--muted);
       letter-spacing: 0.04em;
@@ -392,10 +449,13 @@
     }
 
     .bsec-title {
+      font-family: var(--font-mono);
       display: block;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--ink);
+      letter-spacing: var(--tracking-section);
+      text-transform: uppercase;
     }
 
     .bsec-summary {
@@ -478,6 +538,15 @@
       transition: background 120ms ease;
     }
 
+    .sheet {
+      font-family: var(--font);
+    }
+
+    #d-obj-section .svc-detail {
+      max-width: 390px;
+      margin-bottom: var(--space-32);
+    }
+
     .preview.is-zooming {
       cursor: zoom-in;
     }
@@ -518,12 +587,13 @@
 
     .budget-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: var(--space-7);
       margin-bottom: var(--space-14);
     }
 
-    .budget-actions .btn-add {
+    .budget-actions .btn-add,
+    .budget-actions .btn-export {
       margin-top: 0;
     }
 
@@ -560,11 +630,13 @@
     }
 
     .budget-title {
+      font-family: var(--font-mono);
       display: block;
       color: var(--muted);
       font-size: var(--font-size-body);
       font-weight: 700;
       line-height: 1.35;
+      text-transform: uppercase;
     }
 
     .budget-meta {
@@ -587,6 +659,17 @@
       padding: 3px 7px;
     }
 
+    .budget-row-actions .pchip.is-danger {
+      color: var(--muted);
+      border-color: var(--border);
+    }
+
+    .budget-row-actions .pchip.is-danger:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+      background: transparent;
+    }
+
     .budget-empty {
       padding: var(--space-10) 0;
       color: var(--muted);
@@ -606,11 +689,17 @@
       cursor: pointer;
       font-family: var(--font);
       font-size: 8px;
-      font-weight: 700;
+      font-weight: 400;
       letter-spacing: var(--tracking-strong);
       text-transform: uppercase;
       border-radius: var(--radius-sm);
       transition: color 100ms, border-color 100ms, background 100ms;
+    }
+
+    .doc-footer-mark {
+      width: 16px;
+      height: 19px;
+      display: inline-block;
     }
 
     .bg-chip:hover,
@@ -681,6 +770,174 @@
       white-space: nowrap;
     }
 
+    @media (max-width: 920px) {
+      .builder {
+        width: 330px;
+      }
+
+      .btop {
+        align-items: flex-start;
+        padding-inline: var(--space-18);
+      }
+
+      .auth-email {
+        max-width: 92px;
+      }
+
+      .btop-actions .btn-theme,
+      .btop-actions .btn-export {
+        padding-inline: var(--space-8);
+      }
+
+      .preview {
+        padding-inline: var(--space-24);
+      }
+    }
+
+    @media (max-width: 720px) {
+      html,
+      body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+      }
+
+      .app {
+        display: block;
+        min-height: 100vh;
+        height: auto;
+        overflow: visible;
+      }
+
+      .builder {
+        width: 100%;
+        min-width: 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .btop {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: start;
+        padding: var(--space-12);
+        background: var(--bg-b);
+      }
+
+      body[data-theme="dark"] .btop {
+        background: #171512;
+      }
+
+      .btop-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--space-6);
+        width: 100%;
+      }
+
+      .auth-email {
+        grid-column: 1 / -1;
+        max-width: none;
+        min-width: 0;
+        text-align: right;
+      }
+
+      .btn-theme,
+      .btn-export {
+        min-height: 34px;
+        padding: var(--space-7) var(--space-5);
+        line-height: 1.2;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .btop .brand-logo-mark {
+        width: 24px;
+        height: 29px;
+      }
+
+      body[data-theme="dark"] .btop .brand-logo-mark {
+        filter: brightness(0) saturate(100%) invert(92%) sepia(8%) saturate(176%) hue-rotate(347deg) brightness(97%) contrast(91%);
+      }
+
+      body[data-theme="dark"] .btop .btn-theme {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      body[data-theme="dark"] .btop .btn-export {
+        background: #f5f3ee;
+        color: #0f0e0c;
+      }
+
+      .bbody {
+        overflow: visible;
+        padding-bottom: var(--space-18);
+      }
+
+      .budget-message-global {
+        padding-inline: var(--space-12);
+      }
+
+      .archive-view {
+        padding-inline: var(--space-12);
+      }
+
+      .archive-head {
+        align-items: flex-start;
+      }
+
+      .budget-filters {
+        grid-template-columns: 1fr;
+      }
+
+      .bsec-head {
+        grid-template-columns: 24px minmax(0, 1fr) 16px;
+        gap: var(--space-8);
+        padding: var(--space-13) var(--space-12);
+      }
+
+      .bsec-body {
+        padding: 0 var(--space-12) var(--space-16);
+      }
+
+      .frow,
+      .frow-2,
+      .frow-3,
+      .tipo-grid,
+      .bg-chip-row {
+        grid-template-columns: 1fr !important;
+      }
+
+      .chip-row,
+      .preset-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .chip,
+      .pchip,
+      .tipo-btn {
+        min-height: 34px;
+        white-space: normal;
+      }
+
+      .preview {
+        overflow: visible;
+        padding: var(--space-18) var(--space-12) var(--space-32);
+      }
+
+      .doc-outer {
+        margin-inline: auto;
+      }
+
+      .doc-inner {
+        box-shadow: 0 10px 24px var(--preview-glow);
+      }
+    }
+
     @media print {
       body {
         --color-ink: #0d0d0d;
@@ -693,6 +950,8 @@
         --color-surface-panel: #f5f4f1;
         --color-surface-card: rgba(255, 255, 255, 0.45);
         --color-inverse: #fcfcfb;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
       html, body { background: white; height: auto; }
       .app { display: block; height: auto; overflow: visible; }
@@ -708,7 +967,9 @@
 <div class="auth-shell" id="auth-shell">
   <form class="auth-box" id="auth-form" autocomplete="on">
     <div class="auth-head">
-      <span class="auth-brand">The Crow</span>
+      <span class="auth-brand brand-logo brand-logo-wordmark brand-logo-ui-wordmark" role="img" aria-label="The Crow">
+        <img src="./assets/logo/crow-beige-logotipo.svg" alt="">
+      </span>
       <span class="auth-mode" id="auth-mode">Ingreso</span>
     </div>
     <div class="auth-body">
@@ -732,7 +993,9 @@
   <!-- ── Builder ──────────────────────────────── -->
   <aside class="builder">
     <div class="btop">
-      <span class="btop-brand">The Crow</span>
+      <span class="btop-brand brand-logo brand-logo-mark" role="img" aria-label="The Crow">
+        <img src="./assets/logo/crow-beige-isotipo.svg" alt="">
+      </span>
       <div class="btop-actions">
         <span class="auth-email" id="auth-email"></span>
         <button class="btn-theme" id="auth-logout" type="button" onclick="signOut()">Salir</button>
@@ -742,12 +1005,14 @@
     </div>
 
     <div class="bbody">
+      <p class="budget-message budget-message-global" id="budget-message"></p>
 
+      <div class="builder-panel" id="builder-panel">
       <section class="bsec" data-section="archivo">
         <button class="bsec-head" type="button" onclick="toggleSection('archivo')">
           <span class="bsec-step">00</span>
           <span class="bsec-copy">
-            <span class="bsec-title">Presupuestos</span>
+            <span class="bsec-title">Archivo actual</span>
             <span class="bsec-summary" id="sum-archivo"></span>
           </span>
           <span class="bsec-caret" aria-hidden="true"></span>
@@ -755,28 +1020,11 @@
         <div class="bsec-body">
           <div class="bsec-body-inner">
             <div class="budget-actions">
+              <button class="btn-export" type="button" onclick="exportPDF()">Exportar PDF</button>
               <button class="btn-add" id="budget-save" type="button" onclick="saveBudget()">Guardar</button>
+              <button class="btn-add" type="button" onclick="openArchiveView()">Ver guardados</button>
               <button class="btn-add" type="button" onclick="newBudget()">Nuevo</button>
             </div>
-            <p class="budget-message" id="budget-message"></p>
-            <div class="budget-filters">
-              <div class="field">
-                <label class="fl" for="budget-search">Buscar</label>
-                <input class="fi" id="budget-search" type="search" placeholder="Cliente, título, fecha"
-                  oninput="setBudgetFilter('query', this.value)">
-              </div>
-              <div class="field">
-                <label class="fl" for="budget-type-filter">Tipo</label>
-                <select class="fs" id="budget-type-filter" onchange="setBudgetFilter('tipo', this.value)">
-                  <option value="">Todos</option>
-                  <option value="foto">Foto</option>
-                  <option value="audiovisual">Audiovisual</option>
-                  <option value="edicion">Edición</option>
-                  <option value="tiempoReal">Tiempo real</option>
-                </select>
-              </div>
-            </div>
-            <div class="budget-list" id="budget-list"></div>
           </div>
         </div>
       </section>
@@ -1047,6 +1295,35 @@
           </div>
         </div>
       </section>
+      </div>
+
+      <div class="archive-view is-hidden" id="archive-view">
+        <div class="archive-head">
+          <div>
+            <span class="archive-title">Guardados</span>
+            <span class="archive-count" id="sum-guardados"></span>
+          </div>
+          <button class="btn-theme" type="button" onclick="closeArchiveView()">Volver</button>
+        </div>
+        <div class="budget-filters">
+          <div class="field">
+            <label class="fl" for="budget-search">Buscar</label>
+            <input class="fi" id="budget-search" type="search" placeholder="Cliente, título, fecha"
+              oninput="setBudgetFilter('query', this.value)">
+          </div>
+          <div class="field">
+            <label class="fl" for="budget-type-filter">Tipo</label>
+            <select class="fs" id="budget-type-filter" onchange="setBudgetFilter('tipo', this.value)">
+              <option value="">Todos</option>
+              <option value="foto">Foto</option>
+              <option value="audiovisual">Audiovisual</option>
+              <option value="edicion">Edición</option>
+              <option value="tiempoReal">Tiempo real</option>
+            </select>
+          </div>
+        </div>
+        <div class="budget-list" id="budget-list"></div>
+      </div>
 
     </div>
   </aside>
@@ -1058,7 +1335,9 @@
         <div class="sheet">
 
           <div class="brand">
-            <span class="brand-name">The Crow</span>
+            <span class="brand-name brand-logo brand-logo-wordmark" role="img" aria-label="The Crow">
+              <img src="./assets/logo/crow-beige-logotipo.svg" alt="">
+            </span>
             <span class="brand-slogan">Always present</span>
           </div>
           <div class="brand-rule"></div>
@@ -1077,21 +1356,21 @@
             <p class="svc-detail" id="d-objetivo"></p>
           </div>
 
-          <div class="hrule"></div>
           <p class="sec-title">Alcance del servicio</p>
           <div class="services" id="d-services"></div>
 
           <div id="d-ent-section" style="display:none">
-            <div class="hrule"></div>
             <p class="sec-title">Entregables</p>
             <div class="entregables-grid" id="d-entregables"></div>
           </div>
 
-          <div class="hrule"></div>
           <p class="sec-title">Inversión</p>
           <div class="inversion">
             <span class="inv-lbl" id="d-inv-lbl"></span>
-            <span class="inv-price" id="d-inv-price"></span>
+            <div class="inv-right">
+              <span class="inv-price" id="d-inv-price"></span>
+              <span class="inv-note" id="d-inv-note"></span>
+            </div>
           </div>
 
           <div class="hrule"></div>
@@ -1102,7 +1381,9 @@
             <div class="doc-footer-rule"></div>
             <div class="doc-footer-inner">
               <span class="doc-footer-txt" id="d-footer">Presupuesto</span>
-              <span class="doc-footer-txt">01</span>
+              <span class="doc-footer-mark brand-logo brand-logo-mark" role="img" aria-label="The Crow">
+                <img src="./assets/logo/crow-beige-isotipo.svg" alt="">
+              </span>
             </div>
           </div>
         </div>
@@ -1443,6 +1724,7 @@ let previewZoom = 1
 let currentBudgetId = null
 let budgetArchive = []
 let budgetFilter = { query: '', tipo: '' }
+let builderView = 'editor'
 
 // ─── Auth ───────────────────────────────────────────
 function getSupabaseClient() {
@@ -1677,6 +1959,7 @@ function applyDocumentBackground() {
     sheet.style.setProperty('--semantic-color-rule-strong', bg.ruleStrong)
     sheet.style.setProperty('--rule', bg.ruleSoft)
     sheet.style.setProperty('--color-border-soft', bg.ruleSoft)
+    sheet.style.setProperty('--brand-logo-filter', (bg.id === 'gray' || bg.id === 'beige') ? 'brightness(0) saturate(100%)' : 'none')
   })
 }
 
@@ -1718,6 +2001,16 @@ function setHorario(which, value) {
 
 function toggleSection(name) {
   S.sectionOpen = S.sectionOpen === name ? '' : name
+  renderBuilder()
+}
+
+function openArchiveView() {
+  builderView = 'archive'
+  renderBuilder()
+}
+
+function closeArchiveView() {
+  builderView = 'editor'
   renderBuilder()
 }
 
@@ -1943,8 +2236,20 @@ function setBudgetFilter(key, value) {
   renderBudgetList()
 }
 
+function renderArchiveSummaries() {
+  const payload = serializeBudgetState()
+  const title = budgetTitle(payload)
+  const currentMeta = currentBudgetId
+    ? `${title} · abierto`
+    : title === 'Presupuesto sin título'
+      ? 'Guardar o exportar'
+      : `${title} · sin guardar`
+  txt('sum-archivo', currentMeta)
+  txt('sum-guardados', budgetArchive.length ? `${filteredBudgets().length} de ${budgetArchive.length} guardados` : 'Buscar y recuperar')
+}
+
 function renderBudgetList() {
-  txt('sum-archivo', budgetArchive.length ? `${filteredBudgets().length} de ${budgetArchive.length} guardados` : 'Guardar y recuperar trabajos')
+  renderArchiveSummaries()
   const search = document.getElementById('budget-search')
   const type = document.getElementById('budget-type-filter')
   if (search) search.value = budgetFilter.query
@@ -1972,6 +2277,7 @@ function renderBudgetList() {
         <div class="budget-row-actions">
           <button class="pchip" type="button" onclick="loadBudget('${row.id}')">Ver / editar</button>
           <button class="pchip" type="button" onclick="downloadBudget('${row.id}')">Descargar</button>
+          <button class="pchip is-danger" type="button" onclick="deleteBudget('${row.id}')">Borrar</button>
         </div>
       </div>
     `
@@ -1996,15 +2302,15 @@ async function loadBudgets() {
   renderBudgetList()
 }
 
-async function saveBudget() {
+async function persistBudget(options = {}) {
   const client = getSupabaseClient()
   if (!client || !currentUser) {
     setMessage('budget-message', 'Iniciá sesión para guardar.', true)
-    return
+    return null
   }
   const btn = document.getElementById('budget-save')
   if (btn) btn.disabled = true
-  setMessage('budget-message', currentBudgetId ? 'Actualizando presupuesto...' : 'Guardando presupuesto...')
+  setMessage('budget-message', options.startMessage || (currentBudgetId ? 'Actualizando presupuesto...' : 'Guardando presupuesto...'))
   const row = budgetPayloadForSave()
   const request = currentBudgetId
     ? client.from('budgets').update(row).eq('id', currentBudgetId).select().single()
@@ -2013,12 +2319,17 @@ async function saveBudget() {
   if (btn) btn.disabled = false
   if (error) {
     setMessage('budget-message', error.message, true)
-    return
+    return null
   }
   currentBudgetId = data.id
   await loadBudgets()
-  setMessage('budget-message', 'Presupuesto guardado.')
+  setMessage('budget-message', options.doneMessage || 'Presupuesto guardado.')
   renderBuilder()
+  return data
+}
+
+async function saveBudget() {
+  return persistBudget()
 }
 
 function loadBudget(id) {
@@ -2026,6 +2337,7 @@ function loadBudget(id) {
   if (!row) return
   currentBudgetId = row.id
   restoreBudgetState(row.payload)
+  builderView = 'editor'
   S.sectionOpen = 'archivo'
   renderBuilder()
   renderDoc()
@@ -2037,9 +2349,37 @@ function downloadBudget(id) {
   requestAnimationFrame(() => requestAnimationFrame(exportPDF))
 }
 
+async function deleteBudget(id) {
+  const row = budgetArchive.find(item => item.id === id)
+  if (!row) return
+  const title = row.title || 'este presupuesto'
+  if (!window.confirm(`¿Borrar "${title}"?`)) return
+
+  const client = getSupabaseClient()
+  if (!client || !currentUser) {
+    setMessage('budget-message', 'Iniciá sesión para borrar.', true)
+    return
+  }
+
+  setMessage('budget-message', 'Borrando presupuesto...')
+  const { error } = await client.from('budgets').delete().eq('id', id)
+  if (error) {
+    setMessage('budget-message', error.message, true)
+    return
+  }
+
+  if (currentBudgetId === id) {
+    currentBudgetId = null
+  }
+  await loadBudgets()
+  setMessage('budget-message', 'Presupuesto borrado.')
+  renderBuilder()
+}
+
 function newBudget() {
   currentBudgetId = null
   restoreBudgetState({})
+  builderView = 'editor'
   S.sectionOpen = 'tipo'
   renderBuilder()
   renderDoc()
@@ -2048,6 +2388,11 @@ function newBudget() {
 
 // ─── Render builder ─────────────────────────────────
 function renderBuilder() {
+  const builderPanel = document.getElementById('builder-panel')
+  const archiveView = document.getElementById('archive-view')
+  if (builderPanel) builderPanel.classList.toggle('is-hidden', builderView !== 'editor')
+  if (archiveView) archiveView.classList.toggle('is-hidden', builderView !== 'archive')
+
   document.getElementById('f-titulo').value = S.titulo
   document.getElementById('f-cliente').value = S.cliente
   document.getElementById('f-agencia').value = S.agencia
@@ -2205,16 +2550,29 @@ function renderDoc() {
   if (S.horaInicio) metaRows.push(['Inicio',    S.horaInicio])
   if (S.horaFin)   metaRows.push(['Fin',       S.horaFin])
   if (S.duracion)  metaRows.push(['Duración',   S.duracion])
-  if (S.ivaIncluido) metaRows.push(['IVA', 'Incluido 10%'])
   if (S.ubicacion) metaRows.push(['Ubicación',  S.ubicacion])
   if (S.derechos)  metaRows.push(['Derechos',   S.derechos])
   if (S.crew.size) {
     const crewList = crewLabels().join(', ')
     metaRows.push(['Crew', crewList])
   }
-  html('d-meta', metaRows.map(([l,v]) =>
-    `<div class="meta-row"><span class="meta-lbl">${l}</span><span class="meta-val">${esc(v)}</span></div>`
-  ).join(''))
+  const half = Math.ceil(metaRows.length / 2)
+  const leftMeta = metaRows.slice(0, half)
+  const rightMeta = metaRows.slice(half)
+  html('d-meta', `
+    <div class="meta-grid">
+      <div class="meta-col">
+        ${leftMeta.map(([l,v]) =>
+          `<div class="meta-row"><span class="meta-lbl">${l}</span><span class="meta-val">${esc(v)}</span></div>`
+        ).join('')}
+      </div>
+      <div class="meta-col">
+        ${rightMeta.map(([l,v]) =>
+          `<div class="meta-row"><span class="meta-lbl">${l}</span><span class="meta-val">${esc(v)}</span></div>`
+        ).join('')}
+      </div>
+    </div>
+  `)
 
   const hasObjetivo = !!S.objetivo.trim()
   document.getElementById('d-obj-section').style.display = hasObjetivo ? '' : 'none'
@@ -2253,6 +2611,7 @@ function renderDoc() {
   // Inversión
   txt('d-inv-lbl', S.invLabel)
   txt('d-inv-price', S.invMonto ? `${S.moneda} ${formatAmount(S.invMonto)}` : '')
+  txt('d-inv-note', S.invMonto && S.ivaIncluido ? 'IVA incluido' : '')
 
   // Observaciones: presets activos + custom
   const obsLines = [
@@ -2264,6 +2623,7 @@ function renderDoc() {
   // Footer
   txt('d-footer', titleLabel ? `Presupuesto ${titleLabel}` : 'Presupuesto')
 
+  renderArchiveSummaries()
   scaleDoc()
 }
 
@@ -2274,16 +2634,25 @@ function scaleDoc() {
   const inner   = document.getElementById('doc-inner')
   const docW    = 595
   const docH    = inner.offsetHeight || 842
-  const avail   = preview.clientWidth - 80
+  const mobile = window.matchMedia('(max-width: 720px)').matches
+  const previewInset = mobile ? 16 : 80
+  const avail   = Math.max(240, preview.clientWidth - previewInset)
   const fitScale = Math.min(1, avail / docW)
-  const scale   = fitScale * previewZoom
+  const scale   = fitScale * (mobile ? 1 : previewZoom)
   inner.style.transform       = `scale(${scale})`
   inner.style.transformOrigin = 'top left'
   outer.style.width  = `${docW * scale}px`
   outer.style.height = `${docH * scale}px`
 }
 
-function exportPDF() { window.print() }
+async function exportPDF() {
+  const saved = await persistBudget({
+    startMessage: currentBudgetId ? 'Actualizando antes de exportar...' : 'Guardando antes de exportar...',
+    doneMessage: 'Presupuesto guardado. Preparando PDF.'
+  })
+  if (!saved) return
+  requestAnimationFrame(() => window.print())
+}
 
 // ─── Init ─────────────────────────────────────────────
 document.getElementById('f-fecha-emision').value = todayISO()
