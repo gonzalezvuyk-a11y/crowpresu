@@ -19,6 +19,7 @@
 
     body[data-theme="dark"] .builder,
     body[data-theme="dark"] .preview,
+    body[data-theme="dark"] .archive-panel,
     body[data-theme="dark"] .auth-shell {
       --color-ink: #f5f3ee;
       --color-muted: #a9a39a;
@@ -51,6 +52,15 @@
       background: #0f0e0c;
     }
 
+    body[data-theme="dark"] .archive-panel {
+      background: #0f0e0c;
+    }
+
+    body[data-theme="dark"] .arc-title,
+    body[data-theme="dark"] .arc-amount {
+      color: #f5f3ee;
+    }
+
     body[data-theme="dark"] .sheet {
       --color-ink: #0d0d0d;
       --color-muted: #8a8a8a;
@@ -62,6 +72,9 @@
     }
 
     body[data-theme="dark"] .btop,
+    body[data-theme="dark"] .archive-header,
+    body[data-theme="dark"] .archive-sidebar,
+    body[data-theme="dark"] .archive-count,
     body[data-theme="dark"] .auth-head,
     body[data-theme="dark"] .bsec,
     body[data-theme="dark"] .obs-toggle {
@@ -144,6 +157,9 @@
     body[data-theme="dark"] .tipo-btn,
     body[data-theme="dark"] .chip,
     body[data-theme="dark"] .pchip,
+    body[data-theme="dark"] .archive-close,
+    body[data-theme="dark"] .archive-filter-chip,
+    body[data-theme="dark"] .arc-btn,
     body[data-theme="dark"] .btn-add,
     body[data-theme="dark"] .btn-theme {
       color: #e8e1d7;
@@ -154,6 +170,10 @@
     body[data-theme="dark"] .tipo-btn:hover,
     body[data-theme="dark"] .chip:hover,
     body[data-theme="dark"] .pchip:hover,
+    body[data-theme="dark"] .archive-close:hover,
+    body[data-theme="dark"] .archive-filter-chip:hover,
+    body[data-theme="dark"] .archive-filter-chip.is-active,
+    body[data-theme="dark"] .arc-btn:hover,
     body[data-theme="dark"] .btn-add:hover,
     body[data-theme="dark"] .btn-theme:hover {
       color: #0f0e0c;
@@ -191,8 +211,89 @@
     body[data-theme="dark"] .budget-message,
     body[data-theme="dark"] .budget-title,
     body[data-theme="dark"] .budget-meta,
+    body[data-theme="dark"] .archive-heading,
+    body[data-theme="dark"] .archive-sep,
+    body[data-theme="dark"] .archive-search,
+    body[data-theme="dark"] .archive-filter-label,
+    body[data-theme="dark"] .arc-date,
+    body[data-theme="dark"] .arc-number,
+    body[data-theme="dark"] .arc-client,
+    body[data-theme="dark"] .arc-meta,
+    body[data-theme="dark"] .archive-stat-label,
+    body[data-theme="dark"] .archive-chart-label,
     body[data-theme="dark"] .budget-empty {
       color: #c6bfb5;
+    }
+
+    body[data-theme="dark"] .archive-sidebar {
+      background: #171512;
+    }
+
+    body[data-theme="dark"] .archive-stats {
+      border-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .archive-stat-value,
+    body[data-theme="dark"] .archive-chart-value {
+      color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .archive-chart-bar {
+      background: rgba(245, 243, 238, 0.08);
+    }
+
+    body[data-theme="dark"] .archive-chart-fill {
+      background: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .arc-card {
+      background: rgba(245, 243, 238, 0.035);
+      border-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .arc-empty {
+      color: #a9a39a;
+    }
+
+    body[data-theme="dark"] .arc-btn.is-primary {
+      color: #0f0e0c;
+      background: #f5f3ee;
+      border-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .archive-search {
+      border-bottom-color: rgba(245, 243, 238, 0.24);
+      caret-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .archive-search:focus,
+    body[data-theme="dark"] .arc-card:hover,
+    body[data-theme="dark"] .arc-card.is-active {
+      border-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .arc-badge[data-tipo="foto"] {
+      color: #9ccf9c;
+      background: rgba(156, 207, 156, 0.12);
+    }
+
+    body[data-theme="dark"] .arc-badge[data-tipo="audiovisual"] {
+      color: #a9b8ee;
+      background: rgba(169, 184, 238, 0.12);
+    }
+
+    body[data-theme="dark"] .arc-badge[data-tipo="edicion"] {
+      color: #d8a4d8;
+      background: rgba(216, 164, 216, 0.12);
+    }
+
+    body[data-theme="dark"] .arc-badge[data-tipo="tiempoReal"] {
+      color: #ddb196;
+      background: rgba(221, 177, 150, 0.12);
+    }
+
+    body[data-theme="dark"] .archive-logo img {
+      filter: none;
     }
 
     body[data-theme="dark"] .obs-toggle.on .obs-toggle-txt,
@@ -386,37 +487,398 @@
       margin-bottom: 0;
     }
 
-    .archive-view {
-      padding: var(--space-16) var(--space-18) var(--space-28);
+    body.archive-open {
+      overflow: hidden;
     }
 
-    .archive-view.is-hidden {
-      display: none;
+    .archive-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-app);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 140ms ease;
     }
 
-    .archive-head {
+    .archive-panel.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .archive-header {
+      height: 50px;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: var(--space-12);
-      margin-bottom: var(--space-18);
+      gap: var(--space-14);
+      padding: 0 var(--space-28);
+      border-bottom: 1px solid var(--border);
     }
 
-    .archive-title {
+    .archive-logo {
+      width: 96px;
+      height: 24px;
+    }
+
+    .archive-logo img {
+      filter: brightness(0) saturate(100%);
+    }
+
+    .archive-sep,
+    .archive-heading {
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+    }
+
+    .archive-heading {
       font-family: var(--font-mono);
-      color: var(--ink);
-      font-size: 12px;
       font-weight: 700;
-      letter-spacing: var(--tracking-section);
+      letter-spacing: var(--tracking-heading);
       text-transform: uppercase;
     }
 
-    .archive-count {
+    .archive-close {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: var(--font-size-button);
+      font-weight: 700;
+      letter-spacing: var(--tracking-heading);
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: var(--space-8) var(--space-12);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, border-color 100ms, background 100ms;
+    }
+
+    .archive-close:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .archive-body {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .archive-sidebar {
+      width: 248px;
+      flex: 0 0 248px;
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-24) var(--space-22);
+      border-right: 1px solid var(--border);
+      background: var(--bg-b);
+      overflow-y: auto;
+    }
+
+    .archive-search {
+      width: 100%;
+      font-family: var(--font);
+      font-size: var(--font-size-body);
+      color: var(--ink);
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      padding: var(--space-4) 0 var(--space-6);
+      margin-bottom: var(--space-22);
+      outline: none;
+      caret-color: var(--ink);
+    }
+
+    .archive-search::placeholder {
+      color: var(--muted);
+    }
+
+    .archive-search:focus {
+      border-bottom-color: var(--ink);
+    }
+
+    .archive-filter-label {
       display: block;
-      margin-top: var(--space-4);
+      margin-bottom: var(--space-8);
+      font-family: var(--font-mono);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-section);
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .archive-filters {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-bottom: var(--space-24);
+    }
+
+    .archive-filter-chip {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-ui);
+      font-weight: 700;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+      text-align: left;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      padding: var(--space-5) var(--space-8);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, border-color 100ms, background 100ms;
+    }
+
+    .archive-filter-chip:hover,
+    .archive-filter-chip.is-active {
+      color: var(--ink);
+      border-color: var(--border);
+      background: rgba(13, 13, 13, 0.04);
+    }
+
+    .archive-count {
+      padding-top: var(--space-22);
+      border-top: 1px solid var(--border);
       color: var(--muted);
       font-size: var(--font-size-ui);
-      line-height: 1.4;
+      line-height: 1.45;
+    }
+
+    .archive-stats {
+      display: grid;
+      gap: var(--space-16);
+      margin-top: auto;
+      padding-top: var(--space-22);
+      border-top: 1px solid var(--border);
+    }
+
+    .archive-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-12);
+    }
+
+    .archive-stat {
+      min-width: 0;
+    }
+
+    .archive-stat-value {
+      display: block;
+      font-family: var(--font-mono);
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .archive-stat-label {
+      display: block;
+      margin-top: var(--space-5);
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+      line-height: 1.35;
+    }
+
+    .archive-chart {
+      display: grid;
+      gap: var(--space-6);
+    }
+
+    .archive-chart-row {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr) 20px;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .archive-chart-label,
+    .archive-chart-value {
+      font-size: var(--font-size-ui);
+      line-height: 1;
+    }
+
+    .archive-chart-label {
+      color: var(--muted);
+      text-transform: capitalize;
+    }
+
+    .archive-chart-value {
+      font-family: var(--font-mono);
+      color: var(--ink);
+      text-align: right;
+    }
+
+    .archive-chart-bar {
+      height: 6px;
+      background: rgba(13, 13, 13, 0.07);
+      overflow: hidden;
+    }
+
+    .archive-chart-fill {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--ink);
+    }
+
+    .archive-main {
+      flex: 1;
+      min-width: 0;
+      padding: var(--space-24) var(--space-28);
+      overflow-y: auto;
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--space-12);
+    }
+
+    .arc-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-10);
+      min-width: 0;
+      padding: var(--space-16) var(--space-16) var(--space-12);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-b);
+      cursor: pointer;
+      transition: border-color 120ms ease;
+    }
+
+    .arc-card:hover,
+    .arc-card.is-active {
+      border-color: var(--ink);
+    }
+
+    .arc-card-top,
+    .arc-actions {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-8);
+    }
+
+    .arc-card-top {
+      justify-content: space-between;
+    }
+
+    .arc-badge {
+      flex-shrink: 0;
+      padding: 2px 5px;
+      border-radius: var(--radius-xs);
+      font-family: var(--font-mono);
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-meta);
+      text-transform: uppercase;
+    }
+
+    .arc-badge[data-tipo="foto"] { color: #2d5a2d; background: rgba(45, 90, 45, 0.10); }
+    .arc-badge[data-tipo="audiovisual"] { color: #2d3a6a; background: rgba(45, 58, 106, 0.10); }
+    .arc-badge[data-tipo="edicion"] { color: #5a2d6a; background: rgba(90, 45, 106, 0.10); }
+    .arc-badge[data-tipo="tiempoReal"] { color: #6a3a2d; background: rgba(106, 58, 45, 0.10); }
+
+    .arc-date,
+    .arc-number,
+    .arc-client {
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+      line-height: 1.45;
+    }
+
+    .arc-date {
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .arc-title,
+    .arc-amount {
+      font-family: var(--font-mono);
+      color: var(--ink);
+      font-size: var(--font-size-body);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .arc-title {
+      text-transform: uppercase;
+    }
+
+    .arc-client {
+      margin-top: var(--space-3);
+    }
+
+    .arc-meta {
+      display: grid;
+      gap: var(--space-3);
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+      line-height: 1.45;
+    }
+
+    .arc-meta-row {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+
+    .arc-meta-label {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+    }
+
+    .arc-meta-value {
+      min-width: 0;
+    }
+
+    .arc-actions {
+      flex-wrap: wrap;
+      margin-top: var(--space-2);
+    }
+
+    .arc-btn {
+      font-family: var(--font-mono);
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-heading);
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, border-color 100ms, background 100ms;
+    }
+
+    .arc-btn:hover,
+    .arc-btn.is-primary {
+      color: var(--bg-b);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .arc-btn.is-danger:hover {
+      color: var(--ink);
+      background: transparent;
+    }
+
+    .arc-empty {
+      grid-column: 1 / -1;
+      padding: var(--space-60) 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: var(--font-size-body);
+      line-height: var(--line-body);
     }
 
     .bsec {
@@ -881,14 +1343,56 @@
         padding-inline: var(--space-12);
       }
 
-      .archive-view {
-        padding-inline: var(--space-12);
+      .archive-header {
+        height: auto;
+        min-height: 50px;
+        padding: var(--space-10) var(--space-12);
+        gap: var(--space-8);
       }
 
-      .archive-head {
-        align-items: flex-start;
+      .archive-heading {
+        max-width: 120px;
+        line-height: 1.3;
       }
 
+      .archive-close {
+        padding-inline: var(--space-8);
+      }
+
+      .archive-body {
+        display: block;
+        overflow-y: auto;
+      }
+
+      .archive-sidebar {
+        width: 100%;
+        padding: var(--space-16) var(--space-12);
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .archive-filters {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-bottom: var(--space-12);
+      }
+
+      .archive-count {
+        margin-top: 0;
+        padding-top: var(--space-12);
+      }
+
+      .archive-stats {
+        margin-top: 0;
+        padding-top: var(--space-12);
+      }
+
+      .archive-main {
+        padding: var(--space-16) var(--space-12) var(--space-32);
+        overflow: visible;
+      }
+
+      .archive-grid,
       .budget-filters {
         grid-template-columns: 1fr;
       }
@@ -957,6 +1461,7 @@
       .app { display: block; height: auto; overflow: visible; }
       .builder { display: none !important; }
       .preview { display: block; padding: 0; background: white; overflow: visible; }
+      .archive-panel { display: none !important; }
       .doc-outer, .doc-inner { transform: none !important; width: auto !important; height: auto !important; }
       .sheet { width: 100%; min-height: 100vh; }
       @page { size: A4; margin: 0; }
@@ -1022,7 +1527,7 @@
             <div class="budget-actions">
               <button class="btn-export" type="button" onclick="exportPDF()">Exportar PDF</button>
               <button class="btn-add" id="budget-save" type="button" onclick="saveBudget()">Guardar</button>
-              <button class="btn-add" type="button" onclick="openArchiveView()">Ver guardados</button>
+              <button class="btn-add" type="button" onclick="openArchiveView()">Ver presupuestos →</button>
               <button class="btn-add" type="button" onclick="newBudget()">Nuevo</button>
             </div>
           </div>
@@ -1048,6 +1553,7 @@
             </div>
             <p class="sub-lbl" style="margin-top:12px">Plantillas rápidas</p>
             <div class="preset-row" id="template-chips">
+              <button class="pchip" onclick="newBudget()">Vacío</button>
               <button class="pchip" onclick="applyTemplate('coberturaFoto')">Cobertura foto</button>
               <button class="pchip" onclick="applyTemplate('coberturaAV')">Cobertura foto + video</button>
               <button class="pchip" onclick="applyTemplate('realTime')">Real time</button>
@@ -1084,7 +1590,7 @@
               <input class="fi" id="f-cliente" type="text" oninput="set('cliente', this.value)">
             </div>
             <div class="field">
-              <label class="fl" for="f-agencia">Agencia / intermediario</label>
+              <label class="fl" for="f-agencia">Solicitado por</label>
               <input class="fi" id="f-agencia" type="text" oninput="set('agencia', this.value)">
             </div>
             <div class="field">
@@ -1297,34 +1803,6 @@
       </section>
       </div>
 
-      <div class="archive-view is-hidden" id="archive-view">
-        <div class="archive-head">
-          <div>
-            <span class="archive-title">Guardados</span>
-            <span class="archive-count" id="sum-guardados"></span>
-          </div>
-          <button class="btn-theme" type="button" onclick="closeArchiveView()">Volver</button>
-        </div>
-        <div class="budget-filters">
-          <div class="field">
-            <label class="fl" for="budget-search">Buscar</label>
-            <input class="fi" id="budget-search" type="search" placeholder="Cliente, título, fecha"
-              oninput="setBudgetFilter('query', this.value)">
-          </div>
-          <div class="field">
-            <label class="fl" for="budget-type-filter">Tipo</label>
-            <select class="fs" id="budget-type-filter" onchange="setBudgetFilter('tipo', this.value)">
-              <option value="">Todos</option>
-              <option value="foto">Foto</option>
-              <option value="audiovisual">Audiovisual</option>
-              <option value="edicion">Edición</option>
-              <option value="tiempoReal">Tiempo real</option>
-            </select>
-          </div>
-        </div>
-        <div class="budget-list" id="budget-list"></div>
-      </div>
-
     </div>
   </aside>
 
@@ -1380,7 +1858,17 @@
           <div class="doc-footer">
             <div class="doc-footer-rule"></div>
             <div class="doc-footer-inner">
-              <span class="doc-footer-txt" id="d-footer">Presupuesto</span>
+              <div class="doc-footer-info">
+                <span class="doc-footer-txt">T. +595 972 136903</span>
+                <span class="doc-footer-social">
+                  <svg class="doc-footer-social-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3.5" y="3.5" width="17" height="17" rx="5" ry="5"></rect>
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <circle cx="17.2" cy="6.8" r="1.1"></circle>
+                  </svg>
+                  <span class="doc-footer-social-handle">@THECROWMEDIA</span>
+                </span>
+              </div>
               <span class="doc-footer-mark brand-logo brand-logo-mark" role="img" aria-label="The Crow">
                 <img src="./assets/logo/crow-beige-isotipo.svg" alt="">
               </span>
@@ -1391,6 +1879,38 @@
     </div>
   </div>
 
+</div>
+
+<!-- ── Archivo de presupuestos ─────────────────────── -->
+<div id="archive-panel" class="archive-panel" role="dialog" aria-modal="true" aria-labelledby="archive-heading" aria-hidden="true">
+  <div class="archive-header">
+    <span class="archive-logo brand-logo brand-logo-wordmark" role="img" aria-label="The Crow">
+      <img src="./assets/logo/crow-beige-logotipo.svg" alt="">
+    </span>
+    <span class="archive-sep">/</span>
+    <span class="archive-heading" id="archive-heading">Presupuestos guardados</span>
+    <button class="archive-close" id="archive-close" type="button" onclick="closeArchiveView()">← Volver al editor</button>
+  </div>
+  <div class="archive-body">
+    <aside class="archive-sidebar">
+      <input class="archive-search" id="budget-search" type="search" placeholder="Buscar..."
+        aria-label="Buscar presupuestos"
+        oninput="setBudgetFilter('query', this.value)">
+      <span class="archive-filter-label">Tipo</span>
+      <div class="archive-filters" aria-label="Filtrar por tipo">
+        <button class="archive-filter-chip is-active" data-tipo="" type="button" onclick="setBudgetFilter('tipo', '')">Todos</button>
+        <button class="archive-filter-chip" data-tipo="foto" type="button" onclick="setBudgetFilter('tipo', 'foto')">Fotografía</button>
+        <button class="archive-filter-chip" data-tipo="audiovisual" type="button" onclick="setBudgetFilter('tipo', 'audiovisual')">Audiovisual</button>
+        <button class="archive-filter-chip" data-tipo="edicion" type="button" onclick="setBudgetFilter('tipo', 'edicion')">Edición</button>
+        <button class="archive-filter-chip" data-tipo="tiempoReal" type="button" onclick="setBudgetFilter('tipo', 'tiempoReal')">Tiempo Real</button>
+      </div>
+      <p class="archive-count" id="sum-guardados"></p>
+      <div class="archive-stats" id="budget-stats" aria-live="polite"></div>
+    </aside>
+    <main class="archive-main">
+      <div class="archive-grid" id="budget-list"></div>
+    </main>
+  </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.104.0/dist/umd/supabase.min.js"></script>
 <script>
@@ -1476,6 +1996,11 @@ const DOCUMENT_BACKGROUNDS = [
 ]
 
 const TEMPLATE_PRESETS = [
+  {
+    id: 'vacio',
+    label: 'Vacío',
+    config: {}
+  },
   {
     id: 'coberturaFoto',
     label: 'Cobertura foto',
@@ -1722,9 +2247,11 @@ const MAX_ZOOM = 2.5
 const ZOOM_STEP = 0.1
 let previewZoom = 1
 let currentBudgetId = null
+let currentBudgetInternalNumber = null
 let budgetArchive = []
 let budgetFilter = { query: '', tipo: '' }
 let builderView = 'editor'
+let archiveReturnFocus = null
 
 // ─── Auth ───────────────────────────────────────────
 function getSupabaseClient() {
@@ -1753,6 +2280,7 @@ function setAuthState(session) {
     requestAnimationFrame(scaleDoc)
   } else {
     currentBudgetId = null
+    currentBudgetInternalNumber = null
     budgetArchive = []
     renderBudgetList()
     setAuthMessage('')
@@ -1940,6 +2468,10 @@ function getDocumentBackground() {
 }
 function applyDocumentBackground() {
   const bg = getDocumentBackground()
+  const sloganColor =
+    bg.id === 'black' ? '#f0f0f1' :
+    bg.id === 'white' ? '#cfb9a6' :
+    '#141414'
   document.querySelectorAll('.sheet').forEach(sheet => {
     sheet.style.backgroundColor = bg.color
     sheet.style.setProperty('--color-surface-document', bg.color)
@@ -1960,6 +2492,7 @@ function applyDocumentBackground() {
     sheet.style.setProperty('--rule', bg.ruleSoft)
     sheet.style.setProperty('--color-border-soft', bg.ruleSoft)
     sheet.style.setProperty('--brand-logo-filter', (bg.id === 'gray' || bg.id === 'beige') ? 'brightness(0) saturate(100%)' : 'none')
+    sheet.style.setProperty('--brand-slogan-color', sloganColor)
   })
 }
 
@@ -2005,13 +2538,28 @@ function toggleSection(name) {
 }
 
 function openArchiveView() {
-  builderView = 'archive'
-  renderBuilder()
+  const panel = document.getElementById('archive-panel')
+  if (!panel) return
+  archiveReturnFocus = document.activeElement
+  panel.classList.add('is-open')
+  panel.removeAttribute('aria-hidden')
+  document.body.classList.add('archive-open')
+  renderBudgetList()
+  const search = document.getElementById('budget-search')
+  const fallback = document.getElementById('archive-close')
+  requestAnimationFrame(() => (search || fallback)?.focus())
 }
 
 function closeArchiveView() {
-  builderView = 'editor'
-  renderBuilder()
+  const panel = document.getElementById('archive-panel')
+  if (!panel) return
+  panel.classList.remove('is-open')
+  panel.setAttribute('aria-hidden', 'true')
+  document.body.classList.remove('archive-open')
+  if (archiveReturnFocus?.focus) {
+    archiveReturnFocus.focus()
+  }
+  archiveReturnFocus = null
 }
 
 function setTipo(t) {
@@ -2085,6 +2633,10 @@ function normalizeEntFormats(tipos = []) {
 }
 
 function applyTemplate(id) {
+  if (id === 'vacio') {
+    newBudget()
+    return
+  }
   const template = TEMPLATE_PRESETS.find(t => t.id === id)
   if (!template) return
   const cfg = template.config
@@ -2195,6 +2747,12 @@ function budgetTitle(payload = serializeBudgetState()) {
   return payload.titulo || TIPO_MAP[payload.tipo] || payload.cliente || 'Presupuesto sin título'
 }
 
+function formatBudgetNumber(value) {
+  const n = Number(value)
+  if (!Number.isFinite(n) || n <= 0) return ''
+  return `P-${String(n).padStart(4, '0')}`
+}
+
 function budgetPayloadForSave() {
   const payload = serializeBudgetState()
   return {
@@ -2202,8 +2760,8 @@ function budgetPayloadForSave() {
     title: budgetTitle(payload),
     client: payload.cliente || '',
     budget_type: payload.tipo || '',
-    issue_date: payload.fechaEmision || '',
-    event_date: payload.fechaEvento || '',
+    issue_date: toISO(payload.fechaEmision) || '',
+    event_date: toISO(payload.fechaEvento) || '',
     amount: amountNumber(payload.invMonto),
     currency: payload.moneda || '₲',
     payload
@@ -2212,11 +2770,15 @@ function budgetPayloadForSave() {
 
 function budgetSearchText(row) {
   return [
+    formatBudgetNumber(row.internal_number),
+    row.internal_number,
     row.title,
     row.client,
     TIPO_MAP[row.budget_type],
     row.issue_date,
     row.event_date,
+    row.payload?.fechaEmision,
+    row.payload?.fechaEvento,
     row.currency,
     row.amount
   ].filter(Boolean).join(' ').toLowerCase()
@@ -2236,48 +2798,149 @@ function setBudgetFilter(key, value) {
   renderBudgetList()
 }
 
+function formatArchiveDate(dateStr) {
+  if (!dateStr) return ''
+  const displayIso = toISO(dateStr)
+  if (displayIso) dateStr = displayIso
+  const d = new Date(dateStr.length === 10 ? `${dateStr}T00:00:00` : dateStr)
+  if (Number.isNaN(d.getTime())) return ''
+  return d.toLocaleDateString('es-PY', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function dateFromBudgetCreated(row) {
+  if (!row?.created_at) return null
+  const date = new Date(row.created_at)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+function budgetStats() {
+  const now = new Date()
+  const currentMonth = now.getMonth()
+  const currentYear = now.getFullYear()
+  const monthlyCounts = Array(12).fill(0)
+  let monthCount = 0
+  let yearCount = 0
+
+  budgetArchive.forEach(row => {
+    const date = dateFromBudgetCreated(row)
+    if (!date || date.getFullYear() !== currentYear) return
+    monthlyCounts[date.getMonth()] += 1
+    yearCount += 1
+    if (date.getMonth() === currentMonth) monthCount += 1
+  })
+
+  const activeMonths = monthlyCounts.filter(count => count > 0).length || 1
+  return {
+    monthCount,
+    yearCount,
+    monthlyCounts
+  }
+}
+
+function renderBudgetStats() {
+  const statsEl = document.getElementById('budget-stats')
+  if (!statsEl) return
+
+  if (!currentUser) {
+    statsEl.innerHTML = ''
+    return
+  }
+
+  const stats = budgetStats()
+  const maxCount = Math.max(1, ...stats.monthlyCounts)
+  const monthLabels = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+
+  statsEl.innerHTML = `
+    <div class="archive-stat-grid">
+      <div class="archive-stat">
+        <span class="archive-stat-value">${stats.monthCount}</span>
+        <span class="archive-stat-label">este mes</span>
+      </div>
+      <div class="archive-stat">
+        <span class="archive-stat-value">${stats.yearCount}</span>
+        <span class="archive-stat-label">este año</span>
+      </div>
+    </div>
+    <div class="archive-chart" aria-label="Comparativo anual de presupuestos">
+      ${stats.monthlyCounts.map((count, index) => `
+        <div class="archive-chart-row">
+          <span class="archive-chart-label">${monthLabels[index]}</span>
+          <span class="archive-chart-bar"><span class="archive-chart-fill" style="width:${Math.max(count ? 8 : 0, (count / maxCount) * 100)}%"></span></span>
+          <span class="archive-chart-value">${count}</span>
+        </div>
+      `).join('')}
+    </div>
+  `
+}
+
 function renderArchiveSummaries() {
   const payload = serializeBudgetState()
   const title = budgetTitle(payload)
+  const numberLabel = formatBudgetNumber(currentBudgetInternalNumber)
   const currentMeta = currentBudgetId
-    ? `${title} · abierto`
+    ? `${numberLabel ? `${numberLabel} · ` : ''}${title} · abierto`
     : title === 'Presupuesto sin título'
       ? 'Guardar o exportar'
       : `${title} · sin guardar`
   txt('sum-archivo', currentMeta)
   txt('sum-guardados', budgetArchive.length ? `${filteredBudgets().length} de ${budgetArchive.length} guardados` : 'Buscar y recuperar')
+  renderBudgetStats()
 }
 
 function renderBudgetList() {
   renderArchiveSummaries()
   const search = document.getElementById('budget-search')
-  const type = document.getElementById('budget-type-filter')
   if (search) search.value = budgetFilter.query
-  if (type) type.value = budgetFilter.tipo
+  document.querySelectorAll('.archive-filter-chip').forEach(chip => {
+    chip.classList.toggle('is-active', chip.dataset.tipo === budgetFilter.tipo)
+  })
 
   const list = document.getElementById('budget-list')
   if (!list) return
   const rows = filteredBudgets()
   if (!currentUser) {
-    list.innerHTML = '<p class="budget-empty">Iniciá sesión para ver tus presupuestos.</p>'
+    list.innerHTML = '<p class="arc-empty">Iniciá sesión para ver tus presupuestos.</p>'
     return
   }
   if (!rows.length) {
-    list.innerHTML = `<p class="budget-empty">${budgetArchive.length ? 'No hay resultados para ese filtro.' : 'Todavía no hay presupuestos guardados.'}</p>`
+    list.innerHTML = `<p class="arc-empty">${budgetArchive.length ? 'Sin resultados para ese filtro.' : 'Todavía no hay presupuestos guardados.'}</p>`
     return
   }
   list.innerHTML = rows.map(row => {
     const typeLabel = row.budget_type ? TIPO_MAP[row.budget_type] : ''
+    const internalNumber = formatBudgetNumber(row.internal_number)
     const amount = row.amount ? `${row.currency || '₲'} ${formatAmount(String(row.amount))}` : ''
-    const meta = [row.client, typeLabel, row.event_date || row.issue_date, amount].filter(Boolean).join(' · ')
+    const issueDate = formatArchiveDate(row.issue_date || row.payload?.fechaEmision)
+    const isActive = row.id === currentBudgetId
+    const rowId = escAttr(row.id)
     return `
-      <div class="budget-item${row.id === currentBudgetId ? ' is-active' : ''}">
-        <span class="budget-title">${esc(row.title)}</span>
-        <span class="budget-meta">${esc(meta || 'Sin datos adicionales')}</span>
-        <div class="budget-row-actions">
-          <button class="pchip" type="button" onclick="loadBudget('${row.id}')">Ver / editar</button>
-          <button class="pchip" type="button" onclick="downloadBudget('${row.id}')">Descargar</button>
-          <button class="pchip is-danger" type="button" onclick="deleteBudget('${row.id}')">Borrar</button>
+      <div class="arc-card${isActive ? ' is-active' : ''}" onclick="loadBudgetFromArchive('${rowId}')">
+        <div class="arc-card-top">
+          ${row.budget_type ? `<span class="arc-badge" data-tipo="${escAttr(row.budget_type)}">${esc(typeLabel)}</span>` : '<span></span>'}
+          <span class="arc-number">${esc(internalNumber || 'Sin número')}</span>
+        </div>
+        <div>
+          <p class="arc-title">${esc(row.title)}</p>
+        </div>
+        <div class="arc-meta">
+          <p class="arc-meta-row">
+            <span class="arc-meta-label">Cliente</span>
+            <span class="arc-meta-value">${esc(row.client || 'Sin cliente')}</span>
+          </p>
+          <p class="arc-meta-row">
+            <span class="arc-meta-label">Emisión</span>
+            <span class="arc-meta-value">${esc(issueDate || 'Sin fecha')}</span>
+          </p>
+          <p class="arc-meta-row">
+            <span class="arc-meta-label">Interno</span>
+            <span class="arc-meta-value">${esc(internalNumber || 'Pendiente')}</span>
+          </p>
+        </div>
+        ${amount ? `<p class="arc-amount">${esc(amount)}</p>` : ''}
+        <div class="arc-actions">
+          <button class="arc-btn is-primary" type="button" onclick="event.stopPropagation();loadBudgetFromArchive('${rowId}')">Abrir</button>
+          <button class="arc-btn" type="button" onclick="event.stopPropagation();downloadBudget('${rowId}')">Descargar PDF</button>
+          <button class="arc-btn is-danger" type="button" onclick="event.stopPropagation();deleteBudget('${rowId}')">Borrar</button>
         </div>
       </div>
     `
@@ -2290,7 +2953,7 @@ async function loadBudgets() {
   setMessage('budget-message', 'Cargando presupuestos...')
   const { data, error } = await client
     .from('budgets')
-    .select('id,title,client,budget_type,issue_date,event_date,amount,currency,payload,updated_at,created_at')
+    .select('id,internal_number,title,client,budget_type,issue_date,event_date,amount,currency,payload,updated_at,created_at')
     .order('updated_at', { ascending: false })
     .limit(200)
   if (error) {
@@ -2322,6 +2985,7 @@ async function persistBudget(options = {}) {
     return null
   }
   currentBudgetId = data.id
+  currentBudgetInternalNumber = data.internal_number || null
   await loadBudgets()
   setMessage('budget-message', options.doneMessage || 'Presupuesto guardado.')
   renderBuilder()
@@ -2336,6 +3000,7 @@ function loadBudget(id) {
   const row = budgetArchive.find(item => item.id === id)
   if (!row) return
   currentBudgetId = row.id
+  currentBudgetInternalNumber = row.internal_number || null
   restoreBudgetState(row.payload)
   builderView = 'editor'
   S.sectionOpen = 'archivo'
@@ -2344,8 +3009,14 @@ function loadBudget(id) {
   setMessage('budget-message', 'Presupuesto cargado para editar.')
 }
 
+function loadBudgetFromArchive(id) {
+  loadBudget(id)
+  closeArchiveView()
+}
+
 function downloadBudget(id) {
   loadBudget(id)
+  closeArchiveView()
   requestAnimationFrame(() => requestAnimationFrame(exportPDF))
 }
 
@@ -2370,6 +3041,7 @@ async function deleteBudget(id) {
 
   if (currentBudgetId === id) {
     currentBudgetId = null
+    currentBudgetInternalNumber = null
   }
   await loadBudgets()
   setMessage('budget-message', 'Presupuesto borrado.')
@@ -2378,6 +3050,7 @@ async function deleteBudget(id) {
 
 function newBudget() {
   currentBudgetId = null
+  currentBudgetInternalNumber = null
   restoreBudgetState({})
   builderView = 'editor'
   S.sectionOpen = 'tipo'
@@ -2542,7 +3215,7 @@ function renderDoc() {
   // Meta rows
   const metaRows = []
   if (S.cliente)   metaRows.push(['Cliente',    S.cliente])
-  if (S.agencia)   metaRows.push(['Agencia',    S.agencia])
+  if (S.agencia)   metaRows.push(['Solicitado por', S.agencia])
   if (titleLabel)  metaRows.push(['Servicio',   titleLabel])
   if (S.modalidad) metaRows.push(['Modalidad',  S.modalidad])
   if (S.fechaEmision) metaRows.push(['Emisión', S.fechaEmision])
@@ -2621,8 +3294,6 @@ function renderDoc() {
   html('d-obs', obsLines.map(o => `<p class="obs-doc-item">— ${esc(o)}</p>`).join(''))
 
   // Footer
-  txt('d-footer', titleLabel ? `Presupuesto ${titleLabel}` : 'Presupuesto')
-
   renderArchiveSummaries()
   scaleDoc()
 }
@@ -2663,6 +3334,9 @@ renderBuilder()
 renderDoc()
 initAuth()
 window.addEventListener('resize', scaleDoc)
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeArchiveView()
+})
 document.getElementById('preview').addEventListener('wheel', (event) => {
   if (!event.ctrlKey && !event.metaKey) return
   event.preventDefault()
