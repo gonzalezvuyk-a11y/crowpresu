@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Crow — Builder</title>
+  <link rel="icon" href="data:,">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./design-system.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --preview-glow: rgba(13, 13, 13, 0.08);
+    }
+
+    body[data-theme="dark"] {
+      color-scheme: dark;
+      background: #0f0e0c;
+    }
+
+    body[data-theme="dark"] .builder,
+    body[data-theme="dark"] .preview,
+    body[data-theme="dark"] .auth-shell {
+      --color-ink: #f5f3ee;
+      --color-muted: #a9a39a;
+      --color-rule-soft: rgba(245, 243, 238, 0.14);
+      --color-rule-strong: rgba(245, 243, 238, 0.18);
+      --color-border-soft: rgba(245, 243, 238, 0.18);
+      --color-surface-app: #0f0e0c;
+      --color-surface-panel: #171512;
+      --color-surface-card: rgba(255, 255, 255, 0.03);
+      --color-inverse: #0f0e0c;
+      --preview-glow: rgba(0, 0, 0, 0.35);
+    }
+
+    body[data-theme="dark"] .builder {
+      background: #171512;
+      border-right-color: rgba(245, 243, 238, 0.18);
+    }
+
+    body[data-theme="dark"] .preview {
+      background: #0f0e0c;
+    }
+
+    body[data-theme="dark"] .sheet {
+      --color-ink: #0d0d0d;
+      --color-muted: #8a8a8a;
+      --color-rule-soft: rgba(13, 13, 13, 0.12);
+      --color-rule-strong: rgba(13, 13, 13, 0.15);
+      --color-border-soft: rgba(13, 13, 13, 0.13);
+      --color-surface-document: #fcfcfb;
+      --color-inverse: #fcfcfb;
+    }
+
+    body[data-theme="dark"] .btop,
+    body[data-theme="dark"] .auth-head,
+    body[data-theme="dark"] .bsec,
+    body[data-theme="dark"] .obs-toggle {
+      border-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .btop-brand,
+    body[data-theme="dark"] .auth-brand,
+    body[data-theme="dark"] .bsec-lbl,
+    body[data-theme="dark"] .sub-lbl,
+    body[data-theme="dark"] .fl {
+      color: #d9d1c5;
+    }
+
+    body[data-theme="dark"] .bsec-title {
+      color: #e7e1d8;
+    }
+
+    body[data-theme="dark"] .bsec-summary,
+    body[data-theme="dark"] .bsec-step {
+      color: #a9a39a;
+    }
+
+    body[data-theme="dark"] .bsec.is-open .bsec-title,
+    body[data-theme="dark"] .bsec-head:hover .bsec-title {
+      color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .bsec-caret::before,
+    body[data-theme="dark"] .bsec-caret::after {
+      background: #a9a39a;
+    }
+
+    body[data-theme="dark"] .bsec.is-open .bsec-caret::before,
+    body[data-theme="dark"] .bsec.is-open .bsec-caret::after,
+    body[data-theme="dark"] .bsec-head:hover .bsec-caret::before,
+    body[data-theme="dark"] .bsec-head:hover .bsec-caret::after {
+      background: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .fi,
+    body[data-theme="dark"] .ft,
+    body[data-theme="dark"] .fs {
+      color: #f5f3ee;
+      border-bottom-color: rgba(245, 243, 238, 0.3);
+      caret-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .fi::placeholder,
+    body[data-theme="dark"] .ft::placeholder {
+      color: #8f897f;
+      opacity: 1;
+    }
+
+    body[data-theme="dark"] .fi:focus,
+    body[data-theme="dark"] .ft:focus,
+    body[data-theme="dark"] .fs:focus {
+      border-bottom-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .icard {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(245, 243, 238, 0.16);
+    }
+
+    body[data-theme="dark"] .tipo-btn,
+    body[data-theme="dark"] .chip,
+    body[data-theme="dark"] .pchip,
+    body[data-theme="dark"] .btn-add,
+    body[data-theme="dark"] .btn-theme,
+    body[data-theme="dark"] .auth-switch {
+      color: #e8e1d7;
+      border-color: rgba(245, 243, 238, 0.24);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    body[data-theme="dark"] .tipo-btn:hover,
+    body[data-theme="dark"] .chip:hover,
+    body[data-theme="dark"] .pchip:hover,
+    body[data-theme="dark"] .btn-add:hover,
+    body[data-theme="dark"] .btn-theme:hover,
+    body[data-theme="dark"] .auth-switch:hover {
+      color: #0f0e0c;
+      background: #f5f3ee;
+      border-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .tipo-btn.on,
+    body[data-theme="dark"] .chip.on {
+      color: #0f0e0c;
+      background: #f5f3ee;
+      border-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .btn-export {
+      color: #0f0e0c;
+      background: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .btn-export:hover {
+      opacity: 0.85;
+    }
+
+    body[data-theme="dark"] .obs-toggle-box {
+      border-color: rgba(245, 243, 238, 0.36);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    body[data-theme="dark"] .obs-toggle-txt,
+    body[data-theme="dark"] .ibtn-x,
+    body[data-theme="dark"] .obs-x,
+    body[data-theme="dark"] .auth-email,
+    body[data-theme="dark"] .auth-mode,
+    body[data-theme="dark"] .auth-message {
+      color: #c6bfb5;
+    }
+
+    body[data-theme="dark"] .obs-toggle.on .obs-toggle-txt,
+    body[data-theme="dark"] .ibtn-x:hover,
+    body[data-theme="dark"] .obs-x:hover {
+      color: #f5f3ee;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg-app);
+    }
+
+    body.auth-loading .app,
+    body.auth-signed-out .app {
+      display: none;
+    }
+
+    .auth-shell {
+      min-height: 100vh;
+      display: none;
+      place-items: center;
+      padding: var(--space-24);
+      background: var(--bg-app);
+    }
+
+    body.auth-loading .auth-shell,
+    body.auth-signed-out .auth-shell {
+      display: grid;
+    }
+
+    .auth-box {
+      width: min(100%, 360px);
+      border: 1px solid var(--border);
+      background: var(--bg-b);
+      border-radius: var(--radius-sm);
+    }
+
+    .auth-head {
+      padding: var(--space-18) var(--space-22);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-16);
+    }
+
+    .auth-brand {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-brand-ui);
+      color: var(--ink);
+      text-transform: uppercase;
+    }
+
+    .auth-mode {
+      font-size: var(--font-size-ui);
+      font-weight: 700;
+      letter-spacing: var(--tracking-heading);
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .auth-body {
+      padding: var(--space-22);
+    }
+
+    .auth-actions {
+      display: grid;
+      gap: var(--space-8);
+      margin-top: var(--space-18);
+    }
+
+    .auth-switch {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: var(--font-size-button);
+      font-weight: 700;
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+      padding: var(--space-8) 0 0;
+      text-align: center;
+    }
+
+    .auth-switch:hover {
+      color: var(--ink);
+    }
+
+    .auth-message {
+      min-height: 18px;
+      margin-top: var(--space-12);
+      color: var(--muted);
+      font-size: var(--font-size-body);
+      line-height: var(--line-body);
+    }
+
+    .auth-message.is-error {
+      color: var(--ink);
+    }
+
+    .auth-email {
+      max-width: 120px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .builder {
+      width: 340px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-b);
+      border-right: 1px solid var(--border);
+    }
+
+    .btop {
+      padding: var(--space-18) var(--space-22);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .btop-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .btn-theme {
+      font-family: var(--font);
+      font-size: var(--font-size-button);
+      font-weight: 700;
+      letter-spacing: var(--tracking-heading);
+      text-transform: uppercase;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: var(--space-8) var(--space-12);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, border-color 100ms, background 100ms;
+    }
+
+    .btn-theme:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .bbody {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: var(--space-36);
+    }
+
+    .bsec {
+      padding: 0;
+    }
+
+    .bsec-head {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 28px 1fr 16px;
+      gap: var(--space-10);
+      align-items: start;
+      padding: var(--space-14) var(--space-18);
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .bsec-step {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      padding-top: 1px;
+    }
+
+    .bsec-copy {
+      min-width: 0;
+    }
+
+    .bsec-title {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .bsec-summary {
+      display: block;
+      margin-top: 4px;
+      font-size: 10px;
+      line-height: 1.5;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bsec-caret {
+      width: 16px;
+      height: 16px;
+      position: relative;
+      margin-top: 1px;
+    }
+
+    .bsec-caret::before,
+    .bsec-caret::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      top: 7px;
+      height: 1px;
+      background: var(--muted);
+      transition: transform 140ms ease, opacity 140ms ease, background 140ms ease;
+    }
+
+    .bsec-caret::after {
+      transform: rotate(90deg);
+    }
+
+    .bsec.is-open .bsec-caret::before,
+    .bsec.is-open .bsec-caret::after,
+    .bsec-head:hover .bsec-caret::before,
+    .bsec-head:hover .bsec-caret::after {
+      background: var(--ink);
+    }
+
+    .bsec.is-open .bsec-caret::after {
+      transform: rotate(0deg);
+      opacity: 0;
+    }
+
+    .bsec-body {
+      display: none;
+      padding: 0 var(--space-18) var(--space-18);
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .bsec.is-open .bsec-body {
+      display: block;
+    }
+
+    .bsec-body-inner {
+      padding-top: var(--space-14);
+    }
+
+    .frow {
+      display: grid;
+      gap: var(--space-12);
+    }
+
+    .frow-2 { grid-template-columns: 52px 1fr; }
+    .frow-3 { grid-template-columns: 1fr 80px 80px; }
+    .tipo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+
+    .preview {
+      flex: 1;
+      overflow: auto;
+      padding: var(--space-36) var(--space-40) var(--space-60);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      transition: background 120ms ease;
+    }
+
+    .preview.is-zooming {
+      cursor: zoom-in;
+    }
+
+    .doc-inner {
+      transform-origin: top left;
+      box-shadow: 0 18px 40px var(--preview-glow);
+      transition: box-shadow 120ms ease;
+    }
+
+    .doc-title-kind {
+      display: block;
+      margin-top: var(--space-4);
+      font-size: var(--font-size-ui);
+      letter-spacing: var(--tracking-section);
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .doc-title-kind.is-empty {
+      display: none;
+    }
+
+    .preset-row {
+      margin-bottom: var(--space-10);
+    }
+
+    .pchip {
+      padding: 3px 8px;
+      font-size: 8px;
+    }
+
+    .bg-chip-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+    }
+
+    .bg-chip {
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+      min-height: 30px;
+      padding: var(--space-5) var(--space-8);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      transition: color 100ms, border-color 100ms, background 100ms;
+    }
+
+    .bg-chip:hover,
+    .bg-chip.on {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .bg-swatch {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      border: 1px solid rgba(13, 13, 13, 0.2);
+    }
+
+    body[data-theme="dark"] .bg-chip {
+      color: #e8e1d7;
+      border-color: rgba(245, 243, 238, 0.24);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    body[data-theme="dark"] .bg-chip:hover,
+    body[data-theme="dark"] .bg-chip.on {
+      color: #f5f3ee;
+      border-color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .bg-swatch {
+      border-color: rgba(245, 243, 238, 0.3);
+    }
+
+    .chip,
+    .tipo-btn {
+      font-size: 8px;
+    }
+
+    .obs-toggle {
+      padding: var(--space-6) 0;
+    }
+
+    .calc-box {
+      border: 1px solid var(--border);
+      padding: var(--space-12);
+      margin-top: var(--space-12);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-12);
+      font-size: var(--font-size-ui);
+      line-height: 1.4;
+      margin-top: var(--space-6);
+    }
+
+    .calc-row:first-child {
+      margin-top: 0;
+    }
+
+    .calc-label {
+      color: var(--muted);
+    }
+
+    .calc-value {
+      color: var(--ink);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    @media print {
+      body {
+        --color-ink: #0d0d0d;
+        --color-muted: #8a8a8a;
+        --color-rule-soft: rgba(13, 13, 13, 0.12);
+        --color-rule-strong: rgba(13, 13, 13, 0.15);
+        --color-border-soft: rgba(13, 13, 13, 0.13);
+        --color-surface-document: #fcfcfb;
+        --color-surface-app: #eceae6;
+        --color-surface-panel: #f5f4f1;
+        --color-surface-card: rgba(255, 255, 255, 0.45);
+        --color-inverse: #fcfcfb;
+      }
+      html, body { background: white; height: auto; }
+      .app { display: block; height: auto; overflow: visible; }
+      .builder { display: none !important; }
+      .preview { display: block; padding: 0; background: white; overflow: visible; }
+      .doc-outer, .doc-inner { transform: none !important; width: auto !important; height: auto !important; }
+      .sheet { width: 100%; min-height: 100vh; }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+</head>
+<body class="auth-loading">
+<div class="auth-shell" id="auth-shell">
+  <form class="auth-box" id="auth-form" autocomplete="on">
+    <div class="auth-head">
+      <span class="auth-brand">The Crow</span>
+      <span class="auth-mode" id="auth-mode">Ingreso</span>
+    </div>
+    <div class="auth-body">
+      <div class="field">
+        <label class="fl" for="auth-email-input">Email</label>
+        <input class="fi" id="auth-email-input" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label class="fl" for="auth-password-input">Contraseña</label>
+        <input class="fi" id="auth-password-input" type="password" autocomplete="current-password" minlength="6" required>
+      </div>
+      <div class="auth-actions">
+        <button class="btn-export" id="auth-submit" type="submit">Iniciar sesión</button>
+        <button class="auth-switch" id="auth-switch" type="button">Crear usuario</button>
+      </div>
+      <p class="auth-message" id="auth-message">Cargando sesión...</p>
+    </div>
+  </form>
+</div>
+<div class="app">
+
+  <!-- ── Builder ──────────────────────────────── -->
+  <aside class="builder">
+    <div class="btop">
+      <span class="btop-brand">The Crow</span>
+      <div class="btop-actions">
+        <span class="auth-email" id="auth-email"></span>
+        <button class="btn-theme" id="auth-logout" type="button" onclick="signOut()">Salir</button>
+        <button class="btn-theme" id="theme-toggle" type="button" onclick="toggleTheme()">Modo oscuro</button>
+        <button class="btn-export" onclick="exportPDF()">Exportar PDF</button>
+      </div>
+    </div>
+
+    <div class="bbody">
+
+      <section class="bsec" data-section="tipo">
+        <button class="bsec-head" type="button" onclick="toggleSection('tipo')">
+          <span class="bsec-step">01</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Tipo y plantilla</span>
+            <span class="bsec-summary" id="sum-tipo"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <div class="tipo-grid">
+              <button class="tipo-btn" data-tipo="foto"        onclick="setTipo('foto')">Foto</button>
+              <button class="tipo-btn" data-tipo="audiovisual" onclick="setTipo('audiovisual')">Audiovisual</button>
+              <button class="tipo-btn" data-tipo="edicion"     onclick="setTipo('edicion')">Edición</button>
+              <button class="tipo-btn" data-tipo="tiempoReal"  onclick="setTipo('tiempoReal')">Tiempo Real</button>
+            </div>
+            <p class="sub-lbl" style="margin-top:12px">Plantillas rápidas</p>
+            <div class="preset-row" id="template-chips">
+              <button class="pchip" onclick="applyTemplate('coberturaFoto')">Cobertura foto</button>
+              <button class="pchip" onclick="applyTemplate('coberturaAV')">Cobertura foto + video</button>
+              <button class="pchip" onclick="applyTemplate('realTime')">Real time</button>
+              <button class="pchip" onclick="applyTemplate('proyectoAV')">Proyecto AV</button>
+              <button class="pchip" onclick="applyTemplate('mensual')">Mensual</button>
+              <button class="pchip" onclick="applyTemplate('docFoto')">Documentación foto</button>
+              <button class="pchip" onclick="applyTemplate('redes')">Manejo de redes</button>
+              <button class="pchip" onclick="applyTemplate('edicionTvc')">Edición / TVC</button>
+            </div>
+            <div class="field" style="margin-top:12px">
+              <label class="fl" for="f-titulo">Título del presupuesto</label>
+              <input class="fi" id="f-titulo" type="text" placeholder="ej: FOTOGRAFÍA DE EVENTO"
+                oninput="set('titulo', this.value)">
+            </div>
+            <p class="sub-lbl">Fondo del presupuesto</p>
+            <div class="bg-chip-row" id="bg-chips"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bsec" data-section="cliente">
+        <button class="bsec-head" type="button" onclick="toggleSection('cliente')">
+          <span class="bsec-step">02</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Cliente</span>
+            <span class="bsec-summary" id="sum-cliente"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <div class="field">
+              <label class="fl" for="f-cliente">Cliente</label>
+              <input class="fi" id="f-cliente" type="text" oninput="set('cliente', this.value)">
+            </div>
+            <div class="field">
+              <label class="fl" for="f-agencia">Agencia / intermediario</label>
+              <input class="fi" id="f-agencia" type="text" oninput="set('agencia', this.value)">
+            </div>
+            <div class="field">
+              <label class="fl" for="f-modalidad">Modalidad</label>
+              <input class="fi" id="f-modalidad" type="text" oninput="set('modalidad', this.value)">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bsec" data-section="evento">
+        <button class="bsec-head" type="button" onclick="toggleSection('evento')">
+          <span class="bsec-step">03</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Evento</span>
+            <span class="bsec-summary" id="sum-evento"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <div class="frow" style="grid-template-columns:1fr 1fr">
+              <div class="field">
+                <label class="fl" for="f-fecha-emision">Fecha emisión</label>
+                <input class="fi" id="f-fecha-emision" type="date" onchange="set('fechaEmision', fmtDate(this.value))">
+              </div>
+              <div class="field">
+                <label class="fl" for="f-fecha-evento">Fecha evento</label>
+                <input class="fi" id="f-fecha-evento" type="date" onchange="set('fechaEvento', fmtDate(this.value))">
+              </div>
+            </div>
+            <div class="frow" style="grid-template-columns:80px 80px 1fr">
+              <div class="field">
+                <label class="fl" for="f-hora-inicio">Inicio</label>
+                <input class="fi" id="f-hora-inicio" type="time" onchange="setHorario('inicio', this.value)">
+              </div>
+              <div class="field">
+                <label class="fl" for="f-hora-fin">Fin</label>
+                <input class="fi" id="f-hora-fin" type="time" onchange="setHorario('fin', this.value)">
+              </div>
+              <div class="field">
+                <label class="fl" for="f-dur">Duración</label>
+                <input class="fi" id="f-dur" type="text" placeholder="Se calcula automático" readonly>
+              </div>
+            </div>
+            <div class="field">
+                <label class="fl" for="f-ubicacion">Ubicación</label>
+                <input class="fi" id="f-ubicacion" type="text" placeholder="Asunción / locación" oninput="set('ubicacion', this.value)">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bsec" data-section="contexto">
+        <button class="bsec-head" type="button" onclick="toggleSection('contexto')">
+          <span class="bsec-step">04</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Contexto</span>
+            <span class="bsec-summary" id="sum-contexto"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <div class="field">
+              <label class="fl" for="f-objetivo">Objetivo</label>
+              <textarea class="ft" id="f-objetivo" rows="3" placeholder="Qué se busca comunicar o lograr con este presupuesto"
+                oninput="set('objetivo', this.value)"></textarea>
+            </div>
+            <div class="field">
+              <label class="fl" for="f-derechos">Derechos de imagen</label>
+              <input class="fi" id="f-derechos" type="text" placeholder="A cargo del cliente" oninput="set('derechos', this.value)">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bsec" data-section="crew">
+        <button class="bsec-head" type="button" onclick="toggleSection('crew')">
+          <span class="bsec-step">05</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Crew</span>
+            <span class="bsec-summary" id="sum-crew"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <div class="chip-row" id="crew-chips"></div>
+            <div id="crew-other-row"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bsec" data-section="servicios">
+        <button class="bsec-head" type="button" onclick="toggleSection('servicios')">
+          <span class="bsec-step">06</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Servicios</span>
+            <span class="bsec-summary" id="sum-servicios"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <p class="sub-lbl" style="margin-top:0">Acceso rápido</p>
+            <div class="preset-row" id="preset-chips"></div>
+            <div class="item-list" id="items-list"></div>
+            <button class="btn-add" onclick="addItem()">+ Agregar servicio</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="bsec" data-section="entregables">
+        <button class="bsec-head" type="button" onclick="toggleSection('entregables')">
+          <span class="bsec-step">07</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Entregables</span>
+            <span class="bsec-summary" id="sum-entregables"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <div class="frow frow-3" style="grid-template-columns:1fr 1fr">
+              <div class="field">
+                <label class="fl" for="f-fotos">Fotografías</label>
+                <input class="fi" id="f-fotos" type="text" placeholder="0 imágenes"
+                  oninput="setEnt('fotos', this.value)">
+              </div>
+              <div class="field">
+                <label class="fl" for="f-videos">Videos</label>
+                <input class="fi" id="f-videos" type="text" placeholder="0 piezas"
+                  oninput="setEnt('videos', this.value)">
+              </div>
+            </div>
+            <p class="sub-lbl">Formatos de foto</p>
+            <div class="chip-row" id="foto-format-chips"></div>
+            <p class="sub-lbl">Formatos de video</p>
+            <div class="chip-row" id="video-format-chips"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bsec" data-section="inversion">
+        <button class="bsec-head" type="button" onclick="toggleSection('inversion')">
+          <span class="bsec-step">08</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Inversión</span>
+            <span class="bsec-summary" id="sum-inversion"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <div class="field">
+              <label class="fl" for="f-inv-lbl">Descripción</label>
+              <input class="fi" id="f-inv-lbl" type="text" oninput="set('invLabel', this.value)">
+            </div>
+            <div class="frow frow-2">
+              <div class="field">
+                <label class="fl" for="f-moneda">Moneda</label>
+                <select class="fs" id="f-moneda" onchange="setMoneda(this.value)">
+                  <option value="₲">₲</option>
+                  <option value="$">$</option>
+                  <option value="U$D">U$D</option>
+                  <option value="€">€</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="fl" for="f-monto">Monto</label>
+                <input class="fi" id="f-monto" type="text" inputmode="numeric" placeholder="1.500.000"
+                  oninput="setMonto(this.value)">
+              </div>
+            </div>
+            <div class="frow" style="grid-template-columns:1fr 1fr">
+              <div class="field">
+                <label class="fl" for="f-iva">IVA</label>
+                <select class="fs" id="f-iva" onchange="setIvaIncluido(this.value)">
+                  <option value="excluido">Sin IVA</option>
+                  <option value="incluido">IVA incluido</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="fl">Calculadora</label>
+                <div class="calc-box" id="iva-calc"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bsec" data-section="observaciones">
+        <button class="bsec-head" type="button" onclick="toggleSection('observaciones')">
+          <span class="bsec-step">09</span>
+          <span class="bsec-copy">
+            <span class="bsec-title">Observaciones</span>
+            <span class="bsec-summary" id="sum-observaciones"></span>
+          </span>
+          <span class="bsec-caret" aria-hidden="true"></span>
+        </button>
+        <div class="bsec-body">
+          <div class="bsec-body-inner">
+            <div class="obs-toggle-list" id="obs-presets-list"></div>
+            <p class="sub-lbl">Personalizadas</p>
+            <div id="obs-custom-list"></div>
+            <button class="btn-add" onclick="addObs()">+ Agregar nota</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </aside>
+
+  <!-- ── Preview ────────────────────────────────── -->
+  <div class="preview" id="preview">
+    <div class="doc-outer" id="doc-outer">
+      <div class="doc-inner" id="doc-inner">
+        <div class="sheet">
+
+          <div class="brand">
+            <span class="brand-name">The Crow</span>
+            <span class="brand-slogan">Always present</span>
+          </div>
+          <div class="brand-rule"></div>
+
+          <div class="title-block">
+            <span class="title-bold">PRESUPUESTO</span>
+            <span class="title-light" id="d-titulo"></span>
+          </div>
+
+          <div class="hrule"></div>
+          <div class="meta" id="d-meta"></div>
+
+          <div id="d-obj-section" style="display:none">
+            <div class="hrule"></div>
+            <p class="sec-title">Objetivo</p>
+            <p class="svc-detail" id="d-objetivo"></p>
+          </div>
+
+          <div class="hrule"></div>
+          <p class="sec-title">Alcance del servicio</p>
+          <div class="services" id="d-services"></div>
+
+          <div id="d-ent-section" style="display:none">
+            <div class="hrule"></div>
+            <p class="sec-title">Entregables</p>
+            <div class="entregables-grid" id="d-entregables"></div>
+          </div>
+
+          <div class="hrule"></div>
+          <p class="sec-title">Inversión</p>
+          <div class="inversion">
+            <span class="inv-lbl" id="d-inv-lbl"></span>
+            <span class="inv-price" id="d-inv-price"></span>
+          </div>
+
+          <div class="hrule"></div>
+          <p class="sec-title">Observaciones</p>
+          <div class="obs-doc" id="d-obs"></div>
+
+          <div class="doc-footer">
+            <div class="doc-footer-rule"></div>
+            <div class="doc-footer-inner">
+              <span class="doc-footer-txt" id="d-footer">Presupuesto</span>
+              <span class="doc-footer-txt">01</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.104.0/dist/umd/supabase.min.js"></script>
+<script>
+// ─── Data ───────────────────────────────────────────
+const SUPABASE_URL = 'https://hdsmzaivbpdxicslpepm.supabase.co'
+// Pegar aca la anon public key del proyecto Supabase.
+const SUPABASE_ANON_KEY = 'sb_publishable_QGoqw2nI2RIUocS2Tmn06Q_9_j5yuE7'
+const SUPABASE_IS_CONFIGURED = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY)
+
+let supabaseClient = null
+let currentUser = null
+let authMode = 'login'
+
+const TIPO_MAP = {
+  foto:        'FOTOGRAFÍA',
+  audiovisual: 'AUDIOVISUAL',
+  edicion:     'EDICIÓN',
+  tiempoReal:  'TIEMPO REAL'
+}
+
+const CREW_OPTIONS = [
+  { id: 'fotografo',  label: 'Fotógrafo' },
+  { id: 'videografo', label: 'Videógrafo' },
+  { id: 'editor',     label: 'Editor' },
+  { id: 'dirArte',    label: 'Dir. de Arte' },
+  { id: 'productor',  label: 'Productor' },
+  { id: 'asistente',  label: 'Asistente' },
+  { id: 'otro',       label: 'Otro' }
+]
+
+const FOTO_FORMATS = [
+  { id: 'editadas', label: 'Editadas' },
+  { id: 'raw', label: 'RAW' },
+  { id: 'historiasTexto', label: 'Historias con texto' }
+]
+
+const VIDEO_FORMATS = [
+  { id: 'reel',       label: 'Reel' },
+  { id: 'recap',      label: 'Recap' },
+  { id: 'aftermovie', label: 'Aftermovie' },
+  { id: 'historia',   label: 'Historia' },
+  { id: '16x9',       label: '16:9' },
+  { id: '9x16',       label: '9:16' },
+  { id: '4x5',        label: '4:5' }
+]
+
+const DOCUMENT_BACKGROUNDS = [
+  {
+    id: 'white',
+    label: 'Blanco',
+    color: '#f0f0f1',
+    ink: '#141414',
+    muted: '#777777',
+    ruleSoft: 'rgba(20, 20, 20, 0.14)',
+    ruleStrong: 'rgba(20, 20, 20, 0.2)'
+  },
+  {
+    id: 'gray',
+    label: 'Gris',
+    color: '#adaca8',
+    ink: '#141414',
+    muted: '#5f5e5b',
+    ruleSoft: 'rgba(20, 20, 20, 0.16)',
+    ruleStrong: 'rgba(20, 20, 20, 0.24)'
+  },
+  {
+    id: 'black',
+    label: 'Negro',
+    color: '#141414',
+    ink: '#f0f0f1',
+    muted: '#a8a8a8',
+    ruleSoft: 'rgba(240, 240, 241, 0.18)',
+    ruleStrong: 'rgba(240, 240, 241, 0.78)'
+  },
+  {
+    id: 'beige',
+    label: 'Beige Crow',
+    color: '#cfb9a6',
+    ink: '#141414',
+    muted: '#5f5147',
+    ruleSoft: 'rgba(20, 20, 20, 0.16)',
+    ruleStrong: 'rgba(20, 20, 20, 0.24)'
+  }
+]
+
+const TEMPLATE_PRESETS = [
+  {
+    id: 'coberturaFoto',
+    label: 'Cobertura foto',
+    config: {
+      tipo: 'foto',
+      titulo: 'COBERTURA FOTOGRÁFICA',
+      modalidad: 'Cobertura por evento',
+      objetivo: 'Registrar los momentos clave del evento con un enfoque documental y profesional.',
+      derechos: 'A cargo del cliente',
+      crew: ['fotografo'],
+      items: [
+        { nombre: 'Cobertura fotográfica', detalle: '— Registro completo del evento\n— Selección y edición del material\n— Entrega digital post evento' }
+      ],
+      ent: { fotos: '25 fotos finales editadas', videos: '', tipos: [] },
+      invLabel: 'Inversión total',
+      obsOn: ['post', 'pago50', 'reunion', 'traslados']
+    }
+  },
+  {
+    id: 'coberturaAV',
+    label: 'Cobertura foto + video',
+    config: {
+      tipo: 'audiovisual',
+      titulo: 'COBERTURA AUDIOVISUAL',
+      modalidad: 'Cobertura por evento',
+      objetivo: 'Generar contenido foto y video que resuma el evento y funcione en redes sociales.',
+      derechos: 'A cargo del cliente',
+      crew: ['fotografo', 'videografo', 'editor'],
+      items: [
+        { nombre: 'Cobertura de evento', detalle: '— Registro fotográfico y audiovisual durante la jornada\n— Captura de momentos clave y retratos espontáneos' },
+        { nombre: 'Postproducción', detalle: '— Selección y edición del material\n— Entrega de videos optimizados para redes' }
+      ],
+      ent: { fotos: '25 fotos finales editadas', videos: '3 piezas finales', tipos: ['recap', '9x16'] },
+      invLabel: 'Inversión total',
+      obsOn: ['pago50', 'entrega7', 'reunion', 'traslados']
+    }
+  },
+  {
+    id: 'realTime',
+    label: 'Real time',
+    config: {
+      tipo: 'tiempoReal',
+      titulo: 'COBERTURA EN TIEMPO REAL',
+      modalidad: 'Cobertura en vivo',
+      objetivo: 'Producir materiales durante el evento para publicación inmediata y recap posterior.',
+      derechos: 'A cargo del cliente',
+      crew: ['fotografo', 'videografo', 'editor'],
+      items: [
+        { nombre: 'Cobertura en tiempo real', detalle: '— Producción de fotos y videos durante el evento\n— Material listo para publicación inmediata' },
+        { nombre: 'Soporte técnico', detalle: '— Edición express en locación\n— Coordinación de flujo de entrega y respaldo' }
+      ],
+      ent: { fotos: '+25 fotos editadas', videos: '4 historias + 1 recap', tipos: ['historia', 'recap', '9x16'] },
+      invLabel: 'Inversión total',
+      obsOn: ['pago50', 'entrega24', 'wifi', 'traslados']
+    }
+  },
+  {
+    id: 'proyectoAV',
+    label: 'Proyecto AV',
+    config: {
+      tipo: 'audiovisual',
+      titulo: 'PRODUCCIÓN AUDIOVISUAL POR PROYECTO',
+      modalidad: 'Proyecto puntual',
+      objetivo: 'Desarrollar una pieza audiovisual principal y adaptaciones derivadas a partir de una jornada de producción.',
+      derechos: 'A cargo del cliente',
+      crew: ['videografo', 'editor', 'productor'],
+      items: [
+        { nombre: 'Preproducción', detalle: '— Reunión de bajada\n— Definición de objetivos, guion y logística' },
+        { nombre: 'Producción', detalle: '— Jornada de grabación en locación\n— Cámara, iluminación y sonido' },
+        { nombre: 'Postproducción', detalle: '— Edición, color, sonido, subtítulos y motion graphics' }
+      ],
+      ent: { fotos: '10 fotos finales', videos: '1 pieza principal + 3 adaptaciones', tipos: ['reel', '16x9', '9x16', '4x5'] },
+      invLabel: 'Total proyecto',
+      obsOn: ['reunion', 'cambios3', 'entrega7', 'contraEntrega', 'dentroAsu', 'fueraAsu']
+    }
+  },
+  {
+    id: 'mensual',
+    label: 'Mensual',
+    config: {
+      tipo: 'audiovisual',
+      titulo: 'PAQUETE MENSUAL DE CONTENIDO',
+      modalidad: 'Plan mensual renovable',
+      objetivo: 'Mantener una producción constante de contenido para redes con jornadas y entregas recurrentes.',
+      derechos: 'A cargo del cliente',
+      crew: ['videografo', 'editor'],
+      items: [
+        { nombre: 'Producción mensual', detalle: '— Jornadas de grabación mensuales\n— Generación de banco de contenido' },
+        { nombre: 'Edición mensual', detalle: '— Ediciones semanales para redes sociales\n— Ajustes menores de copy y formato' }
+      ],
+      ent: { fotos: '12 fotos editadas', videos: '8 a 20 piezas mensuales', tipos: ['reel', '9x16', '4x5'] },
+      invLabel: 'Inversión mensual',
+      obsOn: ['cierreMes', 'adicionales', 'anticipacion48']
+    }
+  },
+  {
+    id: 'docFoto',
+    label: 'Documentación foto',
+    config: {
+      tipo: 'foto',
+      titulo: 'DOCUMENTACIÓN FOTOGRÁFICA',
+      modalidad: 'Cobertura por jornadas',
+      objetivo: 'Documentar procesos, personas e instalaciones con criterio editorial y orden de entrega por locación.',
+      derechos: 'A cargo del cliente',
+      crew: ['fotografo'],
+      items: [
+        { nombre: 'Cobertura documental', detalle: '— Registro por organización, locación o jornada\n— Criterio editorial horizontal y vertical' },
+        { nombre: 'Entrega organizada', detalle: '— Selección y edición por carpetas\n— Entrega RAW + JPG según necesidad' }
+      ],
+      ent: { fotos: '200 a 240 fotos finales', videos: '', tipos: [] },
+      invLabel: 'Total proyecto',
+      obsOn: ['pago50Saldo', 'entrega7', 'reunion', 'traslados']
+    }
+  },
+  {
+    id: 'redes',
+    label: 'Manejo de redes',
+    config: {
+      tipo: 'audiovisual',
+      titulo: 'MANEJO DE REDES SOCIALES',
+      modalidad: 'Plan mensual renovable',
+      objetivo: 'Planificar, producir y publicar contenido mensual con apoyo en pauta y seguimiento de resultados.',
+      derechos: 'A cargo del cliente',
+      crew: ['productor', 'videografo', 'editor'],
+      items: [
+        { nombre: 'Planificación y estrategia', detalle: '— Reunión mensual\n— Calendario de contenidos, guiones y captions' },
+        { nombre: 'Creación de contenido', detalle: '— Jornadas de grabación\n— Reels, carruseles e historias editadas' },
+        { nombre: 'Pauta y reportes', detalle: '— Gestión de Meta Ads\n— Reporte mensual con recomendaciones' }
+      ],
+      ent: { fotos: '4 a 8 carruseles', videos: '8 a 12 reels / historias', tipos: ['reel', '9x16', '4x5'] },
+      invLabel: 'Inversión mensual',
+      obsOn: ['cierreMes', 'metaAds', 'adicionales', 'dentroAsu', 'fueraAsu']
+    }
+  },
+  {
+    id: 'edicionTvc',
+    label: 'Edición / TVC',
+    config: {
+      tipo: 'edicion',
+      titulo: 'EDICIÓN Y POSTPRODUCCIÓN',
+      modalidad: 'Servicio por pieza',
+      objetivo: 'Editar una pieza principal y sus adaptaciones en distintos formatos para medios y redes.',
+      derechos: 'A cargo del cliente',
+      crew: ['editor'],
+      items: [
+        { nombre: 'Edición principal', detalle: '— Montaje, música, color y placa final' },
+        { nombre: 'Adaptaciones', detalle: '— Versiones por duración y formato para pauta o redes' }
+      ],
+      ent: { fotos: '', videos: '1 pieza principal + adaptaciones', tipos: ['16x9', '9x16', '4x5'] },
+      invLabel: 'Total servicio',
+      obsOn: ['pago50', 'cambios1', 'validez7']
+    }
+  }
+]
+
+const PRESETS = {
+  foto: [
+    { label: 'Cobertura evento', nombre: 'Cobertura fotográfica', detalle: '— Registro fotográfico durante el evento\n— Selección y edición del material\n— Entrega digital post evento' },
+    { label: 'Documental',       nombre: 'Documentación fotográfica', detalle: '— Registro de procesos, personas y locaciones\n— Entrega editorial organizada por carpetas' },
+    { label: 'Producto',         nombre: 'Fotografía de producto', detalle: '— Sesión de producto en estudio\n— Imágenes con fondo blanco y lifestyle' },
+    { label: 'Corporativa',      nombre: 'Fotografía corporativa', detalle: '— Retratos profesionales del equipo\n— Imágenes institucionales y de espacio' }
+  ],
+  audiovisual: [
+    { label: 'Cobertura AV',     nombre: 'Cobertura audiovisual', detalle: '— Registro foto y video del evento\n— Entrega de materiales editados para redes' },
+    { label: 'Recap',            nombre: 'Recap', detalle: '— Resumen del evento en formato corto\n— Apto para redes sociales' },
+    { label: 'Proyecto',         nombre: 'Producción por proyecto', detalle: '— Preproducción, rodaje y postproducción\n— Entregables definidos por pieza y formato' },
+    { label: 'Podcast',          nombre: 'Entrevista / Podcast', detalle: '— Grabación a una o dos cámaras\n— Subtítulos, placas y estética limpia' },
+    { label: 'Mensual',          nombre: 'Producción audiovisual mensual', detalle: '— Jornadas de grabación mensuales\n— Ediciones semanales para redes' },
+    { label: 'Reel',             nombre: 'Reel para redes', detalle: '— Formato vertical para Instagram / TikTok\n— Edición dinámica con música' }
+  ],
+  edicion: [
+    { label: 'Edición video',    nombre: 'Edición de video', detalle: '— Edición del material grabado\n— Color, sonido y música' },
+    { label: 'TVC + adapt.',     nombre: 'TVC y adaptaciones', detalle: '— Pieza principal y versiones por formato\n— Ajuste de duración, placa y cierre' },
+    { label: 'Color grading',    nombre: 'Color grading', detalle: '— Corrección y gradación de color profesional\n— Look cinematográfico consistente' },
+    { label: 'Motion',           nombre: 'Motion graphics', detalle: '— Animaciones y gráficos en movimiento\n— Títulos, subtítulos y transiciones' }
+  ],
+  tiempoReal: [
+    { label: 'Real time',        nombre: 'Cobertura en tiempo real', detalle: '— Contenido producido y entregado durante el evento\n— Stories, fotos y recap express' },
+    { label: 'Aftermovie exprés',nombre: 'Aftermovie exprés', detalle: '— Video resumen con entrega en el día\n— Edición prioritaria para publicación inmediata' },
+    { label: 'Live stream',      nombre: 'Transmisión en vivo', detalle: '— Streaming del evento en plataformas digitales\n— Configuración técnica incluida' }
+  ]
+}
+
+const OBS_PRESETS = [
+  { id: 'post',         text: 'La entrega se realiza post evento.' },
+  { id: 'reunion',      text: 'Con la aprobación del presupuesto se coordina una reunión de bajada y planificación.' },
+  { id: 'anticipacion48', text: 'La coordinación debe realizarse con al menos 48 horas de anticipación.' },
+  { id: 'dentroAsu',    text: 'Traslado dentro de Asunción incluido.' },
+  { id: 'fueraAsu',     text: 'Traslados fuera de Asunción se presupuestan aparte.' },
+  { id: 'traslados',    text: 'Viáticos, locaciones o coberturas extendidas se cotizan por separado si aplica.' },
+  { id: 'pago50',       text: '50% con la aprobación del presupuesto y 50% contra entrega.' },
+  { id: 'pago50Saldo',  text: 'Reserva del 50% y saldo contra entrega del material.' },
+  { id: 'contraEntrega',text: 'El pago se realiza contra entrega del material final.' },
+  { id: 'cierreMes',    text: 'El pago se realiza al cierre del mes de trabajo.' },
+  { id: 'pago60',       text: 'Condición de pago a 60 días.' },
+  { id: 'entrega24',    text: 'Entrega prioritaria en el día o dentro de las 24 horas posteriores al evento.' },
+  { id: 'entrega48',    text: 'Entrega estimada dentro de las 48 horas hábiles posteriores a la jornada.' },
+  { id: 'entrega7',     text: 'Plazo de entrega estimado de 7 días hábiles.' },
+  { id: 'entrega10',    text: 'Plazo de entrega estimado de 10 días hábiles.' },
+  { id: 'cambios1',     text: 'Incluye 1 ronda de cambios; ajustes extra tendrán sobrecosto.' },
+  { id: 'cambios3',     text: 'Incluye hasta 3 rondas de cambios por material.' },
+  { id: 'validez7',     text: 'El presupuesto tiene validez de 7 días.' },
+  { id: 'validez15',    text: 'El presupuesto tiene validez de 15 días.' },
+  { id: 'adicionales',  text: 'Materiales o jornadas adicionales se cotizan por separado.' },
+  { id: 'metaAds',      text: 'La inversión publicitaria en Meta Ads se abona aparte por el cliente.' },
+  { id: 'wifi',         text: 'Se requiere buena señal o conectividad estable para la cobertura en tiempo real.' }
+]
+
+// ─── State ──────────────────────────────────────────
+const S = {
+  tipo:     '',
+  titulo:   '',
+  cliente:  '',
+  agencia:  '',
+  sectionOpen: 'tipo',
+  modalidad:'',
+  fechaEmision: todayDisplay(),
+  fechaEvento: '',
+  horaInicioRaw:  '',
+  horaFinRaw:  '',
+  horaInicio: '',
+  horaFin:    '',
+  duracion: '',
+  ubicacion:'',
+  objetivo: '',
+  derechos: '',
+  crew:     new Set(),
+  crewOther:'',
+  items:    [{ nombre: '', detalle: '' }],
+  ent: { fotos: '', videos: '', fotoFormats: new Set(), videoFormats: new Set() },
+  invLabel: '',
+  invMonto: '',
+  moneda:   '₲',
+  ivaIncluido: false,
+  docBg: 'white',
+  obsOn:    new Set(),
+  obsCustom:['']
+}
+
+const THEME_STORAGE_KEY = 'the-crow-theme'
+const ZOOM_STORAGE_KEY = 'the-crow-preview-zoom'
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 2.5
+const ZOOM_STEP = 0.1
+let previewZoom = 1
+
+// ─── Auth ───────────────────────────────────────────
+function getSupabaseClient() {
+  if (!SUPABASE_IS_CONFIGURED || !window.supabase) return null
+  if (!supabaseClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  }
+  return supabaseClient
+}
+
+function setAuthMessage(message, isError = false) {
+  const el = document.getElementById('auth-message')
+  if (!el) return
+  el.textContent = message || ''
+  el.classList.toggle('is-error', isError)
+}
+
+function renderAuthMode() {
+  const isRegister = authMode === 'register'
+  txt('auth-mode', isRegister ? 'Registro' : 'Ingreso')
+  txt('auth-submit', isRegister ? 'Crear usuario' : 'Iniciar sesión')
+  txt('auth-switch', isRegister ? 'Ya tengo usuario' : 'Crear usuario')
+  const pass = document.getElementById('auth-password-input')
+  if (pass) pass.autocomplete = isRegister ? 'new-password' : 'current-password'
+}
+
+function setAuthState(session) {
+  currentUser = session?.user || null
+  document.body.classList.remove('auth-loading', 'auth-signed-out', 'auth-signed-in')
+  document.body.classList.add(currentUser ? 'auth-signed-in' : 'auth-signed-out')
+  txt('auth-email', currentUser?.email || '')
+  if (currentUser) {
+    setAuthMessage('')
+    requestAnimationFrame(scaleDoc)
+  } else {
+    setAuthMessage('')
+  }
+}
+
+async function initAuth() {
+  renderAuthMode()
+  const client = getSupabaseClient()
+  if (!client) {
+    document.body.classList.remove('auth-loading', 'auth-signed-in')
+    document.body.classList.add('auth-signed-out')
+    const message = SUPABASE_IS_CONFIGURED
+      ? 'No se pudo cargar Supabase JS. Revisá la conexión.'
+      : 'Falta pegar la anon public key de Supabase en app.html.'
+    setAuthMessage(message, true)
+    return
+  }
+
+  const { data, error } = await client.auth.getSession()
+  if (error) {
+    setAuthMessage(error.message, true)
+    setAuthState(null)
+    return
+  }
+
+  setAuthState(data.session)
+  client.auth.onAuthStateChange((_event, session) => setAuthState(session))
+}
+
+async function handleAuthSubmit(event) {
+  event.preventDefault()
+  const client = getSupabaseClient()
+  if (!client) {
+    const message = SUPABASE_IS_CONFIGURED
+      ? 'No se pudo cargar Supabase JS.'
+      : 'Configurá la anon public key antes de iniciar sesión.'
+    setAuthMessage(message, true)
+    return
+  }
+
+  const email = document.getElementById('auth-email-input').value.trim()
+  const password = document.getElementById('auth-password-input').value
+  const submit = document.getElementById('auth-submit')
+  submit.disabled = true
+  setAuthMessage(authMode === 'register' ? 'Creando usuario...' : 'Ingresando...')
+
+  const result = authMode === 'register'
+    ? await client.auth.signUp({ email, password })
+    : await client.auth.signInWithPassword({ email, password })
+
+  submit.disabled = false
+  if (result.error) {
+    setAuthMessage(result.error.message, true)
+    return
+  }
+
+  if (authMode === 'register' && !result.data.session) {
+    setAuthMessage('Usuario creado. Revisá el email para confirmar la cuenta.')
+    return
+  }
+
+  setAuthMessage('')
+}
+
+function toggleAuthMode() {
+  authMode = authMode === 'login' ? 'register' : 'login'
+  renderAuthMode()
+  setAuthMessage('')
+}
+
+async function signOut() {
+  const client = getSupabaseClient()
+  if (!client) return
+  await client.auth.signOut()
+}
+
+// ─── Helpers ────────────────────────────────────────
+function todayISO() {
+  const d = new Date()
+  return [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-')
+}
+function todayDisplay() {
+  const d = new Date()
+  return `${pad(d.getDate())} / ${pad(d.getMonth()+1)} / ${d.getFullYear()}`
+}
+function fmtDate(iso) {
+  if (!iso) return ''
+  const [y,m,d] = iso.split('-'); return `${d} / ${m} / ${y}`
+}
+function fmtHora(t) {
+  if (!t) return ''
+  const [h,m] = t.split(':')
+  const hh = parseInt(h)
+  const ampm = hh >= 12 ? 'pm' : 'am'
+  return `${hh > 12 ? hh-12 : hh || 12}:${m} ${ampm}`
+}
+function fmtDuracion(mins) {
+  if (!Number.isFinite(mins) || mins < 0) return ''
+  if (mins === 0) return '0 min'
+  const hours = Math.floor(mins / 60)
+  const minutes = mins % 60
+  const parts = []
+  if (hours) parts.push(`${hours} h${hours > 1 ? 's' : ''}`)
+  if (minutes) parts.push(`${minutes} min`)
+  return parts.join(' ')
+}
+function timeToMinutes(value) {
+  if (!value) return null
+  const [hh, mm] = value.split(':').map(Number)
+  if (!Number.isFinite(hh) || !Number.isFinite(mm)) return null
+  return hh * 60 + mm
+}
+function computeDuration(start, end) {
+  const startMinutes = timeToMinutes(start)
+  const endMinutes = timeToMinutes(end)
+  if (startMinutes === null || endMinutes === null) return ''
+  let diff = endMinutes - startMinutes
+  if (diff < 0) diff += 24 * 60
+  return fmtDuracion(diff)
+}
+function normalizeAmount(value) {
+  return String(value || '').replace(/[^\d]/g, '').replace(/^0+(?=\d)/, '')
+}
+function formatAmount(value) {
+  const digits = normalizeAmount(value)
+  if (!digits) return ''
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
+function amountNumber(value) {
+  const digits = normalizeAmount(value)
+  return digits ? Number(digits) : null
+}
+function calcIva(amount, incluido) {
+  const n = amountNumber(amount)
+  if (n === null) return { base: null, iva: null, total: null }
+  if (incluido) {
+    const base = Math.round(n / 1.1)
+    return { base, iva: n - base, total: n }
+  }
+  const iva = Math.round(n * 0.1)
+  return { base: n, iva, total: n + iva }
+}
+function pad(n) { return String(n).padStart(2,'0') }
+function toISO(display) {
+  if (!display) return ''
+  const parts = display.split('/').map(p => p.trim())
+  if (parts.length !== 3) return ''
+  const [d, m, y] = parts
+  if (!d || !m || !y) return ''
+  return `${y}-${pad(m)}-${pad(d)}`
+}
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') }
+function escAttr(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+function clipSummary(parts, fallback) {
+  const text = parts.filter(Boolean).join(' · ').trim()
+  return text || fallback
+}
+function txt(id, val) { const el = document.getElementById(id); if (el) el.textContent = val || '' }
+function html(id, val) { const el = document.getElementById(id); if (el) el.innerHTML = val || '' }
+function getPreferredTheme() {
+  const saved = localStorage.getItem(THEME_STORAGE_KEY)
+  if (saved === 'dark' || saved === 'light') return saved
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+function getSavedZoom() {
+  const saved = parseFloat(localStorage.getItem(ZOOM_STORAGE_KEY))
+  return Number.isFinite(saved) ? clamp(saved, MIN_ZOOM, MAX_ZOOM) : 1
+}
+function applyTheme(theme) {
+  const nextTheme = theme === 'dark' ? 'dark' : 'light'
+  document.body.dataset.theme = nextTheme
+  localStorage.setItem(THEME_STORAGE_KEY, nextTheme)
+  const btn = document.getElementById('theme-toggle')
+  if (btn) btn.textContent = nextTheme === 'dark' ? 'Modo claro' : 'Modo oscuro'
+}
+function toggleTheme() {
+  applyTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark')
+}
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value))
+}
+function setPreviewZoom(value) {
+  previewZoom = clamp(value, MIN_ZOOM, MAX_ZOOM)
+  localStorage.setItem(ZOOM_STORAGE_KEY, String(previewZoom))
+  scaleDoc()
+}
+function adjustPreviewZoom(delta) {
+  setPreviewZoom(previewZoom + delta)
+}
+function getDocumentBackground() {
+  return DOCUMENT_BACKGROUNDS.find(bg => bg.id === S.docBg) || DOCUMENT_BACKGROUNDS[0]
+}
+function applyDocumentBackground() {
+  const bg = getDocumentBackground()
+  document.querySelectorAll('.sheet').forEach(sheet => {
+    sheet.style.backgroundColor = bg.color
+    sheet.style.setProperty('--color-surface-document', bg.color)
+    sheet.style.setProperty('--semantic-color-surface-document', bg.color)
+    sheet.style.setProperty('--component-document-sheet-background', bg.color)
+    sheet.style.setProperty('--bg', bg.color)
+    sheet.style.setProperty('--bg-doc', bg.color)
+    sheet.style.setProperty('--color-ink', bg.ink)
+    sheet.style.setProperty('--semantic-color-text-primary', bg.ink)
+    sheet.style.setProperty('--ink', bg.ink)
+    sheet.style.setProperty('--color-muted', bg.muted)
+    sheet.style.setProperty('--semantic-color-text-muted', bg.muted)
+    sheet.style.setProperty('--muted', bg.muted)
+    sheet.style.setProperty('--color-rule-soft', bg.ruleSoft)
+    sheet.style.setProperty('--color-rule-strong', bg.ruleStrong)
+    sheet.style.setProperty('--semantic-color-rule-soft', bg.ruleSoft)
+    sheet.style.setProperty('--semantic-color-rule-strong', bg.ruleStrong)
+    sheet.style.setProperty('--rule', bg.ruleSoft)
+    sheet.style.setProperty('--color-border-soft', bg.ruleSoft)
+  })
+}
+
+// ─── Setters ────────────────────────────────────────
+function set(k, v) { S[k] = v; renderDoc() }
+function setDocBg(id) {
+  S.docBg = id
+  renderBuilder()
+  renderDoc()
+}
+function setMonto(value) {
+  S.invMonto = normalizeAmount(value)
+  renderBuilder()
+  renderDoc()
+}
+function setMoneda(value) {
+  S.moneda = value
+  renderBuilder()
+  renderDoc()
+}
+function setIvaIncluido(value) {
+  S.ivaIncluido = value === 'incluido'
+  renderBuilder()
+  renderDoc()
+}
+function setHorario(which, value) {
+  if (which === 'inicio') {
+    S.horaInicioRaw = value
+    S.horaInicio = fmtHora(value)
+  }
+  if (which === 'fin') {
+    S.horaFinRaw = value
+    S.horaFin = fmtHora(value)
+  }
+  S.duracion = computeDuration(S.horaInicioRaw, S.horaFinRaw)
+  renderBuilder()
+  renderDoc()
+}
+
+function toggleSection(name) {
+  S.sectionOpen = S.sectionOpen === name ? '' : name
+  renderBuilder()
+}
+
+function setTipo(t) {
+  S.tipo = S.tipo === t ? '' : t
+  if (S.tipo && !S.titulo) {
+    const el = document.getElementById('f-titulo')
+    el.placeholder = TIPO_MAP[t]
+  }
+  renderBuilder(); renderDoc()
+}
+
+function toggleCrew(id) {
+  const isActive = S.crew.has(id)
+  isActive ? S.crew.delete(id) : S.crew.add(id)
+  if (id === 'otro' && isActive) {
+    S.crewOther = ''
+  }
+  renderBuilder(); renderDoc()
+}
+
+function setCrewOther(value) {
+  S.crewOther = value
+  if (value.trim()) S.crew.add('otro')
+  renderBuilder(); renderDoc()
+}
+
+function toggleEntFormat(kind, id) {
+  const set = kind === 'photo' ? S.ent.fotoFormats : S.ent.videoFormats
+  set.has(id) ? set.delete(id) : set.add(id)
+  renderBuilder(); renderDoc()
+}
+
+function setEnt(k, v) { S.ent[k] = v; renderDoc() }
+
+function toggleObs(id) {
+  S.obsOn.has(id) ? S.obsOn.delete(id) : S.obsOn.add(id)
+  renderBuilder(); renderDoc()
+}
+
+function setItem(i, f, v) { S.items[i][f] = v; renderDoc() }
+function addItem() { S.items.push({ nombre: '', detalle: '' }); renderBuilder(); renderDoc() }
+function removeItem(i) { S.items.splice(i,1); renderBuilder(); renderDoc() }
+
+function addPreset(tipo, idx) {
+  const p = PRESETS[tipo][idx]
+  S.items.push({ nombre: p.nombre, detalle: p.detalle })
+  renderBuilder(); renderDoc()
+}
+
+function crewLabels() {
+  const labels = CREW_OPTIONS.filter(c => S.crew.has(c.id) && c.id !== 'otro').map(c => c.label)
+  if (S.crew.has('otro') && S.crewOther.trim()) {
+    labels.push(`Otro: ${S.crewOther.trim()}`)
+  } else if (S.crew.has('otro')) {
+    labels.push('Otro')
+  }
+  return labels
+}
+
+function normalizeEntFormats(tipos = []) {
+  const photoFormats = new Set()
+  const videoFormats = new Set()
+  for (const id of tipos) {
+    if (FOTO_FORMATS.some(format => format.id === id)) {
+      photoFormats.add(id)
+    } else if (VIDEO_FORMATS.some(format => format.id === id)) {
+      videoFormats.add(id)
+    }
+  }
+  return { photoFormats, videoFormats }
+}
+
+function applyTemplate(id) {
+  const template = TEMPLATE_PRESETS.find(t => t.id === id)
+  if (!template) return
+  const cfg = template.config
+
+  S.tipo = cfg.tipo || S.tipo
+  if (cfg.titulo !== undefined) S.titulo = cfg.titulo
+  if (cfg.modalidad !== undefined) S.modalidad = cfg.modalidad
+  if (cfg.objetivo !== undefined) S.objetivo = cfg.objetivo
+  if (cfg.derechos !== undefined) S.derechos = cfg.derechos
+  if (cfg.invLabel !== undefined) S.invLabel = cfg.invLabel
+  if (cfg.crew) S.crew = new Set(cfg.crew)
+  if (cfg.items) S.items = cfg.items.map(item => ({ ...item }))
+  if (cfg.ent) {
+    const normalized = normalizeEntFormats(cfg.ent.tipos || [])
+    S.ent = {
+      fotos: cfg.ent.fotos || '',
+      videos: cfg.ent.videos || '',
+      fotoFormats: normalized.photoFormats,
+      videoFormats: normalized.videoFormats
+    }
+  }
+  if (cfg.obsOn) S.obsOn = new Set(cfg.obsOn)
+  if (cfg.crew && !cfg.crew.includes('otro')) S.crewOther = ''
+
+  renderBuilder()
+  renderDoc()
+}
+
+function setObs(i, v) { S.obsCustom[i] = v; renderDoc() }
+function addObs() { S.obsCustom.push(''); renderBuilder(); renderDoc() }
+function removeObs(i) { S.obsCustom.splice(i,1); renderBuilder(); renderDoc() }
+
+// ─── Render builder ─────────────────────────────────
+function renderBuilder() {
+  document.getElementById('f-titulo').value = S.titulo
+  document.getElementById('f-cliente').value = S.cliente
+  document.getElementById('f-agencia').value = S.agencia
+  document.getElementById('f-modalidad').value = S.modalidad
+  document.getElementById('f-fecha-emision').value = toISO(S.fechaEmision)
+  document.getElementById('f-fecha-evento').value = toISO(S.fechaEvento)
+  document.getElementById('f-hora-inicio').value = S.horaInicioRaw
+  document.getElementById('f-hora-fin').value = S.horaFinRaw
+  document.getElementById('f-dur').value = S.duracion
+  document.getElementById('f-ubicacion').value = S.ubicacion
+  document.getElementById('f-objetivo').value = S.objetivo
+  document.getElementById('f-derechos').value = S.derechos
+  document.getElementById('f-fotos').value = S.ent.fotos
+  document.getElementById('f-videos').value = S.ent.videos
+  document.getElementById('f-inv-lbl').value = S.invLabel
+  document.getElementById('f-moneda').value = S.moneda
+  document.getElementById('f-monto').value = formatAmount(S.invMonto)
+  document.getElementById('f-iva').value = S.ivaIncluido ? 'incluido' : 'excluido'
+
+  document.querySelectorAll('.bsec').forEach(section => {
+    section.classList.toggle('is-open', section.dataset.section === S.sectionOpen)
+  })
+
+  txt('sum-tipo', clipSummary([S.titulo || TIPO_MAP[S.tipo], S.tipo ? 'listo para usar' : ''], 'Elegí tipo o plantilla'))
+  txt('sum-cliente', clipSummary([S.cliente, S.agencia, S.modalidad], 'Cliente, agencia y modalidad'))
+  txt('sum-evento', clipSummary([S.fechaEvento, S.horaInicio && S.horaFin ? `${S.horaInicio} - ${S.horaFin}` : (S.horaInicio || S.horaFin), S.duracion, S.ubicacion], 'Fechas, horario y ubicación'))
+  txt('sum-contexto', clipSummary([S.objetivo, S.derechos], 'Objetivo y condiciones base'))
+  txt('sum-crew', clipSummary([S.crew.size ? `${S.crew.size} seleccionado${S.crew.size > 1 ? 's' : ''}` : '', crewLabels().slice(0, 2).join(', ')], 'Definí el equipo'))
+  txt('sum-servicios', clipSummary([S.items.filter(item => item.nombre || item.detalle).length ? `${S.items.filter(item => item.nombre || item.detalle).length} ítem${S.items.filter(item => item.nombre || item.detalle).length > 1 ? 's' : ''}` : '', S.items.filter(item => item.nombre).slice(0, 2).map(item => item.nombre).join(', ')], 'Agregá el alcance del servicio'))
+  const photoFormats = FOTO_FORMATS.filter(format => S.ent.fotoFormats.has(format.id)).map(format => format.label).join(', ')
+  const videoFormats = VIDEO_FORMATS.filter(format => S.ent.videoFormats.has(format.id)).map(format => format.label).join(', ')
+  txt('sum-entregables', clipSummary([S.ent.fotos, S.ent.videos, photoFormats ? `Fotos: ${photoFormats}` : '', videoFormats ? `Videos: ${videoFormats}` : ''], 'Fotos, videos y formatos'))
+  txt('sum-inversion', clipSummary([S.invLabel, S.invMonto ? `${S.moneda} ${formatAmount(S.invMonto)}` : '', S.invMonto ? (S.ivaIncluido ? 'IVA incluido' : 'Sin IVA') : ''], 'Monto y forma de cobro'))
+  txt('sum-observaciones', clipSummary([S.obsOn.size ? `${S.obsOn.size} preset${S.obsOn.size > 1 ? 's' : ''}` : '', S.obsCustom.filter(o => o.trim()).length ? `${S.obsCustom.filter(o => o.trim()).length} nota${S.obsCustom.filter(o => o.trim()).length > 1 ? 's' : ''}` : ''], 'Pagos, plazos y notas finales'))
+
+  // Tipo buttons
+  document.querySelectorAll('.tipo-btn').forEach(btn => {
+    btn.classList.toggle('on', btn.dataset.tipo === S.tipo)
+  })
+
+  document.getElementById('template-chips').innerHTML = TEMPLATE_PRESETS.map(t =>
+    `<button class="pchip" onclick="applyTemplate('${t.id}')">${t.label}</button>`
+  ).join('')
+
+  document.getElementById('bg-chips').innerHTML = DOCUMENT_BACKGROUNDS.map(bg =>
+    `<button class="bg-chip${S.docBg === bg.id ? ' on' : ''}" type="button" onclick="setDocBg('${bg.id}')">
+      <span class="bg-swatch" style="background:${bg.color}"></span>
+      <span>${bg.label}</span>
+    </button>`
+  ).join('')
+
+  // Preset chips (based on tipo)
+  let presetHtml = ''
+  if (S.tipo) {
+    presetHtml = PRESETS[S.tipo].map((p, i) =>
+      `<button class="pchip" onclick="addPreset('${S.tipo}',${i})">${p.label}</button>`
+    ).join('')
+  } else {
+    const all = []
+    for (const [tipo, items] of Object.entries(PRESETS))
+      items.forEach((p, i) => all.push({ tipo, i, label: p.label }))
+    presetHtml = all.slice(0,12).map(p =>
+      `<button class="pchip" onclick="addPreset('${p.tipo}',${p.i})">${p.label}</button>`
+    ).join('')
+  }
+  document.getElementById('preset-chips').innerHTML = presetHtml
+
+  // Crew chips
+  document.getElementById('crew-chips').innerHTML = CREW_OPTIONS.map(c =>
+    `<button class="chip${S.crew.has(c.id) ? ' on' : ''}" onclick="toggleCrew('${c.id}')">${c.label}</button>`
+  ).join('')
+  document.getElementById('crew-other-row').innerHTML = S.crew.has('otro') ? `
+    <div class="field">
+      <label class="fl" for="f-crew-other">Especificar otro</label>
+      <input class="fi" id="f-crew-other" type="text" value="${escAttr(S.crewOther)}"
+        placeholder="Ej: Dron, iluminador, sonidista..."
+        oninput="setCrewOther(this.value)">
+    </div>
+  ` : ''
+
+  // Formatos de foto
+  document.getElementById('foto-format-chips').innerHTML = FOTO_FORMATS.map(v =>
+    `<button class="chip${S.ent.fotoFormats.has(v.id) ? ' on' : ''}" onclick="toggleEntFormat('photo','${v.id}')">${v.label}</button>`
+  ).join('')
+
+  // Formatos de video
+  document.getElementById('video-format-chips').innerHTML = VIDEO_FORMATS.map(v =>
+    `<button class="chip${S.ent.videoFormats.has(v.id) ? ' on' : ''}" onclick="toggleEntFormat('video','${v.id}')">${v.label}</button>`
+  ).join('')
+
+  const iva = calcIva(S.invMonto, S.ivaIncluido)
+  const ivaBase = iva.base !== null ? `${S.moneda} ${formatAmount(String(iva.base))}` : '—'
+  const ivaMonto = iva.iva !== null ? `${S.moneda} ${formatAmount(String(iva.iva))}` : '—'
+  const ivaTotal = iva.total !== null ? `${S.moneda} ${formatAmount(String(iva.total))}` : '—'
+  document.getElementById('iva-calc').innerHTML = `
+    <div class="calc-row"><span class="calc-label">Base</span><span class="calc-value">${ivaBase}</span></div>
+    <div class="calc-row"><span class="calc-label">IVA 10%</span><span class="calc-value">${ivaMonto}</span></div>
+    <div class="calc-row"><span class="calc-label">Total</span><span class="calc-value">${ivaTotal}</span></div>
+  `
+
+  // Item cards
+  document.getElementById('items-list').innerHTML = S.items.map((item,i) => `
+    <div class="icard">
+      ${S.items.length > 1 ? `<button class="ibtn-x" onclick="removeItem(${i})">×</button>` : ''}
+      <div class="field">
+        <label class="fl">Nombre</label>
+        <input class="fi" type="text" value="${escAttr(item.nombre)}"
+          oninput="setItem(${i},'nombre',this.value)">
+      </div>
+      <div class="field">
+        <label class="fl">Detalle</label>
+        <textarea class="ft" rows="2"
+          oninput="setItem(${i},'detalle',this.value)">${esc(item.detalle)}</textarea>
+      </div>
+    </div>
+  `).join('')
+
+  // Obs presets
+  document.getElementById('obs-presets-list').innerHTML = OBS_PRESETS.map(o =>
+    `<div class="obs-toggle${S.obsOn.has(o.id) ? ' on' : ''}" onclick="toggleObs('${o.id}')">
+      <div class="obs-toggle-box"></div>
+      <span class="obs-toggle-txt">${o.text}</span>
+    </div>`
+  ).join('')
+
+  // Obs custom
+  document.getElementById('obs-custom-list').innerHTML = S.obsCustom.map((o,i) =>
+    `<div class="obs-custom-row">
+      <input class="fi" type="text" value="${escAttr(o)}" placeholder="Nota personalizada..."
+        oninput="setObs(${i},this.value)">
+      ${S.obsCustom.length > 1 ? `<button class="obs-x" onclick="removeObs(${i})">×</button>` : ''}
+    </div>`
+  ).join('')
+}
+
+// ─── Render document ────────────────────────────────
+function renderDoc() {
+  applyDocumentBackground()
+
+  // Title
+  const tipoLabel = S.tipo ? TIPO_MAP[S.tipo] : ''
+  const titleLabel = S.titulo || tipoLabel
+  txt('d-titulo', titleLabel)
+
+  // Meta rows
+  const metaRows = []
+  if (S.cliente)   metaRows.push(['Cliente',    S.cliente])
+  if (S.agencia)   metaRows.push(['Agencia',    S.agencia])
+  if (titleLabel)  metaRows.push(['Servicio',   titleLabel])
+  if (S.modalidad) metaRows.push(['Modalidad',  S.modalidad])
+  if (S.fechaEmision) metaRows.push(['Emisión', S.fechaEmision])
+  if (S.fechaEvento)  metaRows.push(['Evento',  S.fechaEvento])
+  if (S.horaInicio) metaRows.push(['Inicio',    S.horaInicio])
+  if (S.horaFin)   metaRows.push(['Fin',       S.horaFin])
+  if (S.duracion)  metaRows.push(['Duración',   S.duracion])
+  if (S.ivaIncluido) metaRows.push(['IVA', 'Incluido 10%'])
+  if (S.ubicacion) metaRows.push(['Ubicación',  S.ubicacion])
+  if (S.derechos)  metaRows.push(['Derechos',   S.derechos])
+  if (S.crew.size) {
+    const crewList = crewLabels().join(', ')
+    metaRows.push(['Crew', crewList])
+  }
+  html('d-meta', metaRows.map(([l,v]) =>
+    `<div class="meta-row"><span class="meta-lbl">${l}</span><span class="meta-val">${esc(v)}</span></div>`
+  ).join(''))
+
+  const hasObjetivo = !!S.objetivo.trim()
+  document.getElementById('d-obj-section').style.display = hasObjetivo ? '' : 'none'
+  html('d-objetivo', esc(S.objetivo))
+
+  // Services
+  html('d-services', S.items.map((item,i) =>
+    item.nombre || item.detalle ? `
+      <div class="svc-item">
+        <span class="svc-num">${pad(i+1)}</span>
+        <div>
+          <p class="svc-name">${esc(item.nombre)}</p>
+          <p class="svc-detail">${esc(item.detalle)}</p>
+        </div>
+      </div>` : ''
+  ).join(''))
+
+  // Entregables
+  const hasEnt = S.ent.fotos || S.ent.videos || S.ent.fotoFormats.size || S.ent.videoFormats.size
+  document.getElementById('d-ent-section').style.display = hasEnt ? '' : 'none'
+  if (hasEnt) {
+    const entParts = []
+    if (S.ent.fotos)      entParts.push(`<div class="ent-item"><p class="ent-lbl">Fotografías</p><p class="ent-val">${esc(S.ent.fotos)}</p></div>`)
+    if (S.ent.videos)     entParts.push(`<div class="ent-item"><p class="ent-lbl">Videos</p><p class="ent-val">${esc(S.ent.videos)}</p></div>`)
+    if (S.ent.fotoFormats.size) {
+      const formats = FOTO_FORMATS.filter(v => S.ent.fotoFormats.has(v.id)).map(v => v.label).join(', ')
+      entParts.push(`<div class="ent-item"><p class="ent-lbl">Formatos de foto</p><p class="ent-val">${esc(formats)}</p></div>`)
+    }
+    if (S.ent.videoFormats.size) {
+      const formats = VIDEO_FORMATS.filter(v => S.ent.videoFormats.has(v.id)).map(v => v.label).join(', ')
+      entParts.push(`<div class="ent-item"><p class="ent-lbl">Formatos de video</p><p class="ent-val">${esc(formats)}</p></div>`)
+    }
+    html('d-entregables', entParts.join(''))
+  }
+
+  // Inversión
+  txt('d-inv-lbl', S.invLabel)
+  txt('d-inv-price', S.invMonto ? `${S.moneda} ${formatAmount(S.invMonto)}` : '')
+
+  // Observaciones: presets activos + custom
+  const obsLines = [
+    ...OBS_PRESETS.filter(o => S.obsOn.has(o.id)).map(o => o.text),
+    ...S.obsCustom.filter(o => o.trim())
+  ]
+  html('d-obs', obsLines.map(o => `<p class="obs-doc-item">— ${esc(o)}</p>`).join(''))
+
+  // Footer
+  txt('d-footer', titleLabel ? `Presupuesto ${titleLabel}` : 'Presupuesto')
+
+  scaleDoc()
+}
+
+// ─── Scale preview ───────────────────────────────────
+function scaleDoc() {
+  const preview = document.getElementById('preview')
+  const outer   = document.getElementById('doc-outer')
+  const inner   = document.getElementById('doc-inner')
+  const docW    = 595
+  const docH    = inner.offsetHeight || 842
+  const avail   = preview.clientWidth - 80
+  const fitScale = Math.min(1, avail / docW)
+  const scale   = fitScale * previewZoom
+  inner.style.transform       = `scale(${scale})`
+  inner.style.transformOrigin = 'top left'
+  outer.style.width  = `${docW * scale}px`
+  outer.style.height = `${docH * scale}px`
+}
+
+function exportPDF() { window.print() }
+
+// ─── Init ─────────────────────────────────────────────
+document.getElementById('f-fecha-emision').value = todayISO()
+applyTheme(getPreferredTheme())
+previewZoom = getSavedZoom()
+document.getElementById('auth-form').addEventListener('submit', handleAuthSubmit)
+document.getElementById('auth-switch').addEventListener('click', toggleAuthMode)
+renderBuilder()
+renderDoc()
+initAuth()
+window.addEventListener('resize', scaleDoc)
+document.getElementById('preview').addEventListener('wheel', (event) => {
+  if (!event.ctrlKey && !event.metaKey) return
+  event.preventDefault()
+  const direction = event.deltaY > 0 ? -1 : 1
+  adjustPreviewZoom(direction * ZOOM_STEP)
+}, { passive: false })
+</script>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</body>
+</html>
