@@ -2951,11 +2951,21 @@ async function loadBudgets() {
   const client = getSupabaseClient()
   if (!client || !currentUser) return
   setMessage('budget-message', 'Cargando presupuestos...')
-  const { data, error } = await client
+  const baseSelect = 'id,title,client,budget_type,issue_date,event_date,amount,currency,payload,updated_at,created_at'
+  let { data, error } = await client
     .from('budgets')
-    .select('id,internal_number,title,client,budget_type,issue_date,event_date,amount,currency,payload,updated_at,created_at')
+    .select(`id,internal_number,title,client,budget_type,issue_date,event_date,amount,currency,payload,updated_at,created_at`)
     .order('updated_at', { ascending: false })
     .limit(200)
+  if (error && String(error.message || '').includes('internal_number')) {
+    const fallback = await client
+      .from('budgets')
+      .select(baseSelect)
+      .order('updated_at', { ascending: false })
+      .limit(200)
+    data = fallback.data
+    error = fallback.error
+  }
   if (error) {
     setMessage('budget-message', error.message, true)
     return
