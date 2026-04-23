@@ -20,6 +20,7 @@
     body[data-theme="dark"] .builder,
     body[data-theme="dark"] .preview,
     body[data-theme="dark"] .archive-panel,
+    body[data-theme="dark"] .internal-panel,
     body[data-theme="dark"] .auth-shell {
       --color-ink: #f5f3ee;
       --color-muted: #a9a39a;
@@ -52,7 +53,8 @@
       background: #0f0e0c;
     }
 
-    body[data-theme="dark"] .archive-panel {
+    body[data-theme="dark"] .archive-panel,
+    body[data-theme="dark"] .internal-panel {
       background: #0f0e0c;
     }
 
@@ -229,6 +231,11 @@
       background: #171512;
     }
 
+    body[data-theme="dark"] .internal-sidebar {
+      background: #171512;
+      border-left-color: rgba(245, 243, 238, 0.14);
+    }
+
     body[data-theme="dark"] .archive-stats {
       border-color: rgba(245, 243, 238, 0.14);
     }
@@ -249,6 +256,34 @@
     body[data-theme="dark"] .arc-card {
       background: rgba(245, 243, 238, 0.035);
       border-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .internal-sheet,
+    body[data-theme="dark"] .internal-summary {
+      background: rgba(245, 243, 238, 0.035);
+      border-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .internal-toolbar,
+    body[data-theme="dark"] .internal-table th,
+    body[data-theme="dark"] .internal-table td,
+    body[data-theme="dark"] .internal-summary-row.is-total,
+    body[data-theme="dark"] .internal-remove {
+      border-color: rgba(245, 243, 238, 0.14);
+    }
+
+    body[data-theme="dark"] .internal-toolbar-title,
+    body[data-theme="dark"] .internal-money,
+    body[data-theme="dark"] .internal-summary-title,
+    body[data-theme="dark"] .internal-summary-row strong {
+      color: #f5f3ee;
+    }
+
+    body[data-theme="dark"] .internal-copy,
+    body[data-theme="dark"] .internal-table th,
+    body[data-theme="dark"] .internal-muted,
+    body[data-theme="dark"] .internal-summary-row {
+      color: #c6bfb5;
     }
 
     body[data-theme="dark"] .arc-empty {
@@ -1232,6 +1267,195 @@
       white-space: nowrap;
     }
 
+    .internal-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      flex-direction: column;
+      background: var(--bg-a);
+    }
+
+    .internal-panel.is-open {
+      display: flex;
+    }
+
+    .internal-copy {
+      max-width: 420px;
+      margin: 0 0 var(--space-16);
+      color: var(--muted);
+      font-size: var(--font-size-body);
+      line-height: var(--line-body);
+    }
+
+    .internal-layout {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) 320px;
+    }
+
+    .internal-main {
+      min-width: 0;
+      padding: var(--space-24);
+      overflow: auto;
+    }
+
+    .internal-sheet {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .internal-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-12);
+      padding: var(--space-16);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .internal-toolbar-title {
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: var(--font-size-ui);
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+    }
+
+    .internal-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .internal-table th,
+    .internal-table td {
+      padding: var(--space-10) var(--space-12);
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .internal-table th {
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+      font-weight: 400;
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+    }
+
+    .internal-table td.is-number,
+    .internal-table th.is-number {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .internal-table td.is-actions,
+    .internal-table th.is-actions {
+      width: 46px;
+      text-align: center;
+    }
+
+    .internal-table .fi {
+      min-width: 88px;
+    }
+
+    .internal-table .ft {
+      min-width: 180px;
+    }
+
+    .internal-money {
+      color: var(--ink);
+      font-size: var(--font-size-body);
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .internal-muted {
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+    }
+
+    .internal-remove {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: var(--font);
+      transition: color 100ms, border-color 100ms, background 100ms;
+    }
+
+    .internal-remove:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .internal-sidebar {
+      padding: var(--space-24);
+      border-left: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.08);
+      overflow: auto;
+    }
+
+    .internal-summary {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.12);
+      padding: var(--space-16);
+    }
+
+    .internal-summary-title {
+      margin: 0 0 var(--space-12);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: var(--font-size-ui);
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+    }
+
+    .internal-summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-12);
+      margin-top: var(--space-8);
+      color: var(--muted);
+      font-size: var(--font-size-body);
+      line-height: 1.4;
+    }
+
+    .internal-summary-row:first-of-type {
+      margin-top: 0;
+    }
+
+    .internal-summary-row strong {
+      color: var(--ink);
+      font-weight: 400;
+    }
+
+    .internal-summary-row.is-total {
+      margin-top: var(--space-14);
+      padding-top: var(--space-12);
+      border-top: 1px solid var(--border);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: var(--font-size-body);
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+    }
+
+    .internal-message {
+      min-height: 16px;
+      margin: 0 0 var(--space-12);
+      color: var(--muted);
+      font-size: var(--font-size-ui);
+      line-height: var(--line-body);
+    }
+
+    .internal-message.is-error {
+      color: var(--ink);
+    }
+
     @media (max-width: 920px) {
       .builder {
         width: 330px;
@@ -1397,6 +1621,29 @@
         grid-template-columns: 1fr;
       }
 
+      .internal-layout {
+        display: block;
+      }
+
+      .internal-main,
+      .internal-sidebar {
+        padding: var(--space-16) var(--space-12);
+      }
+
+      .internal-sidebar {
+        border-left: 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .internal-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .internal-table {
+        min-width: 860px;
+      }
+
       .bsec-head {
         grid-template-columns: 24px minmax(0, 1fr) 16px;
         gap: var(--space-8);
@@ -1462,6 +1709,7 @@
       .builder { display: none !important; }
       .preview { display: block; padding: 0; background: white; overflow: visible; }
       .archive-panel { display: none !important; }
+      .internal-panel { display: none !important; }
       .doc-outer, .doc-inner { transform: none !important; width: auto !important; height: auto !important; }
       .sheet { width: 100%; min-height: 100vh; }
       @page { size: A4; margin: 0; }
@@ -1527,6 +1775,7 @@
             <div class="budget-actions">
               <button class="btn-export" type="button" onclick="exportPDF()">Exportar PDF</button>
               <button class="btn-add" id="budget-save" type="button" onclick="saveBudget()">Guardar</button>
+              <button class="btn-add" type="button" onclick="openInternalView()">Planilla interna →</button>
               <button class="btn-add" type="button" onclick="openArchiveView()">Ver presupuestos →</button>
               <button class="btn-add" type="button" onclick="newBudget()">Nuevo</button>
             </div>
@@ -1912,6 +2161,67 @@
     </main>
   </div>
 </div>
+<div id="internal-panel" class="internal-panel" role="dialog" aria-modal="true" aria-labelledby="internal-heading" aria-hidden="true">
+  <div class="archive-header">
+    <span class="archive-logo brand-logo brand-logo-wordmark" role="img" aria-label="The Crow">
+      <img src="./assets/logo/crow-beige-logotipo.svg" alt="">
+    </span>
+    <span class="archive-sep">/</span>
+    <span class="archive-heading" id="internal-heading">Planilla interna</span>
+    <button class="archive-close" id="internal-close" type="button" onclick="closeInternalView()">← Volver al editor</button>
+  </div>
+  <div class="internal-layout">
+    <main class="internal-main">
+      <p class="internal-copy">Vista interna para armar costos, cantidades y margen antes de definir el monto final que se ve en el presupuesto.</p>
+      <div class="internal-sheet">
+        <div class="internal-toolbar">
+          <span class="internal-toolbar-title">Costeo base</span>
+          <button class="btn-add" type="button" onclick="addInternalRow()">+ Agregar fila</button>
+        </div>
+        <div style="overflow:auto">
+          <table class="internal-table">
+            <thead>
+              <tr>
+                <th>Concepto</th>
+                <th>Detalle</th>
+                <th class="is-number">Costo unit.</th>
+                <th class="is-number">Cant.</th>
+                <th class="is-number">Margen %</th>
+                <th class="is-number">Costo</th>
+                <th class="is-number">Venta sug.</th>
+                <th class="is-actions"></th>
+              </tr>
+            </thead>
+            <tbody id="internal-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+    <aside class="internal-sidebar">
+      <div class="field">
+        <label class="fl" for="internal-overhead">Ajuste fijo</label>
+        <input class="fi" id="internal-overhead" type="text" inputmode="numeric" placeholder="0"
+          oninput="setInternalMeta('overhead', this.value)">
+      </div>
+      <div class="field">
+        <label class="fl" for="internal-discount">Descuento / ajuste manual</label>
+        <input class="fi" id="internal-discount" type="text" inputmode="numeric" placeholder="0"
+          oninput="setInternalMeta('discount', this.value)">
+      </div>
+      <div class="field">
+        <label class="fl" for="internal-notes">Notas internas</label>
+        <textarea class="ft" id="internal-notes" rows="6" placeholder="Referencias, proveedor, supuestos..."
+          oninput="setInternalMeta('notes', this.value)"></textarea>
+      </div>
+      <p class="internal-message" id="internal-message"></p>
+      <div class="internal-summary" id="internal-summary"></div>
+      <div class="budget-actions" style="margin-top: var(--space-16);">
+        <button class="btn-export" type="button" onclick="applyInternalSuggestedTotal()">Usar total sugerido</button>
+        <button class="btn-add" type="button" onclick="saveBudgetFromInternal()">Guardar presupuesto</button>
+      </div>
+    </aside>
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.104.0/dist/umd/supabase.min.js"></script>
 <script>
 // ─── Data ───────────────────────────────────────────
@@ -2209,6 +2519,19 @@ const OBS_PRESETS = [
   { id: 'wifi',         text: 'Se requiere buena señal o conectividad estable para la cobertura en tiempo real.' }
 ]
 
+function createInternalRow() {
+  return { concepto: '', detalle: '', costo: '', cantidad: '1', margen: '0' }
+}
+
+function defaultInternalState() {
+  return {
+    rows: [createInternalRow()],
+    overhead: '',
+    discount: '',
+    notes: ''
+  }
+}
+
 // ─── State ──────────────────────────────────────────
 const S = {
   tipo:     '',
@@ -2235,6 +2558,7 @@ const S = {
   invMonto: '',
   moneda:   '₲',
   ivaIncluido: false,
+  internal: defaultInternalState(),
   docBg: 'white',
   obsOn:    new Set(),
   obsCustom:['']
@@ -2252,6 +2576,7 @@ let budgetArchive = []
 let budgetFilter = { query: '', tipo: '' }
 let builderView = 'editor'
 let archiveReturnFocus = null
+let internalReturnFocus = null
 
 // ─── Auth ───────────────────────────────────────────
 function getSupabaseClient() {
@@ -2410,6 +2735,42 @@ function calcIva(amount, incluido) {
   const iva = Math.round(n * 0.1)
   return { base: n, iva, total: n + iva }
 }
+function parseFlexibleNumber(value) {
+  const normalized = String(value || '').trim().replace(/\s+/g, '').replace(',', '.')
+  if (!normalized) return null
+  const n = Number(normalized)
+  return Number.isFinite(n) ? n : null
+}
+function roundMoney(value) {
+  return Math.round(Number(value) || 0)
+}
+function formatMoneyValue(value, currency = S.moneda) {
+  if (!Number.isFinite(value)) return '—'
+  const rounded = roundMoney(value)
+  const sign = rounded < 0 ? '-' : ''
+  return `${sign}${currency} ${formatAmount(String(Math.abs(rounded)))}`
+}
+function internalRowTotals(row) {
+  const unitCost = amountNumber(row.costo) || 0
+  const qty = parseFlexibleNumber(row.cantidad)
+  const margin = parseFlexibleNumber(row.margen)
+  const quantity = qty !== null ? qty : 0
+  const marginPct = margin !== null ? margin : 0
+  const costTotal = unitCost * quantity
+  const saleTotal = costTotal * (1 + marginPct / 100)
+  return { costTotal, saleTotal, quantity, marginPct, unitCost }
+}
+function internalTotals() {
+  const rows = Array.isArray(S.internal?.rows) ? S.internal.rows : []
+  const baseCost = rows.reduce((sum, row) => sum + internalRowTotals(row).costTotal, 0)
+  const suggestedRows = rows.reduce((sum, row) => sum + internalRowTotals(row).saleTotal, 0)
+  const overhead = amountNumber(S.internal?.overhead) || 0
+  const discount = amountNumber(S.internal?.discount) || 0
+  const suggestedNet = suggestedRows + overhead - discount
+  const iva = S.ivaIncluido ? 0 : Math.round(suggestedNet * 0.1)
+  const totalWithIva = suggestedNet + iva
+  return { baseCost, suggestedRows, overhead, discount, suggestedNet, iva, totalWithIva }
+}
 function pad(n) { return String(n).padStart(2,'0') }
 function toISO(display) {
   if (!display) return ''
@@ -2562,6 +2923,29 @@ function closeArchiveView() {
   archiveReturnFocus = null
 }
 
+function openInternalView() {
+  const panel = document.getElementById('internal-panel')
+  if (!panel) return
+  internalReturnFocus = document.activeElement
+  panel.classList.add('is-open')
+  panel.removeAttribute('aria-hidden')
+  setInternalMessage('')
+  renderInternalSheet()
+  const focusTarget = document.querySelector('#internal-panel .fi, #internal-close')
+  requestAnimationFrame(() => focusTarget?.focus())
+}
+
+function closeInternalView() {
+  const panel = document.getElementById('internal-panel')
+  if (!panel) return
+  panel.classList.remove('is-open')
+  panel.setAttribute('aria-hidden', 'true')
+  if (internalReturnFocus?.focus) {
+    internalReturnFocus.focus()
+  }
+  internalReturnFocus = null
+}
+
 function setTipo(t) {
   S.tipo = S.tipo === t ? '' : t
   if (S.tipo && !S.titulo) {
@@ -2583,7 +2967,12 @@ function toggleCrew(id) {
 function setCrewOther(value) {
   S.crewOther = value
   if (value.trim()) S.crew.add('otro')
-  renderBuilder(); renderDoc()
+  updateCrewSummary()
+  renderDoc()
+}
+
+function updateCrewSummary() {
+  txt('sum-crew', clipSummary([S.crew.size ? `${S.crew.size} seleccionado${S.crew.size > 1 ? 's' : ''}` : '', crewLabels().slice(0, 2).join(', ')], 'Definí el equipo'))
 }
 
 function toggleEntFormat(kind, id) {
@@ -2607,6 +2996,101 @@ function addPreset(tipo, idx) {
   const p = PRESETS[tipo][idx]
   S.items.push({ nombre: p.nombre, detalle: p.detalle })
   renderBuilder(); renderDoc()
+}
+
+function setInternalRow(index, field, value) {
+  const row = S.internal.rows[index]
+  if (!row) return
+  row[field] = field === 'costo' ? normalizeAmount(value) : value
+  rerenderInternalSheetPreservingFocus()
+}
+
+function addInternalRow() {
+  S.internal.rows.push(createInternalRow())
+  renderInternalSheet()
+}
+
+function removeInternalRow(index) {
+  if (S.internal.rows.length === 1) {
+    S.internal.rows[0] = createInternalRow()
+  } else {
+    S.internal.rows.splice(index, 1)
+  }
+  renderInternalSheet()
+}
+
+function setInternalMeta(field, value) {
+  S.internal[field] = field === 'notes' ? value : normalizeAmount(value)
+  rerenderInternalSheetPreservingFocus()
+}
+
+function useInternalSuggestedTotal() {
+  const totals = internalTotals()
+  const amount = Math.max(0, roundMoney(S.ivaIncluido ? totals.suggestedNet : totals.totalWithIva))
+  S.invMonto = String(amount)
+  renderBuilder()
+  renderDoc()
+  renderInternalSheet()
+  setMessage('budget-message', 'Se copió el total sugerido desde la planilla interna.')
+}
+
+function applyInternalSuggestedTotal() {
+  useInternalSuggestedTotal()
+  S.sectionOpen = 'inversion'
+  renderBuilder()
+  closeInternalView()
+}
+
+async function saveBudgetFromInternal() {
+  setInternalMessage(currentBudgetId ? 'Actualizando presupuesto...' : 'Guardando presupuesto...')
+  const saved = await persistBudget({
+    startMessage: currentBudgetId ? 'Actualizando presupuesto...' : 'Guardando presupuesto...',
+    doneMessage: 'Presupuesto guardado.'
+  })
+  if (!saved) {
+    const globalMessage = document.getElementById('budget-message')?.textContent || 'No se pudo guardar.'
+    setInternalMessage(globalMessage, true)
+    return
+  }
+  setInternalMessage('Presupuesto guardado.')
+  closeInternalView()
+}
+
+function getInternalFocusSnapshot() {
+  const active = document.activeElement
+  if (!(active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement)) return null
+  if (!document.getElementById('internal-panel')?.contains(active)) return null
+  return {
+    id: active.id || '',
+    key: active.dataset.internalKey || '',
+    start: active.selectionStart,
+    end: active.selectionEnd
+  }
+}
+
+function restoreInternalFocus(snapshot) {
+  if (!snapshot) return
+  const target = snapshot.id
+    ? document.getElementById(snapshot.id)
+    : document.querySelector(`[data-internal-key="${snapshot.key}"]`)
+  if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement)) return
+  target.focus()
+  if (typeof snapshot.start === 'number' && typeof snapshot.end === 'number') {
+    target.setSelectionRange(snapshot.start, snapshot.end)
+  }
+}
+
+function rerenderInternalSheetPreservingFocus() {
+  const snapshot = getInternalFocusSnapshot()
+  renderInternalSheet()
+  restoreInternalFocus(snapshot)
+}
+
+function setInternalMessage(message, isError = false) {
+  const el = document.getElementById('internal-message')
+  if (!el) return
+  el.textContent = message || ''
+  el.classList.toggle('is-error', isError)
 }
 
 function crewLabels() {
@@ -2669,6 +3153,46 @@ function setObs(i, v) { S.obsCustom[i] = v; renderDoc() }
 function addObs() { S.obsCustom.push(''); renderBuilder(); renderDoc() }
 function removeObs(i) { S.obsCustom.splice(i,1); renderBuilder(); renderDoc() }
 
+function renderInternalSheet() {
+  const rowsEl = document.getElementById('internal-rows')
+  const summaryEl = document.getElementById('internal-summary')
+  if (!rowsEl || !summaryEl) return
+
+  const rows = Array.isArray(S.internal.rows) && S.internal.rows.length ? S.internal.rows : [createInternalRow()]
+  S.internal.rows = rows
+  rowsEl.innerHTML = rows.map((row, index) => {
+    const totals = internalRowTotals(row)
+    return `
+      <tr>
+        <td><input class="fi" type="text" data-internal-key="row-${index}-concepto" value="${escAttr(row.concepto)}" placeholder="Ej: Cámara, edición, traslado" oninput="setInternalRow(${index}, 'concepto', this.value)"></td>
+        <td><textarea class="ft" rows="2" data-internal-key="row-${index}-detalle" placeholder="Detalle interno" oninput="setInternalRow(${index}, 'detalle', this.value)">${row.detalle || ''}</textarea></td>
+        <td class="is-number"><input class="fi" type="text" inputmode="numeric" data-internal-key="row-${index}-costo" value="${escAttr(formatAmount(row.costo))}" placeholder="0" oninput="setInternalRow(${index}, 'costo', this.value)"></td>
+        <td class="is-number"><input class="fi" type="text" inputmode="decimal" data-internal-key="row-${index}-cantidad" value="${escAttr(row.cantidad)}" placeholder="1" oninput="setInternalRow(${index}, 'cantidad', this.value)"></td>
+        <td class="is-number"><input class="fi" type="text" inputmode="decimal" data-internal-key="row-${index}-margen" value="${escAttr(row.margen)}" placeholder="0" oninput="setInternalRow(${index}, 'margen', this.value)"></td>
+        <td class="is-number"><div class="internal-money">${formatMoneyValue(totals.costTotal)}</div></td>
+        <td class="is-number"><div class="internal-money">${formatMoneyValue(totals.saleTotal)}</div><div class="internal-muted">${totals.marginPct || 0}% margen</div></td>
+        <td class="is-actions"><button class="internal-remove" type="button" onclick="removeInternalRow(${index})">×</button></td>
+      </tr>
+    `
+  }).join('')
+
+  document.getElementById('internal-overhead').value = formatAmount(S.internal.overhead)
+  document.getElementById('internal-discount').value = formatAmount(S.internal.discount)
+  document.getElementById('internal-notes').value = S.internal.notes || ''
+
+  const totals = internalTotals()
+  summaryEl.innerHTML = `
+    <p class="internal-summary-title">Resumen</p>
+    <div class="internal-summary-row"><span>Costo base</span><strong>${formatMoneyValue(totals.baseCost)}</strong></div>
+    <div class="internal-summary-row"><span>Venta sugerida por filas</span><strong>${formatMoneyValue(totals.suggestedRows)}</strong></div>
+    <div class="internal-summary-row"><span>Ajuste fijo</span><strong>${formatMoneyValue(totals.overhead)}</strong></div>
+    <div class="internal-summary-row"><span>Descuento</span><strong>${formatMoneyValue(totals.discount)}</strong></div>
+    <div class="internal-summary-row"><span>Neto sugerido</span><strong>${formatMoneyValue(totals.suggestedNet)}</strong></div>
+    <div class="internal-summary-row"><span>IVA estimado</span><strong>${formatMoneyValue(totals.iva)}</strong></div>
+    <div class="internal-summary-row is-total"><span>Total sugerido</span><strong>${formatMoneyValue(S.ivaIncluido ? totals.suggestedNet : totals.totalWithIva)}</strong></div>
+  `
+}
+
 // ─── Budgets ────────────────────────────────────────
 function serializeBudgetState() {
   return {
@@ -2700,6 +3224,12 @@ function serializeBudgetState() {
     invMonto: S.invMonto,
     moneda: S.moneda,
     ivaIncluido: S.ivaIncluido,
+    internal: {
+      rows: S.internal.rows.map(row => ({ ...row })),
+      overhead: S.internal.overhead,
+      discount: S.internal.discount,
+      notes: S.internal.notes
+    },
     docBg: S.docBg,
     obsOn: [...S.obsOn],
     obsCustom: [...S.obsCustom]
@@ -2738,6 +3268,21 @@ function restoreBudgetState(payload = {}) {
   S.invMonto = payload.invMonto || ''
   S.moneda = payload.moneda || '₲'
   S.ivaIncluido = !!payload.ivaIncluido
+  const internal = payload.internal || {}
+  S.internal = {
+    rows: Array.isArray(internal.rows) && internal.rows.length
+      ? internal.rows.map(row => ({
+          concepto: row.concepto || '',
+          detalle: row.detalle || '',
+          costo: normalizeAmount(row.costo),
+          cantidad: row.cantidad || '1',
+          margen: row.margen || '0'
+        }))
+      : [createInternalRow()],
+    overhead: normalizeAmount(internal.overhead),
+    discount: normalizeAmount(internal.discount),
+    notes: internal.notes || ''
+  }
   S.docBg = payload.docBg || 'white'
   S.obsOn = new Set(Array.isArray(payload.obsOn) ? payload.obsOn : [])
   S.obsCustom = Array.isArray(payload.obsCustom) && payload.obsCustom.length ? [...payload.obsCustom] : ['']
@@ -3105,7 +3650,7 @@ function renderBuilder() {
   txt('sum-cliente', clipSummary([S.cliente, S.agencia, S.modalidad], 'Cliente, agencia y modalidad'))
   txt('sum-evento', clipSummary([S.fechaEvento, S.horaInicio && S.horaFin ? `${S.horaInicio} - ${S.horaFin}` : (S.horaInicio || S.horaFin), S.duracion, S.ubicacion], 'Fechas, horario y ubicación'))
   txt('sum-contexto', clipSummary([S.objetivo, S.derechos], 'Objetivo y condiciones base'))
-  txt('sum-crew', clipSummary([S.crew.size ? `${S.crew.size} seleccionado${S.crew.size > 1 ? 's' : ''}` : '', crewLabels().slice(0, 2).join(', ')], 'Definí el equipo'))
+  updateCrewSummary()
   txt('sum-servicios', clipSummary([S.items.filter(item => item.nombre || item.detalle).length ? `${S.items.filter(item => item.nombre || item.detalle).length} ítem${S.items.filter(item => item.nombre || item.detalle).length > 1 ? 's' : ''}` : '', S.items.filter(item => item.nombre).slice(0, 2).map(item => item.nombre).join(', ')], 'Agregá el alcance del servicio'))
   const photoFormats = FOTO_FORMATS.filter(format => S.ent.fotoFormats.has(format.id)).map(format => format.label).join(', ')
   const videoFormats = VIDEO_FORMATS.filter(format => S.ent.videoFormats.has(format.id)).map(format => format.label).join(', ')
@@ -3211,6 +3756,8 @@ function renderBuilder() {
       ${S.obsCustom.length > 1 ? `<button class="obs-x" onclick="removeObs(${i})">×</button>` : ''}
     </div>`
   ).join('')
+
+  renderInternalSheet()
 }
 
 // ─── Render document ────────────────────────────────
@@ -3345,7 +3892,10 @@ renderDoc()
 initAuth()
 window.addEventListener('resize', scaleDoc)
 window.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeArchiveView()
+  if (event.key === 'Escape') {
+    closeArchiveView()
+    closeInternalView()
+  }
 })
 document.getElementById('preview').addEventListener('wheel', (event) => {
   if (!event.ctrlKey && !event.metaKey) return
