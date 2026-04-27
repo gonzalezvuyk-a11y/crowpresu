@@ -1928,6 +1928,11 @@
         </button>
         <div class="bsec-body">
           <div class="bsec-body-inner">
+            <div class="field">
+              <label class="fl" for="f-casting">Casting</label>
+              <input class="fi" id="f-casting" type="text" placeholder="Ej: 5 modelos: 2 adultos, 2 niños y 1 adulto mayor"
+                oninput="setCasting(this.value)">
+            </div>
             <div class="chip-row" id="crew-chips"></div>
             <div id="crew-other-row"></div>
           </div>
@@ -2550,6 +2555,7 @@ const S = {
   ubicacion:'',
   objetivo: '',
   derechos: '',
+  casting: '',
   crew:     new Set(),
   crewOther:'',
   items:    [{ nombre: '', detalle: '' }],
@@ -2971,8 +2977,14 @@ function setCrewOther(value) {
   renderDoc()
 }
 
+function setCasting(value) {
+  S.casting = value
+  updateCrewSummary()
+  renderDoc()
+}
+
 function updateCrewSummary() {
-  txt('sum-crew', clipSummary([S.crew.size ? `${S.crew.size} seleccionado${S.crew.size > 1 ? 's' : ''}` : '', crewLabels().slice(0, 2).join(', ')], 'Definí el equipo'))
+  txt('sum-crew', clipSummary([S.casting, S.crew.size ? `${S.crew.size} seleccionado${S.crew.size > 1 ? 's' : ''}` : '', crewLabels().slice(0, 2).join(', ')], 'Definí casting o equipo'))
 }
 
 function toggleEntFormat(kind, id) {
@@ -3211,6 +3223,7 @@ function serializeBudgetState() {
     ubicacion: S.ubicacion,
     objetivo: S.objetivo,
     derechos: S.derechos,
+    casting: S.casting,
     crew: [...S.crew],
     crewOther: S.crewOther,
     items: S.items.map(item => ({ ...item })),
@@ -3252,6 +3265,7 @@ function restoreBudgetState(payload = {}) {
   S.ubicacion = payload.ubicacion || ''
   S.objetivo = payload.objetivo || ''
   S.derechos = payload.derechos || ''
+  S.casting = payload.casting || ''
   S.crew = new Set(Array.isArray(payload.crew) ? payload.crew : [])
   S.crewOther = payload.crewOther || ''
   S.items = Array.isArray(payload.items) && payload.items.length
@@ -3633,6 +3647,7 @@ function renderBuilder() {
   document.getElementById('f-ubicacion').value = S.ubicacion
   document.getElementById('f-objetivo').value = S.objetivo
   document.getElementById('f-derechos').value = S.derechos
+  document.getElementById('f-casting').value = S.casting
   document.getElementById('f-fotos').value = S.ent.fotos
   document.getElementById('f-videos').value = S.ent.videos
   document.getElementById('f-inv-lbl').value = S.invLabel
@@ -3782,6 +3797,7 @@ function renderDoc() {
   if (S.duracion)  metaRows.push(['Duración',   S.duracion])
   if (S.ubicacion) metaRows.push(['Ubicación',  S.ubicacion])
   if (S.derechos)  metaRows.push(['Derechos',   S.derechos])
+  if (S.casting)   metaRows.push(['Casting',    S.casting])
   if (S.crew.size) {
     const crewList = crewLabels().join(', ')
     metaRows.push(['Crew', crewList])
