@@ -1044,6 +1044,58 @@
       margin-bottom: var(--space-32);
     }
 
+    .svc-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-16);
+    }
+
+    .svc-price {
+      flex: 0 0 auto;
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: var(--font-size-ui);
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .commercial-summary {
+      display: grid;
+      gap: var(--space-10);
+      margin: var(--space-20) 0 var(--space-28);
+      padding: var(--space-14) 0;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .commercial-summary[hidden] {
+      display: none;
+    }
+
+    .commercial-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-16);
+    }
+
+    .commercial-label {
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: var(--font-size-ui);
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+    }
+
+    .commercial-value {
+      color: var(--ink);
+      font-size: var(--font-size-body);
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
     .preview.is-zooming {
       cursor: zoom-in;
     }
@@ -1477,6 +1529,24 @@
 
       .preview {
         padding-inline: var(--space-24);
+      }
+
+      .svc-head {
+        display: block;
+      }
+
+      .svc-price {
+        display: block;
+        margin-top: var(--space-4);
+      }
+
+      .commercial-row {
+        display: block;
+      }
+
+      .commercial-value {
+        display: block;
+        margin-top: var(--space-4);
       }
     }
 
@@ -2033,6 +2103,11 @@
                 <div class="calc-box" id="iva-calc"></div>
               </div>
             </div>
+            <div class="field">
+              <label class="fl" for="f-package-discount">Descuento paquete completo</label>
+              <input class="fi" id="f-package-discount" type="text" inputmode="numeric" placeholder="0"
+                oninput="setPackageDiscount(this.value)">
+            </div>
           </div>
         </div>
       </section>
@@ -2095,6 +2170,8 @@
             <p class="sec-title">Entregables</p>
             <div class="entregables-grid" id="d-entregables"></div>
           </div>
+
+          <div class="commercial-summary" id="d-commercial-summary" hidden></div>
 
           <p class="sec-title">Inversión</p>
           <div class="inversion">
@@ -2558,10 +2635,11 @@ const S = {
   casting: '',
   crew:     new Set(),
   crewOther:'',
-  items:    [{ nombre: '', detalle: '' }],
+  items:    [{ nombre: '', detalle: '', precio: '' }],
   ent: { fotos: '', videos: '', fotoFormats: new Set(), videoFormats: new Set() },
   invLabel: '',
   invMonto: '',
+  packageDiscount: '',
   moneda:   '₲',
   ivaIncluido: false,
   internal: defaultInternalState(),
@@ -2741,6 +2819,25 @@ function calcIva(amount, incluido) {
   const iva = Math.round(n * 0.1)
   return { base: n, iva, total: n + iva }
 }
+function itemPriceTotal() {
+  return S.items.reduce((sum, item) => sum + (amountNumber(item.precio) || 0), 0)
+}
+function packageDiscountAmount() {
+  return amountNumber(S.packageDiscount) || 0
+}
+function effectiveInvestmentAmount() {
+  const manualAmount = amountNumber(S.invMonto)
+  if (manualAmount !== null) return manualAmount
+  const itemTotal = itemPriceTotal()
+  if (!itemTotal) return null
+  return Math.max(0, itemTotal - packageDiscountAmount())
+}
+function packageSavingsAmount() {
+  const itemTotal = itemPriceTotal()
+  const effectiveAmount = effectiveInvestmentAmount()
+  if (!itemTotal || effectiveAmount === null || effectiveAmount >= itemTotal) return 0
+  return itemTotal - effectiveAmount
+}
 function parseFlexibleNumber(value) {
   const normalized = String(value || '').trim().replace(/\s+/g, '').replace(',', '.')
   if (!normalized) return null
@@ -2867,22 +2964,27 @@ function applyDocumentBackground() {
 function set(k, v) { S[k] = v; renderDoc() }
 function setDocBg(id) {
   S.docBg = id
-  renderBuilder()
+  rerenderBuilderPreservingFocus()
   renderDoc()
 }
 function setMonto(value) {
   S.invMonto = normalizeAmount(value)
-  renderBuilder()
+  rerenderBuilderPreservingFocus()
+  renderDoc()
+}
+function setPackageDiscount(value) {
+  S.packageDiscount = normalizeAmount(value)
+  rerenderBuilderPreservingFocus()
   renderDoc()
 }
 function setMoneda(value) {
   S.moneda = value
-  renderBuilder()
+  rerenderBuilderPreservingFocus()
   renderDoc()
 }
 function setIvaIncluido(value) {
   S.ivaIncluido = value === 'incluido'
-  renderBuilder()
+  rerenderBuilderPreservingFocus()
   renderDoc()
 }
 function setHorario(which, value) {
@@ -2895,7 +2997,7 @@ function setHorario(which, value) {
     S.horaFin = fmtHora(value)
   }
   S.duracion = computeDuration(S.horaInicioRaw, S.horaFinRaw)
-  renderBuilder()
+  rerenderBuilderPreservingFocus()
   renderDoc()
 }
 
@@ -2952,13 +3054,48 @@ function closeInternalView() {
   internalReturnFocus = null
 }
 
+function getBuilderFocusSnapshot() {
+  const active = document.activeElement
+  if (!(active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement || active instanceof HTMLSelectElement)) return null
+  if (!document.getElementById('builder-panel')?.contains(active)) return null
+  return {
+    id: active.id || '',
+    key: active.dataset.builderKey || '',
+    start: 'selectionStart' in active ? active.selectionStart : null,
+    end: 'selectionEnd' in active ? active.selectionEnd : null
+  }
+}
+
+function restoreBuilderFocus(snapshot) {
+  if (!snapshot) return
+  const target = snapshot.id
+    ? document.getElementById(snapshot.id)
+    : document.querySelector(`[data-builder-key="${snapshot.key}"]`)
+  if (!(target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement)) return
+  target.focus()
+  if (
+    target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
+  ) {
+    if (typeof snapshot.start === 'number' && typeof snapshot.end === 'number') {
+      target.setSelectionRange(snapshot.start, snapshot.end)
+    }
+  }
+}
+
+function rerenderBuilderPreservingFocus() {
+  const snapshot = getBuilderFocusSnapshot()
+  renderBuilder()
+  restoreBuilderFocus(snapshot)
+}
+
 function setTipo(t) {
   S.tipo = S.tipo === t ? '' : t
   if (S.tipo && !S.titulo) {
     const el = document.getElementById('f-titulo')
     el.placeholder = TIPO_MAP[t]
   }
-  renderBuilder(); renderDoc()
+  rerenderBuilderPreservingFocus()
+  renderDoc()
 }
 
 function toggleCrew(id) {
@@ -2967,7 +3104,8 @@ function toggleCrew(id) {
   if (id === 'otro' && isActive) {
     S.crewOther = ''
   }
-  renderBuilder(); renderDoc()
+  rerenderBuilderPreservingFocus()
+  renderDoc()
 }
 
 function setCrewOther(value) {
@@ -2990,23 +3128,29 @@ function updateCrewSummary() {
 function toggleEntFormat(kind, id) {
   const set = kind === 'photo' ? S.ent.fotoFormats : S.ent.videoFormats
   set.has(id) ? set.delete(id) : set.add(id)
-  renderBuilder(); renderDoc()
+  rerenderBuilderPreservingFocus()
+  renderDoc()
 }
 
 function setEnt(k, v) { S.ent[k] = v; renderDoc() }
 
 function toggleObs(id) {
   S.obsOn.has(id) ? S.obsOn.delete(id) : S.obsOn.add(id)
-  renderBuilder(); renderDoc()
+  rerenderBuilderPreservingFocus()
+  renderDoc()
 }
 
-function setItem(i, f, v) { S.items[i][f] = v; renderDoc() }
-function addItem() { S.items.push({ nombre: '', detalle: '' }); renderBuilder(); renderDoc() }
+function setItem(i, f, v) {
+  S.items[i][f] = f === 'precio' ? normalizeAmount(v) : v
+  renderBuilderDerived()
+  renderDoc()
+}
+function addItem() { S.items.push({ nombre: '', detalle: '', precio: '' }); renderBuilder(); renderDoc() }
 function removeItem(i) { S.items.splice(i,1); renderBuilder(); renderDoc() }
 
 function addPreset(tipo, idx) {
   const p = PRESETS[tipo][idx]
-  S.items.push({ nombre: p.nombre, detalle: p.detalle })
+  S.items.push({ nombre: p.nombre, detalle: p.detalle, precio: '' })
   renderBuilder(); renderDoc()
 }
 
@@ -3226,7 +3370,7 @@ function serializeBudgetState() {
     casting: S.casting,
     crew: [...S.crew],
     crewOther: S.crewOther,
-    items: S.items.map(item => ({ ...item })),
+    items: S.items.map(item => ({ ...item, precio: item.precio || '' })),
     ent: {
       fotos: S.ent.fotos,
       videos: S.ent.videos,
@@ -3235,6 +3379,7 @@ function serializeBudgetState() {
     },
     invLabel: S.invLabel,
     invMonto: S.invMonto,
+    packageDiscount: S.packageDiscount,
     moneda: S.moneda,
     ivaIncluido: S.ivaIncluido,
     internal: {
@@ -3269,8 +3414,8 @@ function restoreBudgetState(payload = {}) {
   S.crew = new Set(Array.isArray(payload.crew) ? payload.crew : [])
   S.crewOther = payload.crewOther || ''
   S.items = Array.isArray(payload.items) && payload.items.length
-    ? payload.items.map(item => ({ nombre: item.nombre || '', detalle: item.detalle || '' }))
-    : [{ nombre: '', detalle: '' }]
+    ? payload.items.map(item => ({ nombre: item.nombre || '', detalle: item.detalle || '', precio: item.precio || '' }))
+    : [{ nombre: '', detalle: '', precio: '' }]
   const ent = payload.ent || {}
   S.ent = {
     fotos: ent.fotos || '',
@@ -3280,6 +3425,7 @@ function restoreBudgetState(payload = {}) {
   }
   S.invLabel = payload.invLabel || ''
   S.invMonto = payload.invMonto || ''
+  S.packageDiscount = payload.packageDiscount || ''
   S.moneda = payload.moneda || '₲'
   S.ivaIncluido = !!payload.ivaIncluido
   const internal = payload.internal || {}
@@ -3314,6 +3460,9 @@ function formatBudgetNumber(value) {
 
 function budgetPayloadForSave() {
   const payload = serializeBudgetState()
+  const calculatedItemsAmount = payload.items.reduce((sum, item) => sum + (amountNumber(item.precio) || 0), 0)
+  const packageDiscount = amountNumber(payload.packageDiscount) || 0
+  const manualAmount = amountNumber(payload.invMonto)
   return {
     user_id: currentUser.id,
     title: budgetTitle(payload),
@@ -3321,7 +3470,7 @@ function budgetPayloadForSave() {
     budget_type: payload.tipo || '',
     issue_date: toISO(payload.fechaEmision) || '',
     event_date: toISO(payload.fechaEvento) || '',
-    amount: amountNumber(payload.invMonto),
+    amount: manualAmount ?? (calculatedItemsAmount ? Math.max(0, calculatedItemsAmount - packageDiscount) : null),
     currency: payload.moneda || '₲',
     payload
   }
@@ -3628,6 +3777,35 @@ function newBudget() {
   setMessage('budget-message', 'Nuevo presupuesto listo.')
 }
 
+function renderBuilderDerived() {
+  txt('budget-save', currentBudgetId ? 'Actualizar' : 'Guardar')
+  renderBudgetList()
+  txt('sum-tipo', clipSummary([S.titulo || TIPO_MAP[S.tipo], S.tipo ? 'listo para usar' : ''], 'Elegí tipo o plantilla'))
+  txt('sum-cliente', clipSummary([S.cliente, S.agencia, S.modalidad], 'Cliente, agencia y modalidad'))
+  txt('sum-evento', clipSummary([S.fechaEvento, S.horaInicio && S.horaFin ? `${S.horaInicio} - ${S.horaFin}` : (S.horaInicio || S.horaFin), S.duracion, S.ubicacion], 'Fechas, horario y ubicación'))
+  txt('sum-contexto', clipSummary([S.objetivo, S.derechos], 'Objetivo y condiciones base'))
+  updateCrewSummary()
+  const pricedItemsTotal = itemPriceTotal()
+  txt('sum-servicios', clipSummary([S.items.filter(item => item.nombre || item.detalle || item.precio).length ? `${S.items.filter(item => item.nombre || item.detalle || item.precio).length} ítem${S.items.filter(item => item.nombre || item.detalle || item.precio).length > 1 ? 's' : ''}` : '', S.items.filter(item => item.nombre).slice(0, 2).map(item => item.nombre).join(', '), pricedItemsTotal ? `${S.moneda} ${formatAmount(String(pricedItemsTotal))}` : ''], 'Agregá el alcance del servicio'))
+  const photoFormats = FOTO_FORMATS.filter(format => S.ent.fotoFormats.has(format.id)).map(format => format.label).join(', ')
+  const videoFormats = VIDEO_FORMATS.filter(format => S.ent.videoFormats.has(format.id)).map(format => format.label).join(', ')
+  txt('sum-entregables', clipSummary([S.ent.fotos, S.ent.videos, photoFormats ? `Fotos: ${photoFormats}` : '', videoFormats ? `Videos: ${videoFormats}` : ''], 'Fotos, videos y formatos'))
+  const effectiveAmount = effectiveInvestmentAmount()
+  const savingsAmount = packageSavingsAmount()
+  txt('sum-inversion', clipSummary([S.invLabel, effectiveAmount ? `${S.moneda} ${formatAmount(String(effectiveAmount))}` : '', savingsAmount ? `Ahorro ${S.moneda} ${formatAmount(String(savingsAmount))}` : '', effectiveAmount ? (S.invMonto ? (S.ivaIncluido ? 'IVA incluido' : 'Sin IVA') : `${S.ivaIncluido ? 'IVA incluido' : 'Sin IVA'} · Paquete completo`) : ''], 'Monto y forma de cobro'))
+  txt('sum-observaciones', clipSummary([S.obsOn.size ? `${S.obsOn.size} preset${S.obsOn.size > 1 ? 's' : ''}` : '', S.obsCustom.filter(o => o.trim()).length ? `${S.obsCustom.filter(o => o.trim()).length} nota${S.obsCustom.filter(o => o.trim()).length > 1 ? 's' : ''}` : ''], 'Pagos, plazos y notas finales'))
+
+  const iva = calcIva(effectiveAmount !== null ? String(effectiveAmount) : '', S.ivaIncluido)
+  const ivaBase = iva.base !== null ? `${S.moneda} ${formatAmount(String(iva.base))}` : '—'
+  const ivaMonto = iva.iva !== null ? `${S.moneda} ${formatAmount(String(iva.iva))}` : '—'
+  const ivaTotal = iva.total !== null ? `${S.moneda} ${formatAmount(String(iva.total))}` : '—'
+  document.getElementById('iva-calc').innerHTML = `
+    <div class="calc-row"><span class="calc-label">Base</span><span class="calc-value">${ivaBase}</span></div>
+    <div class="calc-row"><span class="calc-label">IVA 10%</span><span class="calc-value">${ivaMonto}</span></div>
+    <div class="calc-row"><span class="calc-label">Total</span><span class="calc-value">${ivaTotal}</span></div>
+  `
+}
+
 // ─── Render builder ─────────────────────────────────
 function renderBuilder() {
   const builderPanel = document.getElementById('builder-panel')
@@ -3653,25 +3831,13 @@ function renderBuilder() {
   document.getElementById('f-inv-lbl').value = S.invLabel
   document.getElementById('f-moneda').value = S.moneda
   document.getElementById('f-monto').value = formatAmount(S.invMonto)
+  document.getElementById('f-package-discount').value = formatAmount(S.packageDiscount)
   document.getElementById('f-iva').value = S.ivaIncluido ? 'incluido' : 'excluido'
 
   document.querySelectorAll('.bsec').forEach(section => {
     section.classList.toggle('is-open', section.dataset.section === S.sectionOpen)
   })
-
-  txt('budget-save', currentBudgetId ? 'Actualizar' : 'Guardar')
-  renderBudgetList()
-  txt('sum-tipo', clipSummary([S.titulo || TIPO_MAP[S.tipo], S.tipo ? 'listo para usar' : ''], 'Elegí tipo o plantilla'))
-  txt('sum-cliente', clipSummary([S.cliente, S.agencia, S.modalidad], 'Cliente, agencia y modalidad'))
-  txt('sum-evento', clipSummary([S.fechaEvento, S.horaInicio && S.horaFin ? `${S.horaInicio} - ${S.horaFin}` : (S.horaInicio || S.horaFin), S.duracion, S.ubicacion], 'Fechas, horario y ubicación'))
-  txt('sum-contexto', clipSummary([S.objetivo, S.derechos], 'Objetivo y condiciones base'))
-  updateCrewSummary()
-  txt('sum-servicios', clipSummary([S.items.filter(item => item.nombre || item.detalle).length ? `${S.items.filter(item => item.nombre || item.detalle).length} ítem${S.items.filter(item => item.nombre || item.detalle).length > 1 ? 's' : ''}` : '', S.items.filter(item => item.nombre).slice(0, 2).map(item => item.nombre).join(', ')], 'Agregá el alcance del servicio'))
-  const photoFormats = FOTO_FORMATS.filter(format => S.ent.fotoFormats.has(format.id)).map(format => format.label).join(', ')
-  const videoFormats = VIDEO_FORMATS.filter(format => S.ent.videoFormats.has(format.id)).map(format => format.label).join(', ')
-  txt('sum-entregables', clipSummary([S.ent.fotos, S.ent.videos, photoFormats ? `Fotos: ${photoFormats}` : '', videoFormats ? `Videos: ${videoFormats}` : ''], 'Fotos, videos y formatos'))
-  txt('sum-inversion', clipSummary([S.invLabel, S.invMonto ? `${S.moneda} ${formatAmount(S.invMonto)}` : '', S.invMonto ? (S.ivaIncluido ? 'IVA incluido' : 'Sin IVA') : ''], 'Monto y forma de cobro'))
-  txt('sum-observaciones', clipSummary([S.obsOn.size ? `${S.obsOn.size} preset${S.obsOn.size > 1 ? 's' : ''}` : '', S.obsCustom.filter(o => o.trim()).length ? `${S.obsCustom.filter(o => o.trim()).length} nota${S.obsCustom.filter(o => o.trim()).length > 1 ? 's' : ''}` : ''], 'Pagos, plazos y notas finales'))
+  renderBuilderDerived()
 
   // Tipo buttons
   document.querySelectorAll('.tipo-btn').forEach(btn => {
@@ -3728,29 +3894,25 @@ function renderBuilder() {
     `<button class="chip${S.ent.videoFormats.has(v.id) ? ' on' : ''}" onclick="toggleEntFormat('video','${v.id}')">${v.label}</button>`
   ).join('')
 
-  const iva = calcIva(S.invMonto, S.ivaIncluido)
-  const ivaBase = iva.base !== null ? `${S.moneda} ${formatAmount(String(iva.base))}` : '—'
-  const ivaMonto = iva.iva !== null ? `${S.moneda} ${formatAmount(String(iva.iva))}` : '—'
-  const ivaTotal = iva.total !== null ? `${S.moneda} ${formatAmount(String(iva.total))}` : '—'
-  document.getElementById('iva-calc').innerHTML = `
-    <div class="calc-row"><span class="calc-label">Base</span><span class="calc-value">${ivaBase}</span></div>
-    <div class="calc-row"><span class="calc-label">IVA 10%</span><span class="calc-value">${ivaMonto}</span></div>
-    <div class="calc-row"><span class="calc-label">Total</span><span class="calc-value">${ivaTotal}</span></div>
-  `
-
   // Item cards
   document.getElementById('items-list').innerHTML = S.items.map((item,i) => `
     <div class="icard">
       ${S.items.length > 1 ? `<button class="ibtn-x" onclick="removeItem(${i})">×</button>` : ''}
       <div class="field">
         <label class="fl">Nombre</label>
-        <input class="fi" type="text" value="${escAttr(item.nombre)}"
+        <input class="fi" type="text" data-builder-key="item-${i}-nombre" value="${escAttr(item.nombre)}"
           oninput="setItem(${i},'nombre',this.value)">
       </div>
       <div class="field">
         <label class="fl">Detalle</label>
-        <textarea class="ft" rows="2"
+        <textarea class="ft" rows="2" data-builder-key="item-${i}-detalle"
           oninput="setItem(${i},'detalle',this.value)">${esc(item.detalle)}</textarea>
+      </div>
+      <div class="field">
+        <label class="fl">Precio</label>
+        <input class="fi" type="text" inputmode="numeric" data-builder-key="item-${i}-precio" value="${escAttr(formatAmount(item.precio))}"
+          placeholder="${escAttr(`${S.moneda} 0`)}"
+          oninput="setItem(${i},'precio',this.value)">
       </div>
     </div>
   `).join('')
@@ -3826,12 +3988,15 @@ function renderDoc() {
 
   // Services
   html('d-services', S.items.map((item,i) =>
-    item.nombre || item.detalle ? `
+    item.nombre || item.detalle || item.precio ? `
       <div class="svc-item">
         <span class="svc-num">${pad(i+1)}</span>
         <div>
-          <p class="svc-name">${esc(item.nombre)}</p>
-          <p class="svc-detail">${esc(item.detalle)}</p>
+          <div class="svc-head">
+            <p class="svc-name">${esc(item.nombre)}</p>
+            ${item.precio ? `<span class="svc-price">${esc(S.moneda)} ${formatAmount(item.precio)}</span>` : ''}
+          </div>
+          ${item.detalle ? `<p class="svc-detail">${esc(item.detalle)}</p>` : ''}
         </div>
       </div>` : ''
   ).join(''))
@@ -3854,10 +4019,33 @@ function renderDoc() {
     html('d-entregables', entParts.join(''))
   }
 
+  const individualTotal = itemPriceTotal()
+  const effectiveAmount = effectiveInvestmentAmount()
+  const savingsAmount = packageSavingsAmount()
+  const commercialSummary = document.getElementById('d-commercial-summary')
+  if (commercialSummary) {
+    const hasCommercialSummary = individualTotal > 0 && effectiveAmount !== null && (savingsAmount > 0 || amountNumber(S.invMonto) !== null)
+    commercialSummary.hidden = !hasCommercialSummary
+    if (hasCommercialSummary) {
+      commercialSummary.innerHTML = [
+        `<div class="commercial-row"><span class="commercial-label">Total por servicios individuales</span><span class="commercial-value">${esc(S.moneda)} ${formatAmount(String(individualTotal))}</span></div>`,
+        savingsAmount > 0
+          ? `<div class="commercial-row"><span class="commercial-label">Descuento paquete completo</span><span class="commercial-value">- ${esc(S.moneda)} ${formatAmount(String(savingsAmount))}</span></div>`
+          : '',
+        `<div class="commercial-row"><span class="commercial-label">Propuesta paquete integral</span><span class="commercial-value">${esc(S.moneda)} ${formatAmount(String(effectiveAmount))}</span></div>`
+      ].filter(Boolean).join('')
+    } else {
+      commercialSummary.innerHTML = ''
+    }
+  }
+
   // Inversión
-  txt('d-inv-lbl', S.invLabel)
-  txt('d-inv-price', S.invMonto ? `${S.moneda} ${formatAmount(S.invMonto)}` : '')
-  txt('d-inv-note', S.invMonto && S.ivaIncluido ? 'IVA incluido' : '')
+  txt('d-inv-lbl', S.invLabel || (effectiveAmount ? 'Total servicios' : ''))
+  txt('d-inv-price', effectiveAmount ? `${S.moneda} ${formatAmount(String(effectiveAmount))}` : '')
+  txt('d-inv-note', effectiveAmount ? [
+    savingsAmount ? `Ahorro frente al total individual: ${S.moneda} ${formatAmount(String(savingsAmount))}` : '',
+    S.invMonto ? (S.ivaIncluido ? 'IVA incluido' : '') : `${S.ivaIncluido ? 'IVA incluido' : 'Sin IVA'} · ${savingsAmount ? 'Paquete completo' : 'Calculado desde los servicios'}`
+  ].filter(Boolean).join(' · ') : '')
 
   // Observaciones: presets activos + custom
   const obsLines = [
