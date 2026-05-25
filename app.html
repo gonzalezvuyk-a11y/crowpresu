@@ -151,7 +151,8 @@
       border-bottom-color: #f5f3ee;
     }
 
-    body[data-theme="dark"] .icard {
+    body[data-theme="dark"] .icard,
+    body[data-theme="dark"] .event-card {
       background: rgba(255, 255, 255, 0.05);
       border-color: rgba(245, 243, 238, 0.16);
     }
@@ -1024,6 +1025,46 @@
     .frow-2 { grid-template-columns: 52px 1fr; }
     .frow-3 { grid-template-columns: 1fr 80px 80px; }
     .tipo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); }
+
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-9);
+      margin-bottom: var(--space-10);
+    }
+
+    .event-card {
+      border: 1px solid var(--component-card-border);
+      padding: var(--space-11) var(--space-11) var(--space-9);
+      background: var(--component-card-surface);
+      border-radius: var(--component-card-radius);
+      position: relative;
+    }
+
+    .event-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-10);
+      margin-bottom: var(--space-10);
+    }
+
+    .event-card-title {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-ui);
+      font-weight: 700;
+      letter-spacing: var(--tracking-strong);
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .event-card .field {
+      margin-bottom: var(--space-8);
+    }
+
+    .event-card .field:last-child {
+      margin-bottom: 0;
+    }
 
     .preview {
       flex: 1;
@@ -1913,7 +1954,7 @@
               <input class="fi" id="f-agencia" type="text" oninput="set('agencia', this.value)">
             </div>
             <div class="field">
-              <label class="fl" for="f-modalidad">Modalidad</label>
+              <label class="fl" for="f-modalidad">Agencia</label>
               <input class="fi" id="f-modalidad" type="text" oninput="set('modalidad', this.value)">
             </div>
           </div>
@@ -1931,34 +1972,12 @@
         </button>
         <div class="bsec-body">
           <div class="bsec-body-inner">
-            <div class="frow" style="grid-template-columns:1fr 1fr">
-              <div class="field">
-                <label class="fl" for="f-fecha-emision">Fecha emisión</label>
-                <input class="fi" id="f-fecha-emision" type="date" onchange="set('fechaEmision', fmtDate(this.value))">
-              </div>
-              <div class="field">
-                <label class="fl" for="f-fecha-evento">Fecha evento</label>
-                <input class="fi" id="f-fecha-evento" type="date" onchange="set('fechaEvento', fmtDate(this.value))">
-              </div>
-            </div>
-            <div class="frow" style="grid-template-columns:80px 80px 1fr">
-              <div class="field">
-                <label class="fl" for="f-hora-inicio">Inicio</label>
-                <input class="fi" id="f-hora-inicio" type="time" onchange="setHorario('inicio', this.value)">
-              </div>
-              <div class="field">
-                <label class="fl" for="f-hora-fin">Fin</label>
-                <input class="fi" id="f-hora-fin" type="time" onchange="setHorario('fin', this.value)">
-              </div>
-              <div class="field">
-                <label class="fl" for="f-dur">Duración</label>
-                <input class="fi" id="f-dur" type="text" placeholder="Se calcula automático" readonly>
-              </div>
-            </div>
             <div class="field">
-                <label class="fl" for="f-ubicacion">Ubicación</label>
-                <input class="fi" id="f-ubicacion" type="text" placeholder="Asunción / locación" oninput="set('ubicacion', this.value)">
+              <label class="fl" for="f-fecha-emision">Fecha emisión</label>
+              <input class="fi" id="f-fecha-emision" type="date" onchange="set('fechaEmision', fmtDate(this.value))">
             </div>
+            <div class="event-list" id="eventos-list"></div>
+            <button class="btn-add" type="button" onclick="addEvent()">+ Agregar fecha de evento</button>
           </div>
         </div>
       </section>
@@ -2605,6 +2624,18 @@ function createInternalRow() {
   return { concepto: '', detalle: '', costo: '', cantidad: '1', margen: '0' }
 }
 
+function createEventRow() {
+  return {
+    fecha: '',
+    horaInicioRaw: '',
+    horaFinRaw: '',
+    horaInicio: '',
+    horaFin: '',
+    duracion: '',
+    ubicacion: ''
+  }
+}
+
 function defaultInternalState() {
   return {
     rows: [createInternalRow()],
@@ -2630,6 +2661,7 @@ const S = {
   horaFin:    '',
   duracion: '',
   ubicacion:'',
+  eventos: [createEventRow()],
   objetivo: '',
   derechos: '',
   casting: '',
@@ -2796,6 +2828,63 @@ function computeDuration(start, end) {
   let diff = endMinutes - startMinutes
   if (diff < 0) diff += 24 * 60
   return fmtDuracion(diff)
+}
+function normalizeEventRow(row = {}) {
+  const horaInicioRaw = row.horaInicioRaw || ''
+  const horaFinRaw = row.horaFinRaw || ''
+  return {
+    fecha: row.fecha || '',
+    horaInicioRaw,
+    horaFinRaw,
+    horaInicio: row.horaInicio || fmtHora(horaInicioRaw),
+    horaFin: row.horaFin || fmtHora(horaFinRaw),
+    duracion: row.duracion || computeDuration(horaInicioRaw, horaFinRaw),
+    ubicacion: row.ubicacion || ''
+  }
+}
+function eventHasData(row = {}) {
+  return !!(row.fecha || row.horaInicioRaw || row.horaFinRaw || row.horaInicio || row.horaFin || row.duracion || row.ubicacion)
+}
+function visibleEvents() {
+  const rows = Array.isArray(S.eventos) && S.eventos.length ? S.eventos : [createEventRow()]
+  S.eventos = rows.map(normalizeEventRow)
+  return S.eventos
+}
+function filledEvents() {
+  return visibleEvents().filter(eventHasData)
+}
+function syncLegacyEventFields() {
+  const first = visibleEvents()[0] || createEventRow()
+  S.fechaEvento = first.fecha || ''
+  S.horaInicioRaw = first.horaInicioRaw || ''
+  S.horaFinRaw = first.horaFinRaw || ''
+  S.horaInicio = first.horaInicio || ''
+  S.horaFin = first.horaFin || ''
+  S.duracion = first.duracion || ''
+  S.ubicacion = first.ubicacion || ''
+}
+function eventSummaryParts() {
+  const rows = filledEvents()
+  if (!rows.length) return []
+  if (rows.length === 1) {
+    const event = rows[0]
+    return [
+      event.fecha,
+      event.horaInicio && event.horaFin ? `${event.horaInicio} - ${event.horaFin}` : (event.horaInicio || event.horaFin),
+      event.duracion,
+      event.ubicacion
+    ]
+  }
+  return [
+    `${rows.length} fechas`,
+    rows.slice(0, 2).map(event => event.fecha || event.ubicacion).filter(Boolean).join(', ')
+  ]
+}
+function eventMetaText(event = {}) {
+  const timeRange = event.horaInicio && event.horaFin
+    ? `${event.horaInicio} - ${event.horaFin}`
+    : (event.horaInicio || event.horaFin)
+  return [event.fecha, timeRange, event.duracion, event.ubicacion].filter(Boolean).join(' · ')
 }
 function normalizeAmount(value) {
   return String(value || '').replace(/[^\d]/g, '').replace(/^0+(?=\d)/, '')
@@ -2988,15 +3077,46 @@ function setIvaIncluido(value) {
   renderDoc()
 }
 function setHorario(which, value) {
-  if (which === 'inicio') {
-    S.horaInicioRaw = value
-    S.horaInicio = fmtHora(value)
+  setEvent(0, which === 'inicio' ? 'horaInicioRaw' : 'horaFinRaw', value)
+}
+
+function setEvent(index, field, value) {
+  const rows = visibleEvents()
+  const event = rows[index]
+  if (!event) return
+  if (field === 'fecha') event.fecha = fmtDate(value)
+  if (field === 'horaInicioRaw') {
+    event.horaInicioRaw = value
+    event.horaInicio = fmtHora(value)
   }
-  if (which === 'fin') {
-    S.horaFinRaw = value
-    S.horaFin = fmtHora(value)
+  if (field === 'horaFinRaw') {
+    event.horaFinRaw = value
+    event.horaFin = fmtHora(value)
   }
-  S.duracion = computeDuration(S.horaInicioRaw, S.horaFinRaw)
+  if (field === 'ubicacion') event.ubicacion = value
+  event.duracion = computeDuration(event.horaInicioRaw, event.horaFinRaw)
+  syncLegacyEventFields()
+  const durationEl = document.getElementById(`f-dur-${index}`)
+  if (durationEl) durationEl.value = event.duracion
+  renderBuilderDerived()
+  renderDoc()
+}
+
+function addEvent() {
+  visibleEvents().push(createEventRow())
+  syncLegacyEventFields()
+  rerenderBuilderPreservingFocus()
+  renderDoc()
+}
+
+function removeEvent(index) {
+  const rows = visibleEvents()
+  if (rows.length === 1) {
+    rows[0] = createEventRow()
+  } else {
+    rows.splice(index, 1)
+  }
+  syncLegacyEventFields()
   rerenderBuilderPreservingFocus()
   renderDoc()
 }
@@ -3252,7 +3372,7 @@ function setInternalMessage(message, isError = false) {
 function crewLabels() {
   const labels = CREW_OPTIONS.filter(c => S.crew.has(c.id) && c.id !== 'otro').map(c => c.label)
   if (S.crew.has('otro') && S.crewOther.trim()) {
-    labels.push(`Otro: ${S.crewOther.trim()}`)
+    labels.push(S.crewOther.trim())
   } else if (S.crew.has('otro')) {
     labels.push('Otro')
   }
@@ -3351,6 +3471,7 @@ function renderInternalSheet() {
 
 // ─── Budgets ────────────────────────────────────────
 function serializeBudgetState() {
+  syncLegacyEventFields()
   return {
     tipo: S.tipo,
     titulo: S.titulo,
@@ -3365,6 +3486,7 @@ function serializeBudgetState() {
     horaFin: S.horaFin,
     duracion: S.duracion,
     ubicacion: S.ubicacion,
+    eventos: visibleEvents().map(event => ({ ...event })),
     objetivo: S.objetivo,
     derechos: S.derechos,
     casting: S.casting,
@@ -3401,13 +3523,18 @@ function restoreBudgetState(payload = {}) {
   S.agencia = payload.agencia || ''
   S.modalidad = payload.modalidad || ''
   S.fechaEmision = payload.fechaEmision || todayDisplay()
-  S.fechaEvento = payload.fechaEvento || ''
-  S.horaInicioRaw = payload.horaInicioRaw || ''
-  S.horaFinRaw = payload.horaFinRaw || ''
-  S.horaInicio = payload.horaInicio || fmtHora(S.horaInicioRaw)
-  S.horaFin = payload.horaFin || fmtHora(S.horaFinRaw)
-  S.duracion = payload.duracion || computeDuration(S.horaInicioRaw, S.horaFinRaw)
-  S.ubicacion = payload.ubicacion || ''
+  S.eventos = Array.isArray(payload.eventos) && payload.eventos.length
+    ? payload.eventos.map(normalizeEventRow)
+    : [normalizeEventRow({
+        fecha: payload.fechaEvento || '',
+        horaInicioRaw: payload.horaInicioRaw || '',
+        horaFinRaw: payload.horaFinRaw || '',
+        horaInicio: payload.horaInicio || '',
+        horaFin: payload.horaFin || '',
+        duracion: payload.duracion || '',
+        ubicacion: payload.ubicacion || ''
+      })]
+  syncLegacyEventFields()
   S.objetivo = payload.objetivo || ''
   S.derechos = payload.derechos || ''
   S.casting = payload.casting || ''
@@ -3487,6 +3614,7 @@ function budgetSearchText(row) {
     row.event_date,
     row.payload?.fechaEmision,
     row.payload?.fechaEvento,
+    ...(Array.isArray(row.payload?.eventos) ? row.payload.eventos.flatMap(event => [event.fecha, event.ubicacion]) : []),
     row.currency,
     row.amount
   ].filter(Boolean).join(' ').toLowerCase()
@@ -3781,8 +3909,8 @@ function renderBuilderDerived() {
   txt('budget-save', currentBudgetId ? 'Actualizar' : 'Guardar')
   renderBudgetList()
   txt('sum-tipo', clipSummary([S.titulo || TIPO_MAP[S.tipo], S.tipo ? 'listo para usar' : ''], 'Elegí tipo o plantilla'))
-  txt('sum-cliente', clipSummary([S.cliente, S.agencia, S.modalidad], 'Cliente, agencia y modalidad'))
-  txt('sum-evento', clipSummary([S.fechaEvento, S.horaInicio && S.horaFin ? `${S.horaInicio} - ${S.horaFin}` : (S.horaInicio || S.horaFin), S.duracion, S.ubicacion], 'Fechas, horario y ubicación'))
+  txt('sum-cliente', clipSummary([S.cliente, S.agencia, S.modalidad], 'Cliente, solicitado por y agencia'))
+  txt('sum-evento', clipSummary(eventSummaryParts(), 'Fechas, horario y ubicación'))
   txt('sum-contexto', clipSummary([S.objetivo, S.derechos], 'Objetivo y condiciones base'))
   updateCrewSummary()
   const pricedItemsTotal = itemPriceTotal()
@@ -3818,11 +3946,6 @@ function renderBuilder() {
   document.getElementById('f-agencia').value = S.agencia
   document.getElementById('f-modalidad').value = S.modalidad
   document.getElementById('f-fecha-emision').value = toISO(S.fechaEmision)
-  document.getElementById('f-fecha-evento').value = toISO(S.fechaEvento)
-  document.getElementById('f-hora-inicio').value = S.horaInicioRaw
-  document.getElementById('f-hora-fin').value = S.horaFinRaw
-  document.getElementById('f-dur').value = S.duracion
-  document.getElementById('f-ubicacion').value = S.ubicacion
   document.getElementById('f-objetivo').value = S.objetivo
   document.getElementById('f-derechos').value = S.derechos
   document.getElementById('f-casting').value = S.casting
@@ -3854,6 +3977,41 @@ function renderBuilder() {
       <span>${bg.label}</span>
     </button>`
   ).join('')
+
+  document.getElementById('eventos-list').innerHTML = visibleEvents().map((event, index) => `
+    <div class="event-card">
+      <div class="event-card-head">
+        <span class="event-card-title">Fecha evento ${pad(index + 1)}</span>
+        ${S.eventos.length > 1 ? `<button class="ibtn-x" type="button" onclick="removeEvent(${index})">×</button>` : ''}
+      </div>
+      <div class="field">
+        <label class="fl" for="f-fecha-evento-${index}">Fecha evento</label>
+        <input class="fi" id="f-fecha-evento-${index}" type="date" data-builder-key="evento-${index}-fecha"
+          value="${escAttr(toISO(event.fecha))}" onchange="setEvent(${index},'fecha',this.value)">
+      </div>
+      <div class="frow" style="grid-template-columns:80px 80px 1fr">
+        <div class="field">
+          <label class="fl" for="f-hora-inicio-${index}">Inicio</label>
+          <input class="fi" id="f-hora-inicio-${index}" type="time" data-builder-key="evento-${index}-inicio"
+            value="${escAttr(event.horaInicioRaw)}" onchange="setEvent(${index},'horaInicioRaw',this.value)">
+        </div>
+        <div class="field">
+          <label class="fl" for="f-hora-fin-${index}">Fin</label>
+          <input class="fi" id="f-hora-fin-${index}" type="time" data-builder-key="evento-${index}-fin"
+            value="${escAttr(event.horaFinRaw)}" onchange="setEvent(${index},'horaFinRaw',this.value)">
+        </div>
+        <div class="field">
+          <label class="fl" for="f-dur-${index}">Duración</label>
+          <input class="fi" id="f-dur-${index}" type="text" value="${escAttr(event.duracion)}" placeholder="Se calcula automático" readonly>
+        </div>
+      </div>
+      <div class="field">
+        <label class="fl" for="f-ubicacion-${index}">Ubicación</label>
+        <input class="fi" id="f-ubicacion-${index}" type="text" data-builder-key="evento-${index}-ubicacion"
+          value="${escAttr(event.ubicacion)}" placeholder="Asunción / locación" oninput="setEvent(${index},'ubicacion',this.value)">
+      </div>
+    </div>
+  `).join('')
 
   // Preset chips (based on tipo)
   let presetHtml = ''
@@ -3951,13 +4109,10 @@ function renderDoc() {
   if (S.cliente)   metaRows.push(['Cliente',    S.cliente])
   if (S.agencia)   metaRows.push(['Solicitado por', S.agencia])
   if (titleLabel)  metaRows.push(['Servicio',   titleLabel])
-  if (S.modalidad) metaRows.push(['Modalidad',  S.modalidad])
+  if (S.modalidad) metaRows.push(['Agencia',  S.modalidad])
   if (S.fechaEmision) metaRows.push(['Emisión', S.fechaEmision])
-  if (S.fechaEvento)  metaRows.push(['Evento',  S.fechaEvento])
-  if (S.horaInicio) metaRows.push(['Inicio',    S.horaInicio])
-  if (S.horaFin)   metaRows.push(['Fin',       S.horaFin])
-  if (S.duracion)  metaRows.push(['Duración',   S.duracion])
-  if (S.ubicacion) metaRows.push(['Ubicación',  S.ubicacion])
+  const eventLines = filledEvents().map(eventMetaText).filter(Boolean)
+  if (eventLines.length) metaRows.push(['Evento', eventLines.join('\n')])
   if (S.derechos)  metaRows.push(['Derechos',   S.derechos])
   if (S.casting)   metaRows.push(['Casting',    S.casting])
   if (S.crew.size) {
