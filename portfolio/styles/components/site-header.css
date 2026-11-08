@@ -1,0 +1,61 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  margin-right: auto;
+}
+
+/* El logo es una máscara del SVG: así toma el color del texto y puede cambiar en hover. */
+.brand__logo {
+  display: block;
+  height: 1.125rem;
+  aspect-ratio: 2592 / 632;
+  background-color: var(--color-ink);
+  -webkit-mask: url("../../assets/logo/crow-ink-logotipo.svg") center / contain no-repeat;
+  mask: url("../../assets/logo/crow-ink-logotipo.svg") center / contain no-repeat;
+}
+
+.brand:hover .brand__logo {
+  background-color: var(--color-accent);
+}
+
+/* Reloj de Asunción: decorativo, con el mismo estilo que el menú. Se oculta en pantallas muy chicas por falta de lugar. */
+.header-clock {
+  display: none;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 36em) {
+  .header-clock {
+    display: block;
+    margin-right: var(--space-4);
+  }
+}
+
+.nav__list {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  padding-inline: var(--space-2);
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+
+.nav__link:hover {
+  color: var(--color-accent);
+}
+
+/* El estado activo no depende del color: lleva subrayado. */
+.nav__link[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}

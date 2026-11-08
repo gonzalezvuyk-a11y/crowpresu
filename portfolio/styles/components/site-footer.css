@@ -1,0 +1,18 @@
+.site-footer {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+}
+
+.site-footer__top {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  padding-inline: var(--space-2);
+  margin-inline: calc(var(--space-2) * -1);
+}
+
+.site-footer__top:hover {
+  color: var(--color-accent);
+}

@@ -1,0 +1,127 @@
+/* Grilla compartida por Work (portadas) y por cada proyecto (piezas). */
+.media-grid {
+  --cols: 4;
+  --cols-sm: 2;
+  display: grid;
+  grid-template-columns: repeat(var(--cols-sm), minmax(0, 1fr));
+  /* Cada ítem toma su propia altura: las portadas tienen proporciones distintas y quedan alineadas arriba. */
+  align-items: start;
+  gap: var(--space-4) var(--grid-gap);
+  margin: 0;
+  padding: 0 var(--gutter);
+  list-style: none;
+}
+
+.media-grid--project {
+  --cols-sm: 1;
+}
+
+.media-grid[data-cols="1"] { --cols: 1; max-width: 64rem; }
+.media-grid[data-cols="2"] { --cols: 2; }
+.media-grid[data-cols="3"] { --cols: 3; }
+.media-grid[data-cols="4"] { --cols: 4; }
+
+@media (min-width: 48em) {
+  .media-grid {
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  }
+}
+
+/* Portada de proyecto */
+.tile {
+  display: block;
+  text-decoration: none;
+}
+
+.tile__frame {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-tile);
+}
+
+/* Proporciones de portada: se elige una por proyecto en site.js. */
+.tile__frame--portrait { aspect-ratio: 4 / 5; }
+.tile__frame--square { aspect-ratio: 1; }
+.tile__frame--landscape { aspect-ratio: 4 / 3; }
+.tile__frame--wide { aspect-ratio: 16 / 9; }
+
+/* El recorte prioriza la parte alta, donde suelen estar las caras. */
+.tile__media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+.tile__caption,
+.media-item__caption {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tile__meta,
+.media-item__caption {
+  color: var(--color-muted);
+}
+
+.tile:hover .tile__title,
+.tile:focus-visible .tile__title {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.tile:focus-visible {
+  outline-offset: 4px;
+}
+
+/* Pieza dentro de un proyecto */
+.media-item {
+  margin: 0;
+}
+
+.media-item__frame {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--color-tile);
+}
+
+.media-item--portrait .media-item__frame {
+  aspect-ratio: 9 / 16;
+}
+
+.media-item--square .media-item__frame {
+  aspect-ratio: 1;
+}
+
+/* Fotos: proporción real de cada una, sin recortar. */
+.media-item--natural .media-item__frame {
+  aspect-ratio: auto;
+}
+
+.media-item--natural .media-item__frame img {
+  height: auto;
+}
+
+.media-item__frame iframe,
+.media-item__frame video,
+.media-item__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+/* Un video vertical solo no debe ocupar más que la pantalla. */
+.media-grid[data-cols="1"] .media-item--portrait {
+  max-width: min(100%, calc(85svh * 9 / 16));
+}

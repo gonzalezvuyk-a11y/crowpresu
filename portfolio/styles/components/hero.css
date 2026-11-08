@@ -1,0 +1,28 @@
+/* La frase queda abajo de la primera pantalla, con la barra de Work asomando justo debajo. */
+.hero {
+  display: flex;
+  align-items: flex-end;
+  min-height: calc(100svh - var(--header-h) - var(--tap-size));
+  padding: var(--space-6) var(--gutter) var(--space-5);
+}
+
+/* Máscara por palabra: la crea motion.js solo cuando hay animación. El padding evita cortar descendentes. */
+.split__mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0 0.04em 0.12em;
+  margin: 0 -0.04em -0.12em;
+}
+
+.split__word {
+  display: inline-block;
+}
+
+.hero__text {
+  max-width: 36ch;
+  font-size: var(--text-hero);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}

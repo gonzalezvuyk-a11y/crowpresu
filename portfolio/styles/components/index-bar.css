@@ -1,0 +1,82 @@
+/* Barra de sección: nombre a la izquierda, selector de columnas a la derecha. */
+.index-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--tap-size);
+  padding-inline: var(--gutter);
+  margin-bottom: var(--space-2);
+  background: var(--color-bg);
+  font-size: var(--text-sm);
+}
+
+@media (min-width: 48em) {
+  .index-bar {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 10;
+  }
+}
+
+.index-bar__lead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-2);
+}
+
+.index-bar__title {
+  margin: 0;
+  font-size: inherit;
+  font-weight: 400;
+}
+
+.index-bar__title strong {
+  font-weight: 500;
+}
+
+.index-bar__meta,
+.index-bar__crumb {
+  color: var(--color-muted);
+}
+
+.index-bar__crumb {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-size);
+  text-decoration: none;
+}
+
+.index-bar__crumb:hover {
+  color: var(--color-accent);
+}
+
+/* Selector de columnas. En mobile la grilla es fija, así que no se muestra. */
+.view-toggle {
+  display: none;
+}
+
+@media (min-width: 48em) {
+  .view-toggle {
+    display: flex;
+  }
+}
+
+.view-toggle__btn {
+  display: inline-grid;
+  place-items: center;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  color: var(--color-muted);
+}
+
+.view-toggle__btn:hover {
+  color: var(--color-accent);
+}
+
+/* El botón activo se distingue por la raya inferior y el color. */
+.view-toggle__btn[aria-pressed="true"] {
+  color: var(--color-ink);
+  box-shadow: inset 0 -2px 0 currentColor;
+}

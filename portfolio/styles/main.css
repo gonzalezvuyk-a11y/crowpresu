@@ -1,0 +1,14 @@
+/* Orden de cascada explícito: sin !important para ganar especificidad. */
+@layer tokens, base, layout, components;
+
+@import url("tokens.css") layer(tokens);
+@import url("base.css") layer(base);
+@import url("layout.css") layer(layout);
+@import url("components/site-header.css") layer(components);
+@import url("components/site-footer.css") layer(components);
+@import url("components/hero.css") layer(components);
+@import url("components/index-bar.css") layer(components);
+@import url("components/media-grid.css") layer(components);
+@import url("components/project.css") layer(components);
+@import url("components/text-page.css") layer(components);
+@import url("components/state-message.css") layer(components);
