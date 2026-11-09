@@ -48,7 +48,7 @@ const adobe = (ratio, ids) => ids.map((id) => ({ type: "adobe", id, ratio }));
 const cover = (slug, ext, width, height, ratio = "landscape", position = "") => ({
   src: `media/${slug}/cover.${ext}`,
   // Las portadas animadas son videos cortos en loop; el poster se ve mientras cargan.
-  poster: ext === "mp4" ? `media/${slug}/poster.webp` : "",
+  poster: ext.endsWith("mp4") ? `media/${slug}/poster.webp` : "",
   width, height, ratio, position
 });
 
@@ -71,9 +71,12 @@ window.CROW = {
   },
 
   projects: [
-    { slug: "pacto-global", title: "Pacto Global", detail: "Red Paraguay", year: 2026, category: "Cobertura realtime", cover: cover("pacto-global", "webp", 720, 900, "portrait"), media: photos("pacto-global", "Pacto Global, Red Paraguay") },
-    { slug: "aurora-alejandro", title: "Aurora & Alejandro", detail: "", year: 2026, category: "Fotografía", cover: cover("aurora-alejandro", "webp", 720, 900, "portrait"), media: photos("aurora-alejandro", "Aurora & Alejandro") },
-    { slug: "bancard", title: "Bancard", detail: "Charla Técnica", year: 2026, category: "Cobertura realtime", cover: cover("bancard", "webp", 720, 900, "portrait"), media: photos("bancard", "Bancard, Charla Técnica") },
+    { slug: "sistema-b", title: "Sistema B", detail: "Día B", year: 2026, category: "Cobertura realtime", cover: cover("sistema-b", "webp", 720, 900, "portrait"),
+      media: [...clips("sistema-b", "Sistema B, Día B", [["aftermovie", "Aftermovie"]], "wide"), ...clips("sistema-b", "Sistema B, Día B", [["recap-sponsors", "Recap sponsors"]]), ...photos("sistema-b", "Sistema B, Día B")] },
+    { slug: "modiga", title: "Módiga", detail: "100 años", year: 2026, category: "Cobertura realtime", cover: cover("modiga", "mp4", 720, 900, "portrait"), media: photos("modiga", "Módiga, 100 años") },
+    { slug: "pacto-global", title: "Pacto Global", detail: "Red Paraguay", year: 2026, category: "Cobertura realtime", cover: cover("pacto-global", "v2.webp", 720, 540, "landscape"), media: photos("pacto-global", "Pacto Global, Red Paraguay") },
+    { slug: "aurora-alejandro", title: "Aurora & Alejandro", detail: "", year: 2026, category: "Fotografía", cover: cover("aurora-alejandro", "v2.mp4", 720, 900, "portrait"), media: photos("aurora-alejandro", "Aurora & Alejandro") },
+    { slug: "bancard", title: "Bancard", detail: "Charla Técnica", year: 2026, category: "Cobertura realtime", cover: cover("bancard", "v2.webp", 720, 900, "portrait"), media: photos("bancard", "Bancard, Charla Técnica") },
     { slug: "broterra", title: "Broterra", detail: "Corrida", year: 2026, category: "Cobertura realtime", cover: cover("broterra", "mp4", 720, 900, "portrait"), media: photos("broterra", "Broterra, Corrida") },
     { slug: "veredas-extremas", title: "Veredas Extremas", detail: "Inclu+", year: 2026, category: "Spots y campañas", cover: cover("veredas-extremas", "mp4", 720, 540, "landscape"), cols: 3,
       award: { name: "Tatakuá de Plata", detail: "Micro spots (TV, cine y digital) hasta 15″ / campaña" },
