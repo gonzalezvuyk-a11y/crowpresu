@@ -6,6 +6,18 @@ Un solo anuncio que muestra los tres productos con cortes rápidos de fotos y vi
 - **Proyecto editable:** "theCrow Pauta Mix" en la base de datos local de DaVinci Resolve, línea de tiempo "Mix 15s". Los títulos van en V2, encima de las tomas en V1, así se pueden mover cortes sin rehacer textos.
 - **Fuentes:** `fuentes/` tiene los HTML de los textos, la lista de fotos (`fotos.txt`) y `build.sh`, que regenera las capas y los clips para Resolve.
 
+## Versión en After Effects
+
+`after/theCrow-Pauta-Mix.aep` (After Effects 2026) es el mismo mix, cuadro por cuadro, con los textos editables.
+
+- **Composición principal:** `01 Comps/Mix 15s` (1080×1920, 30 fps, 15 s). Tiene marcadores en cada sección.
+- **Textos editables:** cada título es una precomposición con texto nativo, en `01 Comps/Precomps`: `Título · 01 Cobertura`, `02 Marcas` y `03 Spots` (este con el sello del Tatakuá como forma y texto), además de `Gancho · Logo` y `Tarjeta final`. Para cambiar una palabra, se abre la precomposición y se edita la capa de texto.
+- **Material original:** usa los videos de `selected works/` y las fotos originales en alta resolución, no los clips intermedios de Resolve. Así cada foto se puede reencuadrar moviendo o escalando su capa.
+- **Logos:** `after/graficos/` tiene los logos y el sello en PNG, sacados de los SVG del portfolio.
+- **Render:** la cola de render ya está configurada en H.264 hacia `after/render/mix-15s-after.mp4`.
+- Los videos de 24 fps, salvo Hydrate, están corridos medio cuadro de origen para tomar el mismo cuadro que Resolve. Si no, en un corte de Día de la Chipa entraba un cuadro con el subtítulo "Centro Histórico".
+- **Tipografías:** necesita Inter Tight e IBM Plex Mono instaladas.
+
 ## Estructura (30 fps, 450 cuadros)
 
 | Cuadros | Tiempo | V1 (tomas) | V2 (texto) |
