@@ -1,0 +1,38 @@
+/* Piezas de pauta 1080×1920. Zona segura de Reels/historias: texto entre y=270 y y=1248 (fuera del 14 % de arriba y el 35 % de abajo). */
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; }
+body { position: relative; font-family: "Inter Tight", system-ui, sans-serif; }
+.transparente { background: transparent; }
+.oscuro { background: #151515; color: #cdb7a4; }
+
+.mono { font-family: "IBM Plex Mono", ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.sombra { text-shadow: 0 2px 22px rgb(0 0 0 / 0.6), 0 0 2px rgb(0 0 0 / 0.5); }
+.logo-blanco { filter: brightness(0) invert(1); }
+
+/* Bloque de texto sobre el video */
+.bloque { position: absolute; left: 72px; right: 72px; top: 300px; color: #fff; }
+.bloque .logo { width: 300px; height: auto; display: block; }
+.bloque .etiqueta { margin-top: 34px; font-size: 30px; color: #f3e7dc; }
+.bloque .titulo { margin-top: 14px; font-size: 80px; font-weight: 500; line-height: 1.02; letter-spacing: -0.02em; }
+
+/* Sello del premio sobre el video */
+.premio { position: absolute; left: 72px; right: 72px; top: 300px; display: flex; align-items: center; gap: 36px; padding: 36px 40px; background: #0b63e5; color: #fff; }
+.premio img { width: 170px; height: auto; flex: none; }
+.premio .etiqueta { font-size: 26px; color: #e7f23c; }
+.premio .nombre { margin-top: 6px; font-size: 70px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; }
+.premio .detalle { margin-top: 14px; font-size: 24px; }
+
+/* Tarjeta final */
+.final { position: absolute; left: 72px; right: 72px; top: 300px; height: 948px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.final .logo { width: 780px; height: auto; display: block; }
+.final .descriptor { margin-top: 40px; font-size: 48px; letter-spacing: -0.01em; }
+.final .oferta { margin-top: 18px; font-size: 30px; color: rgb(205 183 164 / 0.72); }
+.final .sello { margin-top: 56px; display: flex; align-items: center; gap: 22px; font-size: 40px; color: #fff; }
+.final .sello span.caja { display: grid; place-items: center; width: 96px; height: 96px; background: #0b63e5; border-radius: 3px; }
+.final .sello img { width: 66px; height: auto; display: block; }
+.final .cta { margin-top: 64px; padding: 26px 48px; background: #cdb7a4; color: #151515; font-size: 50px; font-weight: 500; letter-spacing: -0.01em; }
+.final .web { margin-top: 30px; font-size: 32px; color: rgb(205 183 164 / 0.85); }
+.barra { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: #78251d; }
+
+/* El nombre de marca y la web se escriben siempre en minúsculas, aunque estén dentro de texto en versalitas. */
+.sin-mayus, .final .web { text-transform: none; }

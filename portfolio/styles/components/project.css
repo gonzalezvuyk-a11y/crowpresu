@@ -1,3 +1,51 @@
+/* Banner del premio, entre la barra y las piezas. */
+.award-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0 var(--gutter) var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-award);
+  color: #fff;
+}
+
+.award-banner__icon {
+  flex: none;
+  width: 5rem;
+  height: auto;
+}
+
+.award-banner__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-award-ray);
+}
+
+.award-banner__name {
+  font-size: clamp(1.5rem, 3.4vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.award-banner__detail {
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 30em) {
+  .award-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+}
+
 .project__empty {
   padding-inline: var(--gutter);
 }

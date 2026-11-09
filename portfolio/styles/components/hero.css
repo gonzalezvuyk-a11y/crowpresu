@@ -2,7 +2,7 @@
 .hero {
   display: flex;
   align-items: flex-end;
-  min-height: calc(100svh - var(--header-h) - var(--tap-size));
+  min-height: calc(100svh - var(--header-h) - var(--tap-size) - var(--clients-h, 0px));
   padding: var(--space-6) var(--gutter) var(--space-5);
 }
 

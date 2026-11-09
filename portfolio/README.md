@@ -22,7 +22,16 @@ cd portfolio
 vercel deploy --prod --yes
 ```
 
-Para sumar el dominio propio: Vercel, proyecto `thecrow-portfolio`, Settings, Domains. Después de comprarlo, hay que apuntar el DNS a Vercel y agregar el dominio ahí. `vercel.json` define el caché de `media/` y `assets/` (7 días) y encabezados de seguridad básicos.
+**Dominio propio:** https://thecrowfilm.com (registrado en GoDaddy). `www.thecrowfilm.com` redirige al dominio principal y `http` redirige a `https`, con certificado de Let's Encrypt que Vercel renueva solo. Registros DNS en GoDaddy: `A @` hacia `216.198.79.1` y `CNAME www` hacia `1550be9ff3197e34.vercel-dns-017.com`; los demás (NS, SOA, `_domainconnect`, `_dmarc`) quedaron como estaban. Si se cambia de proveedor de DNS, hay que repetir esos dos registros. La dirección `thecrow-portfolio.vercel.app` sigue funcionando. `vercel.json` define el caché de `media/` y `assets/` (7 días) y encabezados de seguridad básicos.
+
+## Imagen para compartir, íconos y SEO
+
+- **Imagen para compartir** (`og.png`, 1200×630): la que aparece al pegar el link en WhatsApp, Instagram, LinkedIn, X o Facebook. Es el logotipo beige sobre negro cálido, con la barra vino. Incluye el sello del Tatakuá y "Tatakuá de Plata · Veredas Extremas". Las etiquetas `og:` y `twitter:` están en el `<head>` de `index.html`.
+- **Íconos**: el isotipo "tC" negro sobre fondo blanco, en `favicon.ico`, `assets/icons/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` (iPhone) e `icon-192.png` / `icon-512.png` (los de `site.webmanifest`).
+- **Regenerar todo**: `portfolio/brand/build.sh`. Dibuja `brand/og.html` y `brand/icon.html` con Google Chrome sin ventana y reduce los tamaños con ffmpeg. Para cambiar el texto o el diseño, editar esos dos HTML y volver a correr el script. La carpeta `brand/` no se publica (`.vercelignore`).
+- **Cuando se cambia la imagen**, WhatsApp, Facebook y LinkedIn guardan la vieja varios días. Para forzar la actualización: Facebook Sharing Debugger (developers.facebook.com/tools/debug) y LinkedIn Post Inspector, con el botón de volver a leer la página.
+- **Buscadores**: `robots.txt`, `sitemap.xml`, dirección canónica y datos estructurados (`ProfessionalService` con nombre, correo, teléfono e Instagram). `404.html` es la página de error con la identidad del sitio.
+- **Límite conocido**: las vistas usan `#/` en la dirección, y ni Google ni los previews leen lo que viene después del `#`. Por eso todos los links se ven con la misma imagen y descripción, y Google solo indexa la portada. Para que cada proyecto tenga su propio link, imagen y posicionamiento, hay que pasar a direcciones reales (`/work/<proyecto>`) con una página por proyecto.
 
 ## Agregar o editar un proyecto
 
@@ -32,18 +41,21 @@ Todo el contenido está en `scripts/data/site.js`.
 2. Piezas: completá `media`. Cada pieza lleva `ratio` (`landscape`, `portrait` o `square`).
    - Reproductor de Adobe Portfolio: `{ type: "adobe", id, ratio }`. El `id` es el tramo entre `/ccv/` y `/embed` de la URL del reproductor.
    - Vimeo o YouTube: `{ type: "vimeo", id: "123456789", ratio, title }`.
-   - Video propio: `{ type: "video", src, poster, ratio, title }`.
+   - Video propio: `{ type: "video", src, poster, ratio, title }`. Para varios videos de un proyecto, usar el helper `clips(slug, etiqueta, [[nombre, texto], ...])` de `site.js`, que espera `media/<slug>/<nombre>.mp4` y `media/<slug>/<nombre>-poster.webp`. Conversión recomendada (sin audio, 720 px de ancho para verticales, 1280 px para horizontales; 1 a 9 MB cada uno): `ffmpeg -i original.mov -an -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -profile:v high -movflags +faststart -vf scale=720:-2 nombre.mp4`. El poster es un cuadro del video en WebP (`cwebp -q 76`).
    - Imagen: `{ type: "image", src, alt, ratio }`.
 
 Mientras `media` esté vacío, la página del proyecto muestra "Material en carga".
 
+Para mostrar un premio en un proyecto, agregar `award: { name: "Tatakuá de Plata", detail: "categoría o aclaración" }`. Aparece como un sello azul sobre la portada, el nombre debajo del título en la grilla, un banner azul con el detalle en la página del proyecto y una entrada en "Reconocimientos" de Estudio. "Veredas Extremas" lo lleva. El ícono (`assets/awards/tatakua.svg`: arco blanco con rayos amarillos, pensado para fondo azul) es un dibujo hecho a partir de una captura del premio, no el archivo oficial: si el Tatakuá entrega el logo oficial, reemplazar ese archivo mantiene todo lo demás. `cols` (opcional) fija las columnas de la página del proyecto.
+
 ## Estado actual del material
 
 - Las 15 portadas, las fotos y los reproductores de video salen de roxannasoy.com. Los videos se incrustan desde el Adobe de Roxanna: si ese portfolio se cierra, dejan de verse. Para independizarse hay que subirlos a Vimeo o YouTube y cambiar el `type`.
-- Las tres galerías de fotos (169 fotos) están en `media/<slug>/NN.webp`, convertidas a WebP de hasta 1200 px. Sus datos (archivo, ancho, alto) están en `scripts/data/photos.js`. Para sumar fotos a una galería: copiarlas a la carpeta del proyecto como `.webp` y agregar su fila en `photos.js`.
+- Las tres galerías de fotos (159 fotos) están en `media/<slug>/NN.webp`, convertidas a WebP de hasta 1200 px. Sus datos (archivo, ancho, alto) están en `scripts/data/photos.js`. Cada foto tiene además una versión de 800 px (`NN-800.webp`) que el navegador usa cuando la foto se ve chica; se arma con `cwebp -resize 800 0 -q 74 NN.webp -o NN-800.webp`. Para sumar fotos a una galería: copiarlas a la carpeta del proyecto como `.webp`, crear su versión de 800 px y agregar su fila en `photos.js`.
 - Las portadas de las galerías de fotos (Fotografía Real Time, Real Time Fotos y Stephi Stegman Fotos) son WebP animados de 8 fotos. Se arman con `img2webp` a partir de las fotos de cada galería.
-- Nueve portadas son GIFs animados de entre 1,9 y 5,8 MB cada uno (unos 30 MB en total). Pesan mucho para la página de inicio. Si la carga se siente lenta, hay que reemplazarlos por WebP animado.
-- Los títulos, años y categorías salen de la selección de roxannasoy.com. Las categorías son una asignación inicial: revisarlas.
+- Ocho portadas animadas son videos mp4 cortos y silenciosos en loop (`media/<slug>/cover.mp4` más `poster.webp`, que se ve mientras carga). Pesan 2 MB en total; antes eran GIFs de 29 MB. No descargan nada hasta que entran en pantalla y se pausan al salir. Con "reducir movimiento" activado quedan en el poster. Para sumar una portada animada: `ffmpeg -i origen.mov -an -c:v libx264 -crf 27 -pix_fmt yuv420p -movflags +faststart cover.mp4`, un `poster.webp` con el primer cuadro, y en `site.js` usar `cover(slug, "mp4", ancho, alto, ratio)`. Evitar GIFs: pesan 10 a 15 veces más.
+- Los proyectos de la carpeta `selected works/` (Día de la Chipa, Veredas Extremas —el micro spot ganador y 5 piezas—, Hydrate, Vero Vega, MK Trends, Pilsen, Vogue, New Balance y Aquabrava) se subieron como versión web: videos en mp4 de 720 px, fotos en WebP de 1200 px y portadas en loop. Los originales (3,6 GB) no están en el repositorio ni en el sitio. Los títulos salen de los nombres de carpetas y archivos, y los años (2026) de las fechas de los archivos: revisarlos.
+- Los títulos, años y categorías de los proyectos de roxannasoy.com salen de esa selección. Las categorías de todos son una asignación inicial: revisarlas. Son las tres ofertas del estudio: *Cobertura realtime*, *Contenido para marcas* y *Spots y campañas* (los textos de esas ofertas están en `services` de `site.js` y se ven en Estudio).
 
 ## Datos de contacto
 

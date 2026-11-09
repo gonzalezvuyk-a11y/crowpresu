@@ -109,8 +109,10 @@
           delay: first ? 0.25 : 0
         });
       } else {
+        // En las vistas de texto el título ya entra con el resto de los bloques: animarlo dos veces
+        // hacía que la segunda animación tomara opacidad 0 como valor final y lo dejaba invisible.
         const heading = root.querySelector("h1");
-        if (heading) gsap.from(heading, { opacity: 0, y: 12, duration: 0.6, ease: "power3.out" });
+        if (heading && !heading.closest(".page")) gsap.from(heading, { opacity: 0, y: 12, duration: 0.6, ease: "power3.out" });
       }
 
       const bar = root.querySelector(".index-bar");

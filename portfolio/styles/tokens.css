@@ -9,6 +9,8 @@
   --color-tile: #e3dad0;
   --color-line: rgb(21 21 21 / 0.14);
   --color-focus: #78251d;
+  --color-award: #0b63e5; /* azul del Tatakuá: premios */
+  --color-award-ray: #e7f23c; /* amarillo de los rayos del ícono */
 
   --font-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -32,6 +34,7 @@
   --header-h: 3rem;
   --measure: 38rem;
   --tap-size: 2.75rem;
+  --clients-h: 6.125rem; /* alto del marquee de clientes: se descuenta del hero para que la barra de Work siga asomando */
 
   --duration-fast: 160ms;
 }

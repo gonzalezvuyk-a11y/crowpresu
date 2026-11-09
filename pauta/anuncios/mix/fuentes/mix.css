@@ -1,0 +1,30 @@
+/* Capas del mix de pauta, 1080×1920 con fondo transparente. Texto entre y=270 y y=1248 (zona segura de Reels e historias). */
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+body { position: relative; font-family: "Inter Tight", system-ui, sans-serif; color: #fff; }
+.mono { font-family: "IBM Plex Mono", ui-monospace, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+.sombra { text-shadow: 0 2px 26px rgb(0 0 0 / 0.55), 0 0 3px rgb(0 0 0 / 0.45); }
+
+/* Título de producto: numerado, arriba a la izquierda */
+.producto { position: absolute; left: 72px; right: 72px; top: 300px; }
+.producto .num { font-size: 30px; color: #f3e7dc; }
+.producto .nombre { margin-top: 14px; font-size: 104px; font-weight: 500; line-height: 0.98; letter-spacing: -0.03em; }
+
+/* Logo del gancho, centrado */
+.gancho { position: absolute; inset: 0; display: grid; place-items: center; }
+.gancho img { width: 640px; height: auto; filter: brightness(0) invert(1) drop-shadow(0 4px 30px rgb(0 0 0 / 0.5)); }
+
+/* Sello del premio, chico, bajo el título de Spots */
+.sello { position: absolute; left: 72px; top: 560px; display: flex; align-items: center; gap: 18px; padding: 16px 22px; background: #0b63e5; }
+.sello img { width: 72px; height: auto; }
+.sello span { font-size: 26px; color: #fff; }
+.sello b { color: #e7f23c; font-weight: 400; }
+
+/* Tarjeta final */
+.final { position: absolute; inset: 0; background: #151515; color: #cdb7a4; }
+.final .caja { position: absolute; left: 72px; right: 72px; top: 300px; height: 948px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.final .logo { width: 760px; height: auto; }
+.final .productos { margin-top: 48px; font-size: 30px; line-height: 1.7; color: rgb(205 183 164 / 0.8); }
+.final .cta { margin-top: 60px; padding: 26px 48px; background: #cdb7a4; color: #151515; font-size: 50px; font-weight: 500; letter-spacing: -0.01em; }
+.final .web { margin-top: 30px; font-size: 32px; color: rgb(205 183 164 / 0.85); text-transform: none; }
+.final .barra { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: #78251d; }

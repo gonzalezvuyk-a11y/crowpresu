@@ -1,0 +1,110 @@
+/* Marquee de clientes: logos en gris que pasan en bucle. Pausa con hover o foco; sin movimiento si el sistema lo pide. */
+.clients {
+  --clients-gap: clamp(2.5rem, 6vw, 5rem);
+  overflow: hidden;
+  padding-block: var(--space-4);
+  border-block: 1px solid var(--color-line);
+  /* Los bordes se desvanecen para que los logos no se corten en seco. */
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+
+.clients__belt {
+  display: flex;
+  width: max-content;
+  animation: clients-scroll 70s linear infinite;
+}
+
+.clients:hover .clients__belt,
+.clients:focus-within .clients__belt {
+  animation-play-state: paused;
+}
+
+.clients__track {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--clients-gap);
+  padding-right: var(--clients-gap);
+  margin: 0;
+  list-style: none;
+}
+
+.clients__item {
+  display: flex;
+  align-items: center;
+  height: 3rem;
+}
+
+/* Gris parejo para todos; multiply hace desaparecer los fondos blancos de los logos que no traen transparencia. */
+.clients__logo {
+  display: block;
+  height: var(--logo-h, 2rem);
+  width: auto;
+  filter: grayscale(1) contrast(1.5);
+  mix-blend-mode: multiply;
+  opacity: 0.8;
+  transition: filter var(--duration-fast), opacity var(--duration-fast);
+}
+
+.clients__item:hover .clients__logo {
+  filter: none;
+  opacity: 1;
+}
+
+/* Clientes sin logo cargado: el nombre en texto, con el mismo gris. */
+.clients__name {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--color-muted);
+  transition: color var(--duration-fast);
+}
+
+.clients__item:hover .clients__name {
+  color: var(--color-ink);
+}
+
+/* Con JS el marquee se mueve desde marquee.js y se puede arrastrar; la animación de CSS queda para cuando no hay JS. */
+.clients--draggable {
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.clients--draggable .clients__belt {
+  animation: none;
+  will-change: transform;
+}
+
+.clients--draggable.is-dragging {
+  cursor: grabbing;
+}
+
+@keyframes clients-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clients {
+    mask-image: none;
+  }
+
+  .clients__belt {
+    width: auto;
+    animation: none;
+  }
+
+  .clients__track {
+    flex-wrap: wrap;
+    row-gap: var(--space-3);
+    padding-inline: var(--gutter);
+  }
+
+  .clients__track[aria-hidden="true"] {
+    display: none;
+  }
+}

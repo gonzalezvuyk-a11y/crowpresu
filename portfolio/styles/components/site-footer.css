@@ -5,6 +5,69 @@
   color: var(--color-muted);
 }
 
+/* CTA de WhatsApp a la izquierda y redes a la derecha; en pantallas angostas se apilan. */
+.site-footer__contact {
+  display: flex;
+  flex: 1 0 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.site-footer__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-size);
+  text-decoration: none;
+  padding-inline: var(--space-4);
+  background: var(--color-ink);
+  color: var(--color-bg);
+  font-size: var(--text-sm);
+  letter-spacing: 0.02em;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.site-footer__cta:hover {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+.site-footer__social {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer__social-link {
+  display: inline-grid;
+  place-items: center;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  color: var(--color-ink);
+  transition: color var(--duration-fast);
+}
+
+.site-footer__social-link:hover {
+  color: var(--color-accent);
+}
+
+.site-footer__cta:focus-visible,
+.site-footer__social-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.site-footer__legal {
+  margin: 0;
+}
+
 .site-footer__top {
   display: inline-flex;
   align-items: center;

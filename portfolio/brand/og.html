@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>og</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=Inter+Tight:wght@400;500&display=swap">
+  <style>
+    /* Imagen para compartir (1200×630). Identidad: negro cálido, beige y rojo vino. */
+    * { box-sizing: border-box; margin: 0; }
+    html, body { width: 1200px; height: 630px; overflow: hidden; background: #151515; }
+    .card {
+      position: relative;
+      width: 1200px;
+      height: 630px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #cdb7a4;
+      font-family: "Inter Tight", system-ui, sans-serif;
+    }
+    .logo { width: 760px; height: auto; display: block; }
+    .descriptor {
+      margin-top: 36px;
+      font-size: 40px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    .tagline {
+      margin-top: 14px;
+      font-size: 26px;
+      color: rgb(205 183 164 / 0.62);
+    }
+    .award {
+      margin-top: 34px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 30px;
+      letter-spacing: -0.01em;
+    }
+    .seal {
+      display: grid;
+      place-items: center;
+      width: 68px;
+      height: 68px;
+      background: #0b63e5;
+      border-radius: 3px;
+    }
+    .seal img { width: 46px; height: auto; display: block; }
+    .meta {
+      position: absolute;
+      left: 56px;
+      right: 56px;
+      bottom: 44px;
+      display: flex;
+      justify-content: space-between;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 22px;
+      letter-spacing: 0.04em;
+      color: rgb(205 183 164 / 0.7);
+    }
+    .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 12px; background: #78251d; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="../assets/logo/crow-beige-logotipo.svg" alt="theCrow.">
+    <p class="descriptor">Estudio de contenido visual</p>
+    <p class="tagline">Always present.</p>
+    <div class="award"><span class="seal"><img src="../assets/awards/tatakua.svg" alt=""></span><span>Tatakuá de Plata · Veredas Extremas</span></div>
+    <div class="meta"><span>thecrowfilm.com</span><span>Asunción, Paraguay</span></div>
+    <div class="bar"></div>
+  </div>
+</body>
+</html>

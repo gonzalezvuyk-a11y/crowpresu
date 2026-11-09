@@ -37,9 +37,15 @@
 
 @media (min-width: 48em) {
   .service-list {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     column-gap: var(--space-5);
   }
+}
+
+.service-note {
+  max-width: var(--measure);
+  margin-top: var(--space-4);
+  color: var(--color-muted);
 }
 
 .service-list dt {
@@ -85,4 +91,54 @@
 
 .contact-list__link:hover {
   color: var(--color-accent);
+}
+
+/* Reconocimientos */
+.award-list {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.award-list__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap-size);
+  text-decoration: none;
+}
+
+.award-list__seal {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--color-award);
+  border-radius: 2px;
+}
+
+.award-list__seal img {
+  display: block;
+  width: 2.25rem;
+  height: auto;
+}
+
+.award-list__name {
+  display: block;
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-award);
+}
+
+.award-list__detail {
+  color: var(--color-muted);
+}
+
+.award-list__link:hover .award-list__name {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }

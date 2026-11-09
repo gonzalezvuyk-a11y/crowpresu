@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>portada facebook claro</title>
+  <style>
+    /* Portada de Facebook, 1640×720 (el doble de 820×360).
+       Computadora muestra 820×312 (recorta arriba y abajo) y celular 640×360 (recorta a los costados):
+       todo el contenido va en el centro de 1280×624, y en computadora la foto de perfil tapa abajo a la izquierda. */
+    @font-face { font-family: "TT Norms Mono"; font-weight: 400; src: url("../../assets/fonts/TT_Norms_Pro_Mono_Trial_Regular.ttf") format("truetype"); }
+    @font-face { font-family: "TT Norms Mono"; font-weight: 600; src: url("../../assets/fonts/TT_Norms_Pro_Mono_Trial_DemiBold.ttf") format("truetype"); }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { width: 1640px; height: 720px; overflow: hidden; background: #ffffff; }
+    body { display: grid; place-items: center; font-family: "Inter Tight", system-ui, sans-serif; color: #151515; }
+    .grupo { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .lema { font-family: "TT Norms Mono", ui-monospace, monospace; font-size: 92px; font-weight: 400; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; }
+    .ofertas { margin-top: 44px; font-family: "TT Norms Mono", ui-monospace, monospace; font-size: 21px; font-weight: 400; letter-spacing: 0.02em; text-transform: uppercase; color: #151515; }
+  </style>
+</head>
+<body>
+  <div class="grupo">
+    <p class="lema">Always present.</p>
+    <p class="ofertas">Cobertura realtime · Contenido para marcas · Spots y campañas</p>
+  </div>
+</body>
+</html>

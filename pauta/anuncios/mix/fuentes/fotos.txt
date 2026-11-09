@@ -1,0 +1,19 @@
+vv-122|vero vega/Julio-Jornada2-122.jpg
+vv-134|vero vega/Julio-Jornada2-134.jpg
+vv-56|vero vega/Julio-Jornada2-56.jpg
+vv-113|vero vega/Julio-Jornada2-113.jpg
+vv-40|vero vega/Julio-Jornada2-40.jpg
+vv-137|vero vega/Julio-Jornada2-137.jpg
+vv-125|vero vega/Julio-Jornada2-125.jpg
+vv-131|vero vega/Julio-Jornada2-131.jpg
+vv-59|vero vega/Julio-Jornada2-59.jpg
+vv-43|vero vega/Julio-Jornada2-43.jpg
+bro-146|broterra/RX_00146.jpg
+bro-156|broterra/RX_00156.jpg
+bro-158|broterra/RX_00158.jpg
+bro-213|broterra/RX_00213.jpg
+bro-169|broterra/RX_00169.jpg
+bro-170|broterra/RX_00170.jpg
+bro-172|broterra/RX_00172.jpg
+bro-176|broterra/RX_00176.jpg
+bro-183|broterra/RX_00183.jpg

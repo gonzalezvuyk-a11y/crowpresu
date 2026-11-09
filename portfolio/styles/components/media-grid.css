@@ -34,6 +34,7 @@
 }
 
 .tile__frame {
+  position: relative;
   display: block;
   aspect-ratio: 4 / 3;
   overflow: hidden;
@@ -70,6 +71,31 @@
 .tile__meta,
 .media-item__caption {
   color: var(--color-muted);
+}
+
+/* Sello del Tatakuá en la esquina de la portada. */
+.tile__seal {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--color-award);
+  border-radius: 2px;
+}
+
+.tile__seal img {
+  display: block;
+  width: 2.5rem;
+  height: auto;
+}
+
+/* Premio: línea propia debajo del título y el año. */
+.tile__award {
+  flex-basis: 100%;
+  color: var(--color-award);
 }
 
 .tile:hover .tile__title,
