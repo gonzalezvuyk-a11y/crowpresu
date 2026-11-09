@@ -71,7 +71,7 @@ window.CROW = {
   },
 
   projects: [
-    { slug: "sistema-b", title: "Sistema B", detail: "Día B", year: 2026, category: "Cobertura realtime", cover: cover("sistema-b", "webp", 720, 900, "portrait"),
+    { slug: "sistema-b", title: "Sistema B", detail: "Día B", year: 2026, category: "Cobertura realtime", cover: cover("sistema-b", "mp4", 960, 540, "wide"),
       media: [...clips("sistema-b", "Sistema B, Día B", [["aftermovie", "Aftermovie"]], "wide"), ...clips("sistema-b", "Sistema B, Día B", [["recap-sponsors", "Recap sponsors"]]), ...photos("sistema-b", "Sistema B, Día B")] },
     { slug: "modiga", title: "Módiga", detail: "100 años", year: 2026, category: "Cobertura realtime", cover: cover("modiga", "mp4", 720, 900, "portrait"), media: photos("modiga", "Módiga, 100 años") },
     { slug: "pacto-global", title: "Pacto Global", detail: "Red Paraguay", year: 2026, category: "Cobertura realtime", cover: cover("pacto-global", "v2.webp", 720, 540, "landscape"), media: photos("pacto-global", "Pacto Global, Red Paraguay") },
