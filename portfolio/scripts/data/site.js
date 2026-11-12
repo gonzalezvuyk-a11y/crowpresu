@@ -27,8 +27,8 @@
 const photos = (slug, label) =>
   (window.CROW_PHOTOS[slug] || []).map(([file, width, height], i) => ({
     type: "image",
-    src: `media/${slug}/${file}`,
-    small: `media/${slug}/${file.replace(".webp", "-800.webp")}`,
+    src: `/media/${slug}/${file}`,
+    small: `/media/${slug}/${file.replace(".webp", "-800.webp")}`,
     width,
     height,
     ratio: "natural",
@@ -38,17 +38,17 @@ const photos = (slug, label) =>
 const clips = (slug, label, items, ratio = "portrait") =>
   items.map(([name, caption]) => ({
     type: "video",
-    src: `media/${slug}/${name}.mp4`,
-    poster: `media/${slug}/${name}-poster.webp`,
+    src: `/media/${slug}/${name}.mp4`,
+    poster: `/media/${slug}/${name}-poster.webp`,
     ratio,
     title: `${label}, ${caption}`
   }));
 const adobe = (ratio, ids) => ids.map((id) => ({ type: "adobe", id, ratio }));
 // ratio: portrait (4:5) | square (1:1) | landscape (4:3) | wide (16:9). position: foco del recorte, ej. "50% 20%".
 const cover = (slug, ext, width, height, ratio = "landscape", position = "") => ({
-  src: `media/${slug}/cover.${ext}`,
+  src: `/media/${slug}/cover.${ext}`,
   // Las portadas animadas son videos cortos en loop; el poster se ve mientras cargan.
-  poster: ext.endsWith("mp4") ? `media/${slug}/poster.webp` : "",
+  poster: ext.endsWith("mp4") ? `/media/${slug}/poster.webp` : "",
   width, height, ratio, position
 });
 
@@ -73,9 +73,13 @@ window.CROW = {
   },
 
   projects: [
+    { slug: "mundialito-trebol", title: "Mundialito Trébol", detail: "Trebolín al Mundial", year: 2026, category: "Cobertura realtime", cover: cover("mundialito-trebol", "v2.mp4", 720, 900, "portrait"),
+      media: [...clips("mundialito-trebol", "Mundialito Trébol", [["historia-2", "Historia 1"], ["historia-3", "Historia 2"], ["historia-2-larga", "Historia 3"]]), ...photos("mundialito-trebol", "Mundialito Trébol")] },
     { slug: "sistema-b", title: "Sistema B", detail: "Día B", year: 2026, category: "Cobertura realtime", cover: cover("sistema-b", "mp4", 960, 540, "wide"),
       media: [...clips("sistema-b", "Sistema B, Día B", [["aftermovie", "Aftermovie"]], "wide"), ...clips("sistema-b", "Sistema B, Día B", [["recap-sponsors", "Recap sponsors"]]), ...photos("sistema-b", "Sistema B, Día B")] },
     { slug: "modiga", title: "Módiga", detail: "100 años", year: 2026, category: "Cobertura realtime", cover: cover("modiga", "mp4", 720, 900, "portrait"), media: photos("modiga", "Módiga, 100 años") },
+    { slug: "vogue", title: "Vogue", detail: "Belleza Latina", year: 2026, category: "Cobertura realtime", cover: cover("vogue", "mp4", 720, 900, "portrait"),
+      media: clips("vogue", "Vogue, Belleza Latina", [["clip", "Clips"], ["loop-fotos", "Loop de fotos"]]) },
     { slug: "pacto-global", title: "Pacto Global", detail: "Red Paraguay", year: 2026, category: "Cobertura realtime", cover: cover("pacto-global", "v2.webp", 720, 540, "landscape"), media: photos("pacto-global", "Pacto Global, Red Paraguay") },
     { slug: "aurora-alejandro", title: "Aurora & Alejandro", detail: "", year: 2026, category: "Fotografía", cover: cover("aurora-alejandro", "v2.mp4", 720, 900, "portrait"), media: photos("aurora-alejandro", "Aurora & Alejandro") },
     { slug: "bancard", title: "Bancard", detail: "Charla Técnica", year: 2026, category: "Cobertura realtime", cover: cover("bancard", "v2.webp", 720, 900, "portrait"), media: photos("bancard", "Bancard, Charla Técnica") },
@@ -92,8 +96,6 @@ window.CROW = {
       media: clips("mk-trends", "MK Trends", [["reel", "Reel"]]) },
     { slug: "pilsen", title: "Pilsen", detail: "Torneo de Penales", year: 2026, category: "Cobertura realtime", cover: cover("pilsen", "mp4", 720, 540, "landscape"),
       media: [...clips("pilsen", "Pilsen, Torneo de Penales", [["recap", "Recap"], ["historia-3", "Historia 3"], ["historia-4", "Historia 4"], ["historia-7", "Historia 7"]]), ...photos("pilsen", "Pilsen, Torneo de Penales")] },
-    { slug: "vogue", title: "Vogue", detail: "Belleza Latina", year: 2026, category: "Cobertura realtime", cover: cover("vogue", "mp4", 720, 900, "portrait"),
-      media: clips("vogue", "Vogue, Belleza Latina", [["clip", "Clips"], ["loop-fotos", "Loop de fotos"]]) },
     { slug: "new-balance", title: "New Balance", detail: "Clips", year: 2026, category: "Cobertura realtime", cover: cover("new-balance", "mp4", 960, 540, "wide"),
       media: clips("new-balance", "New Balance", [["clips", "Clips"]]) },
     { slug: "aquabrava", title: "Aquabrava", detail: "Clips", year: 2026, category: "Contenido para marcas", cover: cover("aquabrava", "mp4", 720, 720, "square"),

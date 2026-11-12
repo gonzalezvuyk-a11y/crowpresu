@@ -1,6 +1,6 @@
 /*
  * Píxel de Meta (ID 1957630941866467, cuenta publicitaria de theCrow.).
- * La web es una sola página con rutas por hash, así que además de la carga inicial se cuenta una vista
+ * La web cambia de ruta sin recargar, así que además de la carga inicial se cuenta una vista
  * nueva en cada cambio de ruta, y se miden los contactos: clic en WhatsApp o mail y el formulario.
  * Los eventos del formulario salen de main.js con window.crowTrack.
  */
@@ -36,8 +36,8 @@
     }
   };
 
-  // Cada ruta nueva es una vista nueva (la primera ya se contó arriba).
-  window.addEventListener("hashchange", function () {
+  // Cada ruta nueva es una vista nueva (la primera ya se contó arriba). main.js avisa con este evento.
+  window.addEventListener("crow:route", function () {
     window.crowTrack("PageView");
   });
 

@@ -1,6 +1,9 @@
 /*
- * Router por hash + render de vistas. Sin dependencias.
- * Rutas: #/ (work) · #/work/<slug> · #/estudio · #/contacto
+ * Router por direcciones reales (History API) + render de vistas. Sin dependencias.
+ * Rutas: / (work) · /work/<slug> · /estudio · /contacto
+ * Cada ruta existe también como archivo estático (lo genera scripts/prerender.mjs) con su título,
+ * descripción y canónico, para que Google y las redes puedan leer cada una por separado.
+ * Las direcciones viejas con # (#/work/<slug>) se convierten al cargar.
  */
 (function () {
   "use strict";
@@ -17,6 +20,7 @@
   };
 
   // Direcciones que cambiaron de nombre: siguen funcionando.
+  const SITE_DESCRIPTION = "theCrow. es un estudio de contenido visual: fotografía, video, edición y producción para marcas, eventos y experiencias. Always present.";
   const RENAMED = { veredas: "veredas-extremas", "veredas-extremas-fotos": "veredas-extremas" };
   const motion = window.CrowMotion;
   let isFirstRender = true;
@@ -31,7 +35,7 @@
   }
 
   function projectHref(project) {
-    return `#/work/${encodeURIComponent(project.slug)}`;
+    return `/work/${encodeURIComponent(project.slug)}`;
   }
 
   function projectLabel(project) {
@@ -62,7 +66,7 @@
   }
 
   // Sello del Tatakuá sobre la portada (decorativo: el nombre del premio está en el texto).
-  const AWARD_SEAL = '<span class="tile__seal" aria-hidden="true"><img src="assets/awards/tatakua.svg" alt="" width="28" height="16"></span>';
+  const AWARD_SEAL = '<span class="tile__seal" aria-hidden="true"><img src="/assets/awards/tatakua.svg" alt="" width="28" height="16"></span>';
 
   function tile(project, index) {
     const cover = project.cover;
@@ -187,7 +191,7 @@
     if (!clients || !clients.length) return "";
     const item = (c, hidden) => {
       const inner = c.logo
-        ? `<img class="clients__logo" src="assets/clients/${c.logo}" alt="${hidden ? "" : esc(c.name)}" width="${c.w}" height="${c.h}" style="--logo-h:${c.size}rem" decoding="async">`
+        ? `<img class="clients__logo" src="/assets/clients/${c.logo}" alt="${hidden ? "" : esc(c.name)}" width="${c.w}" height="${c.h}" style="--logo-h:${c.size}rem" decoding="async">`
         : `<span class="clients__name">${esc(c.name)}</span>`;
       return `<li class="clients__item">${inner}</li>`;
     };
@@ -205,6 +209,8 @@
 
     return {
       title: `${site.name} ${site.descriptor}`,
+      path: "/",
+      description: SITE_DESCRIPTION,
       html: `
         <section class="hero">
           <h1 class="hero__text" tabindex="-1">${esc(site.intro)}</h1>
@@ -228,7 +234,7 @@
     const meta = [project.detail, project.category, project.year].filter(Boolean).join(", ");
     const award = project.award
       ? `<aside class="award-banner" aria-label="Premio">
-            <img class="award-banner__icon" src="assets/awards/tatakua.svg" alt="" width="96" height="54">
+            <img class="award-banner__icon" src="/assets/awards/tatakua.svg" alt="" width="96" height="54">
             <div class="award-banner__text">
               <p class="award-banner__label">Premio</p>
               <p class="award-banner__name">${esc(project.award.name)}</p>
@@ -248,11 +254,13 @@
 
     return {
       title: projectLabel(project),
+      path: `/work/${encodeURIComponent(project.slug)}`,
+      description: `${projectLabel(project)}: ${project.category.toLowerCase()} de ${site.name} (${project.year}). ${site.descriptor} en Asunción, Paraguay.`,
       html: `
         <article>
           <div class="index-bar">
             <div class="index-bar__lead">
-              <a class="index-bar__crumb" href="#/">Work</a>
+              <a class="index-bar__crumb" href="/">Work</a>
               <span class="index-bar__crumb" aria-hidden="true">/</span>
               <h1 class="index-bar__title" tabindex="-1"><strong>${esc(project.title)}</strong> <span class="index-bar__meta">${esc(meta)}</span></h1>
             </div>
@@ -281,7 +289,7 @@
                 .map(
                   (p) => `<li>
                 <a class="award-list__link" href="${projectHref(p)}">
-                  <span class="award-list__seal" aria-hidden="true"><img src="assets/awards/tatakua.svg" alt="" width="36" height="20"></span>
+                  <span class="award-list__seal" aria-hidden="true"><img src="/assets/awards/tatakua.svg" alt="" width="36" height="20"></span>
                   <span><strong class="award-list__name">${esc(p.award.name)}</strong>
                   <span class="award-list__detail">${esc(projectLabel(p))}. ${esc(p.award.detail)}</span></span>
                 </a>
@@ -295,6 +303,8 @@
   function studioView() {
     return {
       title: "Estudio",
+      path: "/estudio",
+      description: "theCrow. nace como evolución del trabajo de Roxanna Ramírez: fotógrafa, videógrafa y editora. Cobertura realtime, contenido para marcas y spots y campañas en Asunción, Paraguay.",
       html: `
         <div class="page">
           <h1 class="text-page__title" tabindex="-1">Estudio de contenido visual.</h1>
@@ -339,6 +349,8 @@
 
     return {
       title: "Contacto",
+      path: "/contacto",
+      description: "Escribinos por WhatsApp, mail o el formulario: eventos, marcas, campañas o contenido recurrente en Asunción, Paraguay.",
       html: `
         <div class="page">
           <h1 class="text-page__title" tabindex="-1">Contemos lo que está pasando.</h1>
@@ -388,11 +400,14 @@
   function notFoundView() {
     return {
       title: "Página no encontrada",
+      path: "/404",
+      noindex: true,
+      description: "La dirección que buscás no existe o cambió de lugar.",
       html: `
         <div class="page">
           <h1 class="text-page__title" tabindex="-1">No encontramos esa página.</h1>
           <div class="project__empty" style="margin-top: var(--space-5)">
-            ${stateMessage({ title: "Error 404", text: "El proyecto que buscás no existe o cambió de lugar.", link: { href: "#/", label: "Volver a Work" } })}
+            ${stateMessage({ title: "Error 404", text: "El proyecto que buscás no existe o cambió de lugar.", link: { href: "/", label: "Volver a Work" } })}
           </div>
         </div>`
     };
@@ -400,8 +415,8 @@
 
   /* ---------- Router ---------- */
 
-  function resolve(hash) {
-    const parts = hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  function resolve(pathname) {
+    const parts = pathname.split("/").filter(Boolean);
     if (parts.length === 0) return { nav: "work", view: workView() };
     if (parts[0] === "work" && parts[1]) {
       const slug = decodeURIComponent(parts[1]);
@@ -439,8 +454,38 @@
 
   let stopMarquee = () => {};
 
+  const SITE_URL = "https://thecrowfilm.com";
+
+  // Título, descripción, canónico y etiquetas para compartir de la ruta actual (también están escritos en el
+  // archivo estático de cada ruta; esto los mantiene al navegar sin recargar).
+  function setPageMeta(view) {
+    const url = SITE_URL + view.path;
+    const set = (selector, attr, value) => {
+      const el = document.querySelector(selector);
+      if (el) el.setAttribute(attr, value);
+    };
+    set('link[rel="canonical"]', "href", url);
+    set('meta[name="description"]', "content", view.description);
+    set('meta[property="og:url"]', "content", url);
+    set('meta[property="og:title"]', "content", document.title);
+    set('meta[property="og:description"]', "content", view.description);
+    set('meta[name="twitter:title"]', "content", document.title);
+    set('meta[name="twitter:description"]', "content", view.description);
+    let robots = document.querySelector('meta[name="robots"]');
+    if (view.noindex) {
+      if (!robots) {
+        robots = document.createElement("meta");
+        robots.name = "robots";
+        document.head.append(robots);
+      }
+      robots.content = "noindex";
+    } else if (robots) {
+      robots.remove();
+    }
+  }
+
   function render() {
-    const { nav, view } = resolve(window.location.hash);
+    const { nav, view } = resolve(window.location.pathname);
 
     motion.leave();
     stopMarquee();
@@ -449,6 +494,7 @@
     motion.enter(main, { first: isFirstRender });
     watchLoops();
     document.title = view.title.startsWith(site.name) ? view.title : `${view.title} — ${site.name}`;
+    setPageMeta(view);
 
     navLinks.forEach((link) => {
       if (link.dataset.nav === nav) link.setAttribute("aria-current", "page");
@@ -457,10 +503,11 @@
 
     motion.scrollToTop(true);
 
-    // Navegar por hash no mueve el foco: lo llevamos al título de la vista nueva (no en la carga inicial).
+    // Navegar sin recargar no mueve el foco: lo llevamos al título de la vista nueva (no en la carga inicial).
     if (!isFirstRender) {
       const heading = main.querySelector("h1");
       if (heading) heading.focus({ preventScroll: true });
+      window.dispatchEvent(new Event("crow:route")); // el píxel cuenta una vista nueva
     }
     isFirstRender = false;
   }
@@ -602,6 +649,23 @@
 
   renderFooterContact();
   renderFloatingWhatsapp();
-  window.addEventListener("hashchange", render);
+  // Navegación: los links internos cambian la dirección sin recargar la página.
+  const INTERNAL = /^\/(?:$|work\/|estudio$|contacto$)/;
+  document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const link = event.target.closest("a[href]");
+    if (!link || (link.target && link.target !== "_self") || link.hasAttribute("download")) return;
+    const href = link.getAttribute("href");
+    if (!INTERNAL.test(href)) return;
+    event.preventDefault();
+    if (href !== window.location.pathname) window.history.pushState({}, "", href);
+    render();
+  });
+  window.addEventListener("popstate", render);
+
+  // Las direcciones viejas con # (por ejemplo /#/work/sistema-b) pasan a la dirección real.
+  if (window.location.hash.startsWith("#/")) {
+    window.history.replaceState({}, "", window.location.hash.slice(1) || "/");
+  }
   render();
 })();

@@ -7,9 +7,11 @@
  *   node scripts/deploy.mjs           publica en producción
  *   node scripts/deploy.mjs --dry     solo muestra la versión y qué archivos cambiaría
  *
- * Calcula un hash con el contenido de scripts/ y styles/, lo agrega a los <script> y al CSS de
- * index.html y a los @import de styles/main.css, publica, y deja los archivos como estaban: el
- * repositorio no guarda los ?v=. Las fotos y videos no lo necesitan: cambian de nombre cuando cambian.
+ * Primero corre scripts/prerender.mjs, que genera la página de cada ruta y el sitemap a partir de site.js.
+ * Después calcula un hash con el contenido de scripts/ y styles/, lo agrega a los <script> y al CSS de
+ * index.html y de cada página generada, y a los @import de styles/main.css, publica, y deja los archivos
+ * como estaban: el repositorio no guarda los ?v=. Las fotos y videos no lo necesitan: cambian de nombre
+ * cuando cambian.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -28,27 +30,35 @@ function filesIn(dir, ext) {
   });
 }
 
+// Páginas generadas, sin versión todavía (se reescriben antes de calcular el hash).
+execFileSync("node", [path.join(ROOT, "scripts/prerender.mjs")], { cwd: ROOT, stdio: "inherit" });
+
 const sources = [...filesIn(path.join(ROOT, "scripts"), [".js"]), ...filesIn(path.join(ROOT, "styles"), [".css"])].sort();
 const hash = crypto.createHash("sha1");
 for (const f of sources) hash.update(path.relative(ROOT, f)).update(fs.readFileSync(f));
 const version = hash.digest("hex").slice(0, 10);
 
-const targets = {
-  "index.html": (s) => s
-    .replace(/(<script src="scripts\/[^"?]+\.js)(\?v=[^"]*)?"/g, `$1?v=${version}"`)
-    .replace(/(<link rel="stylesheet" href="styles\/[^"?]+\.css)(\?v=[^"]*)?"/g, `$1?v=${version}"`),
-  "styles/main.css": (s) => s.replace(/@import url\("([^"?]+\.css)(\?v=[^"]*)?"\)/g, `@import url("$1?v=${version}")`)
-};
+const withVersion = (s) =>
+  s
+    .replace(/(<script src="\/?scripts\/[^"?]+\.js)(\?v=[^"]*)?"/g, `$1?v=${version}"`)
+    .replace(/(<link rel="stylesheet" href="\/?styles\/[^"?]+\.css)(\?v=[^"]*)?"/g, `$1?v=${version}"`);
+
+const htmlPages = [
+  path.join(ROOT, "index.html"),
+  ...["work", "estudio", "contacto"].flatMap((d) => (fs.existsSync(path.join(ROOT, d)) ? filesIn(path.join(ROOT, d), [".html"]) : []))
+];
+const targets = new Map(htmlPages.map((file) => [file, withVersion]));
+targets.set(path.join(ROOT, "styles/main.css"), (s) => s.replace(/@import url\("([^"?]+\.css)(\?v=[^"]*)?"\)/g, `@import url("$1?v=${version}")`));
 
 const originals = {};
-for (const [rel, transform] of Object.entries(targets)) {
-  const file = path.join(ROOT, rel);
+let refs = 0;
+for (const [file, transform] of targets) {
   originals[file] = fs.readFileSync(file, "utf8");
   const next = transform(originals[file]);
-  const count = (next.match(new RegExp(`\\?v=${version}`, "g")) || []).length;
-  console.log(`${rel}: ${count} referencias con ?v=${version}`);
+  refs += (next.match(new RegExp(`\\?v=${version}`, "g")) || []).length;
   if (!dry) fs.writeFileSync(file, next);
 }
+console.log(`${targets.size} archivos, ${refs} referencias con ?v=${version}`);
 
 if (dry) process.exit(0);
 try {

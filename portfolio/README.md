@@ -22,18 +22,20 @@ cd portfolio
 node scripts/deploy.mjs
 ```
 
-El script agrega `?v=<hash>` a los archivos de código (`scripts/` y `styles/`, en `index.html` y en los `@import` de `styles/main.css`), publica con `vercel deploy --prod --yes` y deja los archivos locales como estaban. El hash sale del contenido, así que solo cambia cuando cambia el código. Sirve para que todos los navegadores bajen la versión nueva apenas vuelven a entrar, incluidos los de WhatsApp e Instagram, que guardan las páginas más tiempo. Con `--dry` muestra qué cambiaría sin publicar. Las fotos y videos no lo necesitan: cuando se reemplaza una portada, va con nombre nuevo (`cover.v2.webp`). Publicar con `vercel deploy` a secas sigue funcionando, pero sin la versión.
+El script primero genera las páginas por ruta y el sitemap (`scripts/prerender.mjs`), y agrega `?v=<hash>` a los archivos de código (`scripts/` y `styles/`, en `index.html`, en cada página generada y en los `@import` de `styles/main.css`), publica con `vercel deploy --prod --yes` y deja los archivos locales como estaban. El hash sale del contenido, así que solo cambia cuando cambia el código. Sirve para que todos los navegadores bajen la versión nueva apenas vuelven a entrar, incluidos los de WhatsApp e Instagram, que guardan las páginas más tiempo. Con `--dry` muestra qué cambiaría sin publicar. Las fotos y videos no lo necesitan: cuando se reemplaza una portada, va con nombre nuevo (`cover.v2.webp`). Publicar con `vercel deploy` a secas sigue funcionando, pero sin la versión.
 
 **Dominio propio:** https://thecrowfilm.com (registrado en GoDaddy). `www.thecrowfilm.com` redirige al dominio principal y `http` redirige a `https`, con certificado de Let's Encrypt que Vercel renueva solo. Registros DNS en GoDaddy: `A @` hacia `216.198.79.1` y `CNAME www` hacia `1550be9ff3197e34.vercel-dns-017.com`; los demás (NS, SOA, `_domainconnect`, `_dmarc`) quedaron como estaban. Si se cambia de proveedor de DNS, hay que repetir esos dos registros. La dirección `thecrow-portfolio.vercel.app` sigue funcionando. `vercel.json` define el caché de `media/` y `assets/` (7 días) y encabezados de seguridad básicos.
 
 ## Imagen para compartir, íconos y SEO
 
-- **Imagen para compartir** (`og.png`, 1200×630): la que aparece al pegar el link en WhatsApp, Instagram, LinkedIn, X o Facebook. Es el logotipo beige sobre negro cálido, con la barra vino. Incluye el sello del Tatakuá y "Tatakuá de Plata · Veredas Extremas". Las etiquetas `og:` y `twitter:` están en el `<head>` de `index.html`.
+- **Imagen para compartir** (`og-v2.png`, 1200×630): la que aparece al pegar el link en WhatsApp, Instagram, LinkedIn, X o Facebook. Es el logotipo en negro sobre fondo beige, con "ESTUDIO DE CONTENIDO VISUAL" y `THECROWFILM.COM`. El archivo editable (vectorial) es `brand/og-thecrow.ai`. Cuando se cambia la imagen va con nombre nuevo (`og-v3.png`…) para esquivar el caché, y se actualiza en el `<head>` de `index.html` (etiquetas `og:` y `twitter:` y los datos estructurados); después hay que pedirle a Meta que vuelva a leer el link en developers.facebook.com/tools/debug.
 - **Íconos**: el isotipo "tC" negro sobre fondo blanco, en `favicon.ico`, `assets/icons/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` (iPhone) e `icon-192.png` / `icon-512.png` (los de `site.webmanifest`).
 - **Regenerar todo**: `portfolio/brand/build.sh`. Dibuja `brand/og.html` y `brand/icon.html` con Google Chrome sin ventana y reduce los tamaños con ffmpeg. Para cambiar el texto o el diseño, editar esos dos HTML y volver a correr el script. La carpeta `brand/` no se publica (`.vercelignore`).
+- **Reels y GIF animados**: `brand/render-frames.mjs <pagina.html> <carpeta> [fps] [ancho] [alto]` renderiza una página de `brand/` cuadro a cuadro con Chrome (la página expone `window.pintar(t)`, `window.DURACION` y `window.listo`; ejemplo: `reel-asi-se-ve-tu-evento.html`) y después se codifica con ffmpeg a MP4 y GIF. Las historias estilo Instagram del carrusel y del reel salen de `brand/historias.css` y `brand/historias.js`. Necesita Node 22+.
 - **Cuando se cambia la imagen**, WhatsApp, Facebook y LinkedIn guardan la vieja varios días. Para forzar la actualización: Facebook Sharing Debugger (developers.facebook.com/tools/debug) y LinkedIn Post Inspector, con el botón de volver a leer la página.
-- **Buscadores**: `robots.txt`, `sitemap.xml`, dirección canónica y datos estructurados (`ProfessionalService` con nombre, correo, teléfono e Instagram). `404.html` es la página de error con la identidad del sitio.
-- **Límite conocido**: las vistas usan `#/` en la dirección, y ni Google ni los previews leen lo que viene después del `#`. Por eso todos los links se ven con la misma imagen y descripción, y Google solo indexa la portada. Para que cada proyecto tenga su propio link, imagen y posicionamiento, hay que pasar a direcciones reales (`/work/<proyecto>`) con una página por proyecto.
+- **Buscadores**: `robots.txt`, `sitemap.xml` (con las 34 direcciones: portada, estudio, contacto y un link por proyecto), dirección canónica y datos estructurados (`ProfessionalService` con nombre, correo, teléfono e Instagram; migas de pan en cada página interna). `404.html` es la página de error con la identidad del sitio.
+- **Direcciones reales**: `/`, `/work/<proyecto>`, `/estudio` y `/contacto`. Cada una existe como archivo estático (`work/<proyecto>/index.html`, `estudio/index.html`, `contacto/index.html`) con su propio `<title>`, descripción, dirección canónica y etiquetas para compartir, más un título y un resumen escritos en el HTML (ocultos a la vista; el sitio los reemplaza al cargar). Esos archivos y `sitemap.xml` los genera `scripts/prerender.mjs` a partir de `site.js`: no se editan a mano y se regeneran solos al publicar (también con `node scripts/prerender.mjs`). Al agregar o renombrar un proyecto no hay que hacer nada más que publicar. Las direcciones viejas con `#` (`/#/work/<proyecto>`) se convierten solas, y `veredas` y `veredas-extremas-fotos` redirigen a `/work/veredas-extremas` (`vercel.json`). Las imágenes para compartir son la misma en todas las páginas (`og-v2.png`).
+- **Pendiente de Google**: dar de alta `https://thecrowfilm.com` en Google Search Console y enviar `https://thecrowfilm.com/sitemap.xml`. Eso solo lo puede hacer quien tenga la cuenta de Google.
 
 ## Agregar o editar un proyecto
 
@@ -68,14 +70,14 @@ Están en `site.js`: `email`, `whatsapp`, `whatsappMessage` (el mensaje que lleg
 ```
 index.html
 styles/        tokens.css · base.css · layout.css · components/*.css · main.css (orden con @layer)
-scripts/       main.js (router por hash, vistas, selector de columnas, reloj) · motion.js (Lenis + GSAP) · data/site.js (contenido)
+scripts/       main.js (router por direcciones reales (History API), vistas, selector de columnas, reloj) · motion.js (Lenis + GSAP) · pixel.js (píxel de Meta) · prerender.mjs (páginas por ruta y sitemap) · deploy.mjs (publicar) · data/site.js (contenido)
 assets/logo/   isotipo y logotipo, en beige y en negro
 media/         portadas por proyecto
 ```
 
 ## Decisiones
 
-- Navegación por hash (`#/work/<slug>`): una sola página, sin servidor. Al cambiar de vista se actualiza `<title>` y el foco pasa al `h1`.
+- Navegación por direcciones reales (`/work/<slug>`) con History API: los links internos cambian la dirección sin recargar, funcionan el botón Atrás y los links directos. Al cambiar de vista se actualizan `<title>`, descripción y canónico, y el foco pasa al `h1`.
 - Tipografías: Inter Tight (texto) e IBM Plex Mono (epígrafes), de Google Fonts. No se usan las TT Norms de `/assets/fonts` porque son una versión de prueba (trial) y no están licenciadas para producción.
 - Colores: en hover, el texto y el logo cambian al beige `#CFB9A6` (`--color-accent`); las portadas y "Siguiente" además se subrayan. Sobre el fondo claro el beige tiene poco contraste (cerca de 1,6:1), así que se usa solo en hover. El rojo vino queda solo para el anillo de foco del teclado.
 - El logo del header es una máscara CSS del SVG (`assets/logo/crow-ink-logotipo.svg`), para que pueda cambiar de color en hover. Para pasar a una versión oscura alcanza con cambiar los colores de `styles/tokens.css` y usar el logo beige.

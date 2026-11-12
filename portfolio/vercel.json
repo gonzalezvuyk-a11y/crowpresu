@@ -1,4 +1,18 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/work/veredas",
+      "destination": "/work/veredas-extremas",
+      "permanent": true
+    },
+    {
+      "source": "/work/veredas-extremas-fotos",
+      "destination": "/work/veredas-extremas",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/media/(.*)",
