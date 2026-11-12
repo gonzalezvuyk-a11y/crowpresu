@@ -167,6 +167,19 @@
       </ul>`;
   }
 
+  // Botón flotante "Hablemos": abre el WhatsApp del número de site.js, en cualquier pantalla.
+  function renderFloatingWhatsapp() {
+    if (!site.whatsapp) return;
+    const text = site.whatsappMessage ? `?text=${encodeURIComponent(site.whatsappMessage)}` : "";
+    const link = document.createElement("a");
+    link.className = "wa-float";
+    link.href = `https://wa.me/${site.whatsapp.replace(/\D/g, "")}${text}`;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.innerHTML = `${icon("whatsapp")}<span class="wa-float__label">Hablemos</span><span class="visually-hidden"> por WhatsApp (se abre en otra pestaña)</span>`;
+    document.body.append(link);
+  }
+
   /* ---------- Vistas ---------- */
 
   // Marquee de clientes. La segunda copia de la lista solo existe para que el bucle no tenga corte y se oculta a lectores de pantalla.
@@ -332,6 +345,34 @@
           <p class="text-page__lead">
             Eventos, marcas, campañas o contenido recurrente. Contanos qué tenés en mente y vemos cómo estar presentes.
           </p>
+          <form class="contact-form" data-contact-form novalidate>
+            <div class="contact-form__field">
+              <label for="cf-name">Nombre <span class="contact-form__req">(obligatorio)</span></label>
+              <input id="cf-name" name="name" type="text" autocomplete="name" required aria-describedby="cf-name-error">
+              <p class="contact-form__error" id="cf-name-error" hidden></p>
+            </div>
+            <div class="contact-form__field">
+              <label for="cf-company">Empresa o marca</label>
+              <input id="cf-company" name="company" type="text" autocomplete="organization">
+            </div>
+            <div class="contact-form__field">
+              <label for="cf-contact">Mail o WhatsApp <span class="contact-form__req">(obligatorio)</span></label>
+              <input id="cf-contact" name="contact" type="text" autocomplete="email" required aria-describedby="cf-contact-error">
+              <p class="contact-form__error" id="cf-contact-error" hidden></p>
+            </div>
+            <div class="contact-form__field">
+              <label for="cf-message">¿Qué tenés en mente? <span class="contact-form__req">(obligatorio)</span></label>
+              <textarea id="cf-message" name="message" rows="5" required aria-describedby="cf-message-error"></textarea>
+              <p class="contact-form__error" id="cf-message-error" hidden></p>
+            </div>
+            <div class="visually-hidden" aria-hidden="true">
+              <label for="cf-web">No completar este campo</label>
+              <input id="cf-web" name="botcheck" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <button class="contact-form__submit" type="submit">Enviar consulta</button>
+            <p class="contact-form__status" role="status" aria-live="polite" data-contact-status></p>
+          </form>
+          <h2 class="text-page__label contact-form__alt">O escribinos directo</h2>
           <ul class="contact-list">
             ${links
               .map(
@@ -426,6 +467,98 @@
 
   /* ---------- Interacciones ---------- */
 
+  // Formulario de contacto: con clave de Web3Forms llega por mail; sin clave arma el mensaje y abre WhatsApp.
+  const CONTACT_FIELDS = [
+    { name: "name", error: "Escribí tu nombre." },
+    { name: "contact", error: "Dejanos un mail o un WhatsApp para responderte." },
+    { name: "message", error: "Contanos brevemente qué tenés en mente." }
+  ];
+
+  function validateContact(form) {
+    let firstInvalid = null;
+    CONTACT_FIELDS.forEach(({ name, error }) => {
+      const input = form.elements[name];
+      const message = form.querySelector(`#${input.id}-error`);
+      const invalid = !input.value.trim();
+      input.setAttribute("aria-invalid", String(invalid));
+      message.hidden = !invalid;
+      message.textContent = invalid ? error : "";
+      if (invalid && !firstInvalid) firstInvalid = input;
+    });
+    if (firstInvalid) firstInvalid.focus();
+    return !firstInvalid;
+  }
+
+  async function submitContact(form) {
+    const status = form.querySelector("[data-contact-status]");
+    const button = form.querySelector("button[type='submit']");
+    if (form.elements.botcheck.value) return; // los bots completan el campo oculto
+    if (!validateContact(form)) {
+      status.textContent = "Revisá los campos marcados.";
+      return;
+    }
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    const whatsappUrl = () => {
+      const lines = [`Hola theCrow., soy ${data.name}${data.company ? ` (${data.company})` : ""}.`, data.message, `Mi contacto: ${data.contact}`];
+      return `https://wa.me/${site.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(lines.join("\n"))}`;
+    };
+
+    // Sin mail cargado en site.js, el formulario arma el mensaje y abre WhatsApp.
+    if (!site.email) {
+      if (!site.whatsapp) return;
+      window.crowTrack && window.crowTrack("Lead", { method: "whatsapp" });
+      status.textContent = "Abrimos WhatsApp con tu mensaje listo. Tocá enviar para que nos llegue.";
+      window.open(whatsappUrl(), "_blank", "noopener");
+      return;
+    }
+
+    button.disabled = true;
+    status.textContent = "Enviando…";
+    try {
+      // FormSubmit manda el mail directo a site.email. Si la persona dejó un mail, "Responder" le contesta a ella.
+      const looksLikeEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.contact.trim());
+      const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(site.email)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `Consulta de ${data.name}${data.company ? ` (${data.company})` : ""} desde thecrowfilm.com`,
+          _template: "table",
+          _captcha: "false",
+          Nombre: data.name,
+          Empresa: data.company || "—",
+          Contacto: data.contact,
+          Mensaje: data.message,
+          ...(looksLikeEmail ? { email: data.contact.trim() } : {})
+        })
+      });
+      const result = await response.json();
+      if (String(result.success) !== "true") throw new Error("error");
+      window.crowTrack && window.crowTrack("Lead", { method: "form" });
+      form.reset();
+      status.textContent = "¡Gracias! Recibimos tu consulta y te respondemos pronto.";
+    } catch (error) {
+      status.innerHTML = "";
+      const retry = document.createElement("span");
+      retry.textContent = "No se pudo enviar. ";
+      const link = document.createElement("a");
+      link.href = site.whatsapp ? whatsappUrl() : `mailto:${site.email}`;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = site.whatsapp ? "Escribinos por WhatsApp" : "Escribinos por mail";
+      status.append(retry, link);
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  main.addEventListener("submit", (event) => {
+    const form = event.target.closest("[data-contact-form]");
+    if (!form) return;
+    event.preventDefault();
+    submitContact(form);
+  });
+
   // Selector de columnas: delegado, sin volver a renderizar la vista.
   main.addEventListener("click", (event) => {
     const button = event.target.closest("[data-cols-set]");
@@ -468,6 +601,7 @@
   }
 
   renderFooterContact();
+  renderFloatingWhatsapp();
   window.addEventListener("hashchange", render);
   render();
 })();

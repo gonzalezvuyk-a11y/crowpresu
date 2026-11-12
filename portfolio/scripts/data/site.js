@@ -61,11 +61,13 @@ window.CROW = {
     servicesNote: "También editamos y montamos material para agencias y productoras. Escribinos.",
     timeZone: "America/Asuncion",
     instagram: { handle: "thecrowmedia", url: "https://www.instagram.com/thecrowmedia/" },
-    facebook: { name: "TheCrow Film", url: "https://www.facebook.com/profile.php?id=61596256446917" },
+    facebook: { name: "TheCrow", url: "https://www.facebook.com/profile.php?id=61596256446917" },
     // Si quedan vacíos, no se muestran.
     email: "thecrowmedia@gmail.com",
     whatsapp: "+595 972 136903",
     whatsappMessage: "Hola theCrow., quiero consultar por contenido para mi marca o evento.",
+    // El formulario de Contacto manda directo a "email" con FormSubmit (formsubmit.co, gratis, sin cuenta).
+    // La primera consulta pide confirmar la casilla desde un mail de activación; después llegan todas.
     location: "Asunción, Paraguay",
     year: 2026
   },

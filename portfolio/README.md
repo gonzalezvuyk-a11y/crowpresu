@@ -19,8 +19,10 @@ El proyecto **no** está conectado a GitHub, así que un push no lo actualiza. P
 
 ```bash
 cd portfolio
-vercel deploy --prod --yes
+node scripts/deploy.mjs
 ```
+
+El script agrega `?v=<hash>` a los archivos de código (`scripts/` y `styles/`, en `index.html` y en los `@import` de `styles/main.css`), publica con `vercel deploy --prod --yes` y deja los archivos locales como estaban. El hash sale del contenido, así que solo cambia cuando cambia el código. Sirve para que todos los navegadores bajen la versión nueva apenas vuelven a entrar, incluidos los de WhatsApp e Instagram, que guardan las páginas más tiempo. Con `--dry` muestra qué cambiaría sin publicar. Las fotos y videos no lo necesitan: cuando se reemplaza una portada, va con nombre nuevo (`cover.v2.webp`). Publicar con `vercel deploy` a secas sigue funcionando, pero sin la versión.
 
 **Dominio propio:** https://thecrowfilm.com (registrado en GoDaddy). `www.thecrowfilm.com` redirige al dominio principal y `http` redirige a `https`, con certificado de Let's Encrypt que Vercel renueva solo. Registros DNS en GoDaddy: `A @` hacia `216.198.79.1` y `CNAME www` hacia `1550be9ff3197e34.vercel-dns-017.com`; los demás (NS, SOA, `_domainconnect`, `_dmarc`) quedaron como estaban. Si se cambia de proveedor de DNS, hay que repetir esos dos registros. La dirección `thecrow-portfolio.vercel.app` sigue funcionando. `vercel.json` define el caché de `media/` y `assets/` (7 días) y encabezados de seguridad básicos.
 

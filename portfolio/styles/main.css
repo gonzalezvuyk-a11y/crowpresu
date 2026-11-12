@@ -13,3 +13,4 @@
 @import url("components/project.css") layer(components);
 @import url("components/text-page.css") layer(components);
 @import url("components/state-message.css") layer(components);
+@import url("components/wa-float.css") layer(components);

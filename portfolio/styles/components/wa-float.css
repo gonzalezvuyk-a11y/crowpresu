@@ -1,0 +1,43 @@
+/* Botón flotante de WhatsApp: fijo abajo a la derecha en todas las vistas. Mismo lenguaje que el CTA del pie. */
+.wa-float {
+  position: fixed;
+  right: max(var(--gutter), env(safe-area-inset-right));
+  bottom: max(var(--gutter), env(safe-area-inset-bottom));
+  z-index: 30; /* por encima del encabezado (20) */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-size);
+  padding-inline: var(--space-3);
+  background: var(--color-ink);
+  color: var(--color-bg);
+  border-radius: 999px;
+  box-shadow: 0 0.25rem 1rem rgb(21 21 21 / 0.25);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background-color var(--duration-fast), color var(--duration-fast);
+}
+
+.wa-float:hover {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+.wa-float:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+@media (min-width: 48rem) {
+  .wa-float {
+    padding-inline: var(--space-4);
+  }
+}
+
+@media print {
+  .wa-float {
+    display: none;
+  }
+}
