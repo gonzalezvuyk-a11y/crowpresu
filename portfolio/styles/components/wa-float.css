@@ -13,9 +13,10 @@
   color: var(--color-bg);
   border-radius: 999px;
   box-shadow: 0 0.25rem 1rem rgb(21 21 21 / 0.25);
+  font-family: var(--font-mono);
   font-size: var(--text-sm);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   text-decoration: none;
   transition: background-color var(--duration-fast), color var(--duration-fast);
 }

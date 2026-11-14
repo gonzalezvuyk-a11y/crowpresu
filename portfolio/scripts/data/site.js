@@ -61,7 +61,7 @@ window.CROW = {
     servicesNote: "También editamos y montamos material para agencias y productoras. Escribinos.",
     timeZone: "America/Asuncion",
     instagram: { handle: "thecrowmedia", url: "https://www.instagram.com/thecrowmedia/" },
-    facebook: { name: "TheCrow", url: "https://www.facebook.com/profile.php?id=61596256446917" },
+    facebook: { name: "TheCrow Media", url: "https://www.facebook.com/profile.php?id=61596411034998" },
     // Si quedan vacíos, no se muestran.
     email: "thecrowmedia@gmail.com",
     whatsapp: "+595 972 136903",

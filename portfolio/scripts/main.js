@@ -158,7 +158,7 @@
     if (site.facebook) socials.push({ name: "facebook", label: `Facebook ${site.facebook.name}`, href: site.facebook.url });
     const text = site.whatsappMessage ? `?text=${encodeURIComponent(site.whatsappMessage)}` : "";
     const cta = site.whatsapp
-      ? `<a class="site-footer__cta" href="https://wa.me/${site.whatsapp.replace(/\D/g, "")}${text}" target="_blank" rel="noopener noreferrer">${icon("whatsapp")}<span>Escribinos por WhatsApp</span><span class="visually-hidden"> (se abre en otra pestaña)</span></a>`
+      ? `<a class="site-footer__cta" href="https://wa.me/${site.whatsapp.replace(/\D/g, "")}${text}" target="_blank" rel="noopener noreferrer">${icon("whatsapp")}<span>Hablemos</span><span class="visually-hidden"> por WhatsApp (se abre en otra pestaña)</span></a>`
       : "";
     target.innerHTML = `
       ${cta}
